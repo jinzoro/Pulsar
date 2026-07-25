@@ -1,137 +1,93 @@
-# proxmox-kvm-swissknife
+<div align="center">
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Go](https://img.shields.io/badge/go-1.22+-00ADD8?logo=go&logoColor=white)
-![Python](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)
-![Bash](https://img.shields.io/badge/bash-5+-4EAA25?logo=gnubash&logoColor=white)
-![Proxmox](https://img.shields.io/badge/proxmox-VE%208+-E57000?logo=proxmox&logoColor=white)
+# 🪚 proxmox-kvm-swissknife
 
-A comprehensive, opinionated automation suite for managing Proxmox VE clusters, KVM virtual machines, Packer image builds, and Ansible orchestration — all from a unified CLI with a rich terminal UI, plus a REST API gateway for web-based integrations.
+*Unified automation suite for Proxmox VE clusters, KVM/libvirt, and golden-image pipelines*
 
-## Features
+[![Version](https://img.shields.io/badge/Release-1.1.0-14b8a6?style=for-the-badge&logo=github&logoColor=white)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/License-MIT-3b82f6?style=for-the-badge)](LICENSE)
+[![PRs](https://img.shields.io/badge/PRs-Welcome-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourorg/proxmox-kvm-swissknife/pulls)
 
-- **Web UI** — SvelteKit SPA with PegaProx-inspired dark theme. Dashboard, VM/container/node/storage views, power actions, and dev proxy to the API gateway.
-- **REST API Gateway** — HTTP/HTTPS API on `:8443` wrapping the Proxmox client with full CRUD for VMs, containers, storage, snapshots, backups, firewall, HA, and cluster metrics. Auth via X-API-Key / Bearer token. Prometheus `/metrics` endpoint.
-- **Unified CLI** — Single `swissknife` binary wrapping `pmxctl` and `kvmctl` subcommands
-- **Rich TUI** — Interactive terminal dashboard built with Bubble Tea / Lip Gloss for real-time VM monitoring, resource overview, and quick actions
-- **Proxmox API Client** — Full lifecycle management of VMs, containers, storage, networking, backups, and cluster operations via the Proxmox REST API
-- **KVM/libvirt Toolkit** — Local hypervisor management through libvirt, including VM creation, snapshot, migration, and PCI passthrough configuration
-- **Packer Templates** — Pre-configured HCL2 templates for building golden images (Ubuntu, Debian, Rocky, Windows Server) on Proxmox
-- **Ansible Playbooks** — Idempotent roles for host provisioning, security hardening, package management, user setup, and post-install automation
-- **Terraform Modules** — Reusable infrastructure-as-code modules for provisioning Proxmox VMs, networks, and storage from CI/CD pipelines
-- **Backup & Restore** — Tight integration with Proxmox Backup Server (PBS) for scheduled snapshots, retention policies, and disaster recovery
-- **Notification Engine** — Multi-channel alerts (Slack, Telegram, email, ntfy) for job completions, failures, and resource threshold warnings
-- **Observability** — Structured JSON logging, optional Prometheus metrics endpoint, and exportable audit trails
-- **Test Suite** — Bats, pytest, and Go test coverage for all modules with CI-ready configurations
-- **Makefile-Driven** — Consistent developer experience with lint, build, test, and install targets
+[![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?style=for-the-badge&logo=go&logoColor=white)](/go)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](/tests/pytest)
+[![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)](/web)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](/web/src)
+[![Bash](https://img.shields.io/badge/Bash-5%2B-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)](/proxmox)
+[![Ansible](https://img.shields.io/badge/Ansible-2.16%2B-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://github.com/ansible/ansible)
+[![Terraform](https://img.shields.io/badge/Terraform-1.7%2B-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)](https://github.com/hashicorp/terraform)
+[![Packer](https://img.shields.io/badge/Packer-1.10%2B-02A8EF?style=for-the-badge&logo=packer&logoColor=white)](/packer)
 
-## Quick Start
+[![Proxmox](https://img.shields.io/badge/Proxmox_VE_8-E57000?style=for-the-badge&logo=proxmox&logoColor=white)](https://www.proxmox.com)
+[![Prometheus](https://img.shields.io/badge/Metrics-Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](/go/internal/apiserver)
+[![Bubble Tea](https://img.shields.io/badge/TUI-Bubble_Tea-FF6B6B?style=for-the-badge)](https://github.com/charmbracelet/bubbletea)
+[![adapter-static](https://img.shields.io/badge/SPA-SvelteKit-000000?style=for-the-badge&logo=svelte&logoColor=white)](/web)
 
-### Prerequisites
+</div>
 
-| Tool | Minimum Version | Purpose |
-|------|----------------|---------|
-| Go | 1.22 | Building CLI binaries |
-| Python | 3.11 | Ansible playbooks and scripts |
-| Packer | 1.10 | Building VM images |
-| Ansible | 2.16 | Configuration management |
-| Terraform | 1.7 | Infrastructure provisioning |
-| Proxmox VE | 8.x | Target hypervisor cluster |
-| jq | 1.7 | JSON processing in scripts |
-| shellcheck | 0.10 | Bash linting |
+---
 
-### Clone & Configure
+## 📦 Features
+
+| Layer | Description |
+|-------|-------------|
+| 🌐 **Web UI** | SvelteKit 5 SPA with dark theme — dashboard, VM/CT/node/storage views, power actions, dev proxy |
+| 🔌 **REST API** | Go gateway on `:8443` with 40+ endpoints, X-API-Key/Bearer auth, CORS, Prometheus metrics |
+| 🖥 **TUI** | Bubble Tea interactive dashboard — real-time VM status, sparklines, vim-style keyboard navigation |
+| 🛠 **CLI** | Single `swissknife` binary wrapping `pmxctl` + `kvmctl` with consistent interface |
+| 🖼 **Packer** | HCL2 templates for Ubuntu, Debian, Rocky, Windows Server golden images on Proxmox |
+| 📋 **Ansible** | 23 idempotent roles + 15 playbooks for fleet provisioning, hardening, and automation |
+| 🏗 **Terraform** | Reusable IaC modules for VMs, networks, storage from CI/CD pipelines |
+| 💾 **Backup** | PBS integration with scheduled snapshots, retention policies, disaster recovery |
+| 🔔 **Notifications** | Multi-channel alerts — Slack, Telegram, email, ntfy |
+| 📊 **Observability** | Structured JSON logging, Prometheus metrics, audit trails |
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 git clone https://github.com/yourorg/proxmox-kvm-swissknife.git
 cd proxmox-kvm-swissknife
-
-cp .env.example .env
-# Edit .env with your Proxmox API credentials and preferences
+cp .env.example .env   # Edit with your Proxmox credentials
+make build             # Build all Go binaries
 ```
 
-### First Run
+| Command | What it does |
+|---------|-------------|
+| `make tui` | Launch interactive TUI dashboard |
+| `./bin/apigateway.exe` | Start REST API gateway on `:8443` |
+| `cd web && npm run dev` | Start SvelteKit dev server (proxies `/api` → `:8443`) |
+| `./bin/swissknife status` | Cluster overview |
+| `./bin/pmxctl vm list -n pve1` | List VMs on node |
+| `./bin/kvmctl list --all` | List local libvirt domains |
 
-```bash
-# Build all binaries (including apigateway)
-make build
+> **Prerequisites:** Go 1.22+, Python 3.11+, Packer 1.10+, Ansible 2.16+, Terraform 1.7+, Proxmox VE 8.x
 
-# Run the interactive TUI
-make tui
+---
 
-# Start the REST API gateway
-./bin/apigateway.exe
-
-# Start the web UI dev server (separate terminal, proxies /api to :8443)
-cd web && npm run dev
-
-# Or use the CLI directly
-./bin/swissknife status
-./bin/pmxctl vm list --node pve1
-./bin/kvmctl list
-```
-
-## Directory Structure
+## 📁 Structure
 
 ```
 proxmox-kvm-swissknife/
-├── config/                  # Default configuration files
-│   ├── settings.yaml        # Global settings
-│   └── templates/           # Packer and Terraform variable templates
-├── docs/                    # Documentation
-│   ├── architecture.md      # System architecture overview
-│   ├── api-reference.md     # CLI command reference
-│   └── runbooks/            # Operational runbooks
-├── go/                      # Go source code
-│   ├── cmd/                 # CLI & server entry points
-│   │   ├── swissknife/      # Main unified CLI
-│   │   ├── pmxctl/          # Proxmox control CLI
-│   │   ├── kvmctl/          # KVM/libvirt control CLI
-│   │   └── apigateway/      # REST API gateway
-│   ├── internal/            # Internal packages
-│   │   ├── apiserver/       # API gateway server, handlers, middleware
-│   │   ├── pmx/             # Proxmox API client
-│   │   ├── kvm/             # libvirt/libkvm client
-│   │   ├── tui/             # Bubble Tea TUI components
-│   │   ├── notify/          # Notification dispatcher
-│   │   ├── config/          # Config loader
-│   │   └── logging/         # Structured logging
-│   ├── pkg/                 # Public reusable packages
-│   ├── go.mod               # Go module definition
-│   └── go.sum               # Go module checksums
-├── kvm/                     # KVM/libvirt helper scripts and templates
-├── packer/                  # Packer HCL2 templates
-│   ├── ubuntu/              # Ubuntu image builds
-│   ├── debian/              # Debian image builds
-│   ├── rocky/               # Rocky Linux image builds
-│   └── windows/             # Windows Server image builds
-├── proxmox/                 # Proxmox-specific configs and scripts
-├── shared/                  # Shared utilities and libraries
-├── tests/                   # Test suites
-│   ├── bats/                # Bash automated testing system tests
-│   ├── pytest/              # Python test suite
-│   └── go/                  # Go test suite
-├── web/                     # SvelteKit web UI
-│   ├── src/                 #  Svelte components, pages, API client
-│   ├── static/              #  Static assets
-│   ├── build/               #  Production build output
-│   ├── package.json
-│   ├── svelte.config.js
-│   └── vite.config.ts
-├── .env.example             # Environment variable template
-├── .gitignore               # Git ignore rules
-├── Makefile                 # Build and task automation
-├── CHANGELOG.md             # Release changelog
-├── LICENSE                  # MIT License
-└── README.md                # This file
+├── config/           # Settings, templates
+├── docs/             # Architecture, API ref, runbooks
+├── go/               # Go source (CLI, API, TUI, client libs)
+│   ├── cmd/          # Entry points
+│   ├── internal/     # apiserver, pmx, kvm, tui, notify, config
+│   └── pkg/          # Public packages
+├── kvm/              # libvirt helpers
+├── packer/           # HCL2 image templates
+├── proxmox/          # Proxmox scripts
+├── tests/            # BATS, pytest, Go test suites
+└── web/              # SvelteKit SPA
 ```
 
-## Modules
+---
 
-### `pmxctl` — Proxmox Control CLI
+## 🧩 Modules
 
-A purpose-built command-line tool for Proxmox VE operations.
+<details>
+<summary><strong>pmxctl</strong> — Proxmox CLI</summary>
 
 ```bash
 pmxctl vm list --node pve1
@@ -139,199 +95,109 @@ pmxctl vm create --name web-01 --node pve1 --template ubuntu-2204 --cores 4 --me
 pmxctl vm snapshot create --vmid 101 --name pre-upgrade
 pmxctl vm backup --vmid 101 --storage local --mode snapshot
 pmxctl cluster status
-pmxctl storage list --node pve1
-pmxctl network list --node pve1
 ```
+</details>
 
-### `kvmctl` — KVM/libvirt Control CLI
-
-Local hypervisor management via libvirt.
+<details>
+<summary><strong>kvmctl</strong> — KVM/libvirt CLI</summary>
 
 ```bash
 kvmctl list --all
-kvmctl create --name dev-vm --cpus 4 --ram 8G --disk 50G --iso /var/lib/libvirt/images/ubuntu-22.04.iso
+kvmctl create --name dev-vm --cpus 4 --ram 8G --disk 50G
 kvmctl snapshot --name dev-vm --label daily
 kvmctl migrate --name dev-vm --dest pve2
-kvmctl pci-list --node pve1
 ```
+</details>
 
-### `swissknife` — Unified CLI
-
-Wraps both `pmxctl` and `kvmctl` with a consistent interface and adds cluster-wide operations.
+<details>
+<summary><strong>swissknife</strong> — Unified CLI + TUI</summary>
 
 ```bash
-swissknife status              # Overview of all nodes
-swissknife vm list             # List VMs across all nodes
-swissknife backups list        # List recent backups
-swissknife alerts              # Check notification channels
-swissknife tui                 # Launch interactive dashboard
+swissknife status          # Cluster overview
+swissknife vm list         # VMs across all nodes
+swissknife backups list    # Recent backups
+swissknife tui             # Launch interactive dashboard
 ```
 
-### TUI Dashboard
+**TUI hotkeys:** `j/k` navigate · `Enter` select · `s` start · `S` stop · `r` restart · `b` snapshot · `/` search · `?` help · `q` quit
+</details>
 
-The interactive terminal UI provides:
+<details>
+<summary><strong>apigateway</strong> — REST API server</summary>
 
-- Real-time VM status and resource utilization (CPU, RAM, disk, network)
-- Node health overview with load averages and uptime
-- Quick actions: start, stop, restart, snapshot, backup
-- Backup status and next scheduled run
-- Notification log with recent alerts
-- Keyboard-driven navigation with vim-style bindings
-
-## Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and fill in your credentials:
-
-```bash
-cp .env.example .env
+```
+GET/POST   /api/v1/vms                  List / create VMs
+GET/DELETE /api/v1/vms/{vmid}           VM detail / delete
+POST       /api/v1/vms/{vmid}/start     Power on
+POST       /api/v1/vms/{vmid}/stop      Power off
+POST       /api/v1/vms/{vmid}/shutdown  Graceful shutdown
+POST       /api/v1/vms/{vmid}/clone     Clone VM
+POST       /api/v1/vms/{vmid}/resize    Resize VM
+POST       /api/v1/vms/{vmid}/migrate   Migrate VM
+GET/POST   /api/v1/vms/{vmid}/snapshots Snapshot management
+GET/POST   /api/v1/containers           Container operations
+GET        /api/v1/nodes                Node list / detail
+GET        /api/v1/cluster/status       Cluster health
+GET        /api/v1/storage              Storage status
+GET/POST   /api/v1/backups              Backup operations
+GET/POST   /api/v1/pools                Pool management
+GET        /api/v1/ha/groups            HA group status
+GET        /api/v1/firewall/rules        FW rules
+GET        /api/v1/metrics              Prometheus metrics
 ```
 
-Key variables:
+Configure with env prefix `APIGW_` or `apigateway.yaml`.
+</details>
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `PMX_API_URL` | Proxmox VE API endpoint (e.g., `https://pve1.example.com:8006`) | Yes |
-| `PMX_USER` | API authentication user (e.g., `root@pam`) | Yes |
-| `PMX_TOKEN_ID` | API token identifier | Yes |
-| `PMX_TOKEN_SECRET` | API token secret | Yes |
-| `PMX_NODE` | Default Proxmox node name | Yes |
-| `SSH_USER` | SSH username for remote operations | No |
-| `SSH_KEY_PATH` | Path to SSH private key | No |
-| `SLACK_WEBHOOK_URL` | Slack incoming webhook URL | No |
-| `TELEGRAM_BOT_TOKEN` | Telegram bot API token | No |
-| `TELEGRAM_CHAT_ID` | Telegram chat ID for notifications | No |
+---
 
-### API Gateway Environment Variables
+## ⚙️ Configuration
 
-The REST API gateway (`apigateway`) is configured via `apigateway.yaml` or environment variables with prefix `APIGW_`:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `PMX_API_URL` | ✅ | Proxmox API endpoint |
+| `PMX_USER` | ✅ | Auth user (e.g. `root@pam`) |
+| `PMX_TOKEN_ID` | ✅ | API token ID |
+| `PMX_TOKEN_SECRET` | ✅ | API token secret |
+| `PMX_NODE` | ✅ | Default target node |
+| `SSH_USER` | ❌ | SSH username |
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `APIGW_LISTEN` | Listen address | `:8443` |
-| `APIGW_TLS_ENABLED` | Enable HTTPS | `false` |
-| `APIGW_TLS_CERT` | TLS cert path | — |
-| `APIGW_TLS_KEY` | TLS key path | — |
-| `APIGW_PROXMOX_URL` | Proxmox API endpoint | `https://localhost:8006` |
-| `APIGW_PROXMOX_USER` | Proxmox auth user | `root@pam` |
-| `APIGW_PROXMOX_TOKEN_ID` | API token ID | — |
-| `APIGW_PROXMOX_TOKEN_SECRET` | API token secret | — |
-| `APIGW_AUTH_ENABLED` | Enable X-API-Key auth | `true` |
-| `APIGW_AUTH_API_KEY` | API key for auth | — |
+Full config reference in [`config/settings.yaml`](config/settings.yaml).
 
-### `settings.yaml`
+---
 
-Located at `config/settings.yaml`. Controls default behaviors:
-
-```yaml
-defaults:
-  node: pve1
-  storage: local-lvm
-  bridge: vmbr0
-  ostype: l26
-
-backup:
-  enabled: true
-  storage: local
-  mode: snapshot
-  retention:
-    daily: 7
-    weekly: 4
-    monthly: 6
-
-notifications:
-  enabled: false
-  channels:
-    - type: slack
-      enabled: false
-    - type: telegram
-      enabled: false
-    - type: email
-      enabled: false
-    - type: ntfy
-      enabled: false
-
-logging:
-  level: info
-  format: json
-  output: stdout
-  file: /var/log/swissknife.log
-
-tui:
-  refresh_interval: 5
-  theme: dark
-  show_header: true
-```
-
-## TUI Usage
-
-```bash
-# Launch the TUI dashboard
-make tui
-# or
-./bin/swissknife tui
-
-# Keyboard shortcuts:
-#   j/k       Navigate up/down
-#   Enter     Select / expand
-#   s         Start selected VM
-#   S         Stop selected VM
-#   r         Restart selected VM
-#   b         Create snapshot
-#   /         Search / filter
-#   ?         Show help
-#   q/Esc     Quit
-```
-
-## Makefile Targets
-
-Run `make help` to see all available targets:
+## 🔨 Makefile
 
 | Target | Description |
 |--------|-------------|
-| `make help` | Display all available targets (default) |
-| `make build` | Build all Go binaries (`swissknife`, `pmxctl`, `kvmctl`, `apigateway`) |
-| `make tui` | Build and launch the interactive TUI |
-| `make test` | Run the full test suite (bats, pytest, Go) |
-| `make lint` | Run all linters (shellcheck, ruff, golangci-lint, ansible-lint, tflint) |
-| `make install` | Install Go binaries to `/usr/local/bin` |
-| `make clean` | Remove build artifacts and cache directories |
-| `make packer-build` | Build all Packer image templates |
-| `make ansible-check` | Syntax-check all Ansible playbooks |
-| `make fmt` | Format all source code (gofmt, black, shfmt) |
-| `make tidy` | Run `go mod tidy` and pip-compile |
+| `build` | Build all Go binaries |
+| `tui` | Build + launch TUI |
+| `test` | Full test suite (bats, pytest, Go) |
+| `lint` | All linters (shellcheck, ruff, golangci-lint, ansible-lint, tflint) |
+| `install` | Install binaries to `/usr/local/bin` |
+| `clean` | Remove build artifacts |
+| `packer-build` | Build all Packer images |
+| `ansible-check` | Syntax-check playbooks |
+| `fmt` | Format all code |
 
-## Contributing
+---
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Make your changes with tests
-4. Run the full test and lint suite: `make test && make lint`
-5. Commit your changes (`git commit -am 'Add my feature'`)
-6. Push to the branch (`git push origin feature/my-feature`)
-7. Open a Pull Request
+## 🤝 Contributing
 
-### Development Guidelines
-
-- Follow [Effective Go](https://go.dev/doc/effective-go) conventions for Go code
-- Use [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) for Python
-- Run `shellcheck` on all Bash scripts before committing
-- Ansible roles must pass `ansible-lint` with zero warnings
-- All Packer templates must validate with `packer validate`
-- Write tests for new functionality and update this README
-
-### Commit Convention
-
-Use [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat(pmxctl): add VM migration command
-fix(notify): resolve Slack webhook timeout
-docs(readme): update installation steps
-chore(deps): bump go dependencies
+```bash
+git checkout -b feature/my-feature
+# make changes with tests
+make test && make lint
+git commit -m "feat(pmxctl): add my feature"
+git push origin feature/my-feature
 ```
 
-## License
+Follow [Effective Go](https://go.dev/doc/effective-go) and [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html). Use [Conventional Commits](https://www.conventionalcommits.org/).
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+---
+
+<div align="center">
+
+<sub>Built with ❤️ for Proxmox administrators · MIT License</sub>
+
+</div>

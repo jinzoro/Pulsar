@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Patching Role - handlers/main.yml
+
+- name: restart pve-cluster
+  ansible.builtin.systemd:
+    name: pve-cluster
+    state: restarted
+
+- name: restart pvedaemon
+  ansible.builtin.systemd:
+    name: pvedaemon
+    state: restarted
+
+- name: restart pveproxy
+  ansible.builtin.systemd:
+    name: pveproxy
+    state: restarted
+
+- name: restart pve-firewall
+  ansible.builtin.systemd:
+    name: pve-firewall
+    state: restarted

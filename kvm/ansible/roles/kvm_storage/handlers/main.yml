@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+# KVM Storage Role - handlers/main.yml
+
+- name: refresh storage pool
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    command: refresh
+
+- name: restart libvirtd
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: restarted

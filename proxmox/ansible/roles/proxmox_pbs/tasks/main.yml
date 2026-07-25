@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: MIT
+# Proxmox PBS Integration Role - tasks/main.yml
+
+- name: Ensure PBS client packages are installed
+  ansible.builtin.apt:
+    name:
+      - proxmox-backup-client
+    state: present
+  tags: proxmox_pbs
+
+- name: Add PBS server fingerprints
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: ".*{{ item.host }}.*"
+    line: "{{ item.host }} {{ item.name }}"
+    state: present
+  loop: "{{ pbs_servers }}"
+  loop_control:
+    label: "Host: {{ item.name }} ({{ item.host }})"
+  when: pbs_servers | default([]) | length > 0
+  tags: proxmox_pbs
+
+- name: Register PBS storage targets via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/storage"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      storage: "pbs-{{ item.name }}"
+      type: "pbs"
+      server: "{{ item.host }}"
+      datastore: "{{ item.datastore }}"
+      content: "backup,prune"
+      fingerprint: "{{ item.fingerprint | default(omit) }}"
+      comment: "{{ item.comment | default(omit) }}"
+      disable: false
+      prune: true
+      keep_last: "{{ pbs_retention.keep_last }}"
+      keep_daily: "{{ pbs_retention.keep_daily }}"
+      keep_weekly: "{{ pbs_retention.keep_weekly }}"
+      keep_monthly: "{{ pbs_retention.keep_monthly }}"
+      keep_yearly: "{{ pbs_retention.keep_yearly }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ pbs_datastores }}"
+  loop_control:
+    label: "PBS datastore: {{ item.name }}"
+  when: pbs_datastores | default([]) | length > 0
+  tags: proxmox_pbs
+
+- name: Configure backup jobs to PBS
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/backup"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      enabled: "{{ item.enabled | default(true) }}"
+      schedule: "0 1 * * {{ item.schedule | default('*') }}"
+      storage: "pbs-{{ item.store }}"
+      mode: "{{ item.mode | default('snapshot') }}"
+      compress: "{{ item.compress | default('zstd') }}"
+      mailto: "{{ item.mailto | default('') }}"
+      mail: false
+      all: "{{ item.selection | default('all') }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ pbs_backup_jobs }}"
+  loop_control:
+    label: "{{ item.comment | default('PBS backup job') }}"
+  when:
+    - pbs_backup_jobs | default([]) | length > 0
+    - item.enabled | default(true)
+  tags: proxmox_pbs
+
+- name: Verify PBS connectivity
+  ansible.builtin.command: >-
+    pbs-server verify
+    --server {{ pbs_servers[0].host }}
+    --fingerprint {{ pbs_servers[0].fingerprint }}
+  register: pbs_verify
+  changed_when: false
+  failed_when: false
+  when: pbs_servers | default([]) | length > 0
+  tags: proxmox_pbs
+
+- name: Display PBS configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      PBS integration: {{ pbs_servers | length }} servers,
+      {{ pbs_datastores | length }} datastores,
+      {{ pbs_backup_jobs | length }} backup jobs
+  tags: proxmox_pbs

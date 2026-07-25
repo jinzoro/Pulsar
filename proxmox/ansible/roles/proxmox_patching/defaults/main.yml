@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Patching Role - defaults/main.yml
+
+patch_reboot_timeout: 600
+patch_wait_timeout: 300
+patch_drain_ha: true
+patch_max_parallel: 1
+patch_exclude_packages: []
+
+patch_apt_update: true
+patch_security_only: false
+patch_upgrade_type: "dist-upgrade"
+
+patch_notification: false
+patch_notification_email: ""
+
+patch_pre_check: true
+patch_post_check: true
+
+patch_snapshots_before: false
+patch_snapshot_name: "pre-patch"
+
+patch_services_restart:
+  - "pve-cluster"
+  - "pvedaemon"
+  - "pveproxy"
+  - "pve-firewall"
+  - "pvestatd"

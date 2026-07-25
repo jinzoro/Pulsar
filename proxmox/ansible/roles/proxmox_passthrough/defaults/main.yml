@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Passthrough Role - defaults/main.yml
+
+iommu_enabled: true
+iommu_mode: "intel"  # intel or amd
+
+pci_devices:
+  - vendor: "10de"
+    device: "2684"
+    comment: "NVIDIA GPU"
+
+gpu_devices:
+  - vendor: "10de"
+    device: "2684"
+    audio_device: "10de"
+    audio_vendor: "228a"
+    comment: "NVIDIA RTX 4090"
+
+vfio_pci_modules:
+  - "vfio"
+  - "vfio_iommu_type1"
+  - "vfio_pci"
+  - "vfio_virqfd"
+
+blacklist_modules:
+  - "nvidia"
+  - "nvidia_drm"
+  - "nvidia_modeset"
+  - "nvidia_uvm"
+  - "amdgpu"
+  - "radeon"
+
+iommu_params:
+  intel_iommu: "on"
+  iommu: "pt"
+
+kernel_params:
+  - "quiet"
+  - "nomodeset"
+
+gpu_passthrough: true
+update_initramfs: true
+reboot_after_iommu: false

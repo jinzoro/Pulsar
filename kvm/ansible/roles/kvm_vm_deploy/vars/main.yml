@@ -1,0 +1,3 @@
+# SPDX-License-Identifier: MIT
+# KVM VM Deploy Role - vars/main.yml
+# Empty - all variables in defaults/main.yml

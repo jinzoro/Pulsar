@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cluster Role - tasks/main.yml
+
+- name: Check if cluster already exists
+  ansible.builtin.command: pvecm status
+  register: pvecm_status
+  changed_when: false
+  failed_when: false
+  tags: proxmox_cluster
+
+- name: Bootstrap Proxmox cluster (first node)
+  ansible.builtin.command: >-
+    pvecm create {{ cluster_name }}
+    --ring0_addr {{ ring0_address }}
+    {% if ring1_address is defined %}--ring1_addr {{ ring1_address }}{% endif %}
+  when:
+    - pvecm_status.rc != 0
+    - first_node | default(false)
+  no_log: true
+  tags: proxmox_cluster
+
+- name: Join existing Proxmox cluster
+  ansible.builtin.command: >-
+    pvecm add {{ cluster_join_address }}
+    --ring0_addr {{ ring0_address }}
+    {% if ring1_address is defined %}--ring1_addr {{ ring1_address }}{% endif %}
+  when:
+    - pvecm_status.rc != 0
+    - not (first_node | default(false))
+  no_log: true
+  tags: proxmox_cluster
+
+- name: Wait for cluster services to stabilize
+  ansible.builtin.pause:
+    seconds: 10
+  when: pvecm_status.rc != 0
+  tags: proxmox_cluster
+
+- name: Verify cluster quorum
+  ansible.builtin.command: pvecm status
+  register: quorum_status
+  changed_when: false
+  retries: 12
+  delay: 5
+  until: "'Votequorum' in quorum_status.stdout"
+  tags: proxmox_cluster
+
+- name: Display cluster status
+  ansible.builtin.debug:
+    msg: "{{ quorum_status.stdout_lines }}"
+  tags: proxmox_cluster
+
+- name: Verify expected node count
+  ansible.builtin.assert:
+    that:
+      - expected_nodes | default(3) | int <= quorum_status.stdout_lines | select('search', 'Nodes') | map('regex_replace', '.*:\\s*(\\d+).*', '\\1') | first | int
+    fail_msg: "Cluster node count does not match expected"
+  when: expected_nodes is defined
+  tags: proxmox_cluster

@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Firewall Role - tasks/main.yml
+
+- name: Enable cluster-wide firewall
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/firewall/options"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      enable: "{{ firewall_enabled | int }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  tags: proxmox_firewall
+
+- name: Create cluster firewall rules
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/firewall/rules"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      type: "{{ item.type }}"
+      macro: "{{ item.macro | default(omit) }}"
+      dport: "{{ item.dport | default(omit) }}"
+      proto: "{{ item.proto | default(omit) }}"
+      source: "{{ item.source | default(omit) }}"
+      dest: "{{ item.dest | default(omit) }}"
+      action: "{{ item.action }}"
+      state: "{{ item.state | default(omit) }}"
+      comment: "{{ item.comment | default(omit) }}"
+      enable: "{{ item.enabled | default(true) | int }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ cluster_firewall_rules }}"
+  loop_control:
+    label: "{{ item.comment | default(item.name) }}"
+  tags: proxmox_firewall
+
+- name: Create IPsets
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/firewall/ipset"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "{{ item.name }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200, 500]
+  loop: "{{ ipsets }}"
+  loop_control:
+    label: "IPset: {{ item.name }}"
+  tags: proxmox_firewall
+
+- name: Add entries to IPsets
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/firewall/ipset/{{ item.0.name }}"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      cidr: "{{ item.1 }}"
+      comment: "{{ item.0.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200, 500]
+  loop: "{{ ipsets | subelements('entries') }}"
+  loop_control:
+    label: "{{ item.0.name }}: {{ item.1 }}"
+  when: item.1 | length > 0
+  tags: proxmox_firewall
+
+- name: Configure node-level firewall
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/nodes/{{ proxmox_node }}/firewall/options"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      enable: "{{ firewall_enabled | int }}"
+      policy_in: "{{ firewall_policy }}"
+      policy_out: "ACCEPT"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  tags: proxmox_firewall
+
+- name: Create node-level firewall rules
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/nodes/{{ proxmox_node }}/firewall/rules"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      type: "{{ item.type }}"
+      macro: "{{ item.macro | default(omit) }}"
+      dport: "{{ item.dport | default(omit) }}"
+      proto: "{{ item.proto | default(omit) }}"
+      source: "{{ item.source | default(omit) }}"
+      action: "{{ item.action }}"
+      state: "{{ item.state | default(omit) }}"
+      comment: "{{ item.comment | default(omit) }}"
+      enable: "{{ item.enabled | default(true) | int }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ node_firewall_rules }}"
+  loop_control:
+    label: "{{ item.comment | default(item.name) }}"
+  tags: proxmox_firewall
+
+- name: Display firewall configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      Firewall: cluster rules={{ cluster_firewall_rules | length }},
+      node rules={{ node_firewall_rules | length }},
+      ipsets={{ ipsets | length }}
+  tags: proxmox_firewall

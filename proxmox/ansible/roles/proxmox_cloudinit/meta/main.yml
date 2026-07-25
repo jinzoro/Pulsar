@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cloud-Init Role - meta/main.yml
+
+galaxy_info:
+  role_name: proxmox_cloudinit
+  description: Download and configure cloud-init templates on Proxmox VE
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies: []

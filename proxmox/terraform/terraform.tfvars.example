@@ -1,0 +1,151 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) proxmox-kvm-swissknife contributors
+
+# Proxmox API Configuration
+pm_api_url          = "https://pve.example.com:8006/api2/json"
+pm_api_token_id     = "automation@pam!terraform"
+pm_api_token_secret = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+pm_api_tls_insecure = true
+pm_node             = "pve"
+
+# SSH for cloud-init drive mounting
+pm_ssh_user     = "root"
+pm_ssh_password = "changeme"
+
+# Virtual Machines
+vms = {
+  web-server = {
+    name           = "web-server"
+    vmid           = 200
+    cpu_cores      = 4
+    cpu_sockets    = 1
+    memory         = 4096
+    disk_size      = 50
+    disk_storage   = "local-lvm"
+    template_id    = 100
+    clone_full     = true
+    ci_user        = "ubuntu"
+    ci_password    = "changeme"
+    ci_ssh_keys    = "ssh-rsa AAAAB3... user@host"
+    ci_ip          = "10.0.0.10/24"
+    ci_gateway     = "10.0.0.1"
+    ci_nameserver  = "1.1.1.1"
+    ci_domain      = "example.local"
+    network_bridge = "vmbr0"
+    tags           = "web,production"
+    description    = "Production web server"
+    agent          = true
+  }
+
+  db-server = {
+    name           = "db-server"
+    vmid           = 201
+    cpu_cores      = 8
+    cpu_sockets    = 1
+    memory         = 16384
+    disk_size      = 200
+    disk_storage   = "local-lvm"
+    template_id    = 101
+    clone_full     = true
+    ci_user        = "debian"
+    ci_password    = "changeme"
+    ci_ip          = "10.0.0.11/24"
+    ci_gateway     = "10.0.0.1"
+    ci_nameserver  = "1.1.1.1"
+    network_bridge = "vmbr0"
+    tags           = "database,production"
+    description    = "Production database server"
+  }
+
+  dev-vm = {
+    name         = "dev-vm"
+    vmid         = 300
+    cpu_cores    = 2
+    memory       = 4096
+    disk_size    = 32
+    template_id  = 100
+    clone_full   = false
+    ci_user      = "ubuntu"
+    ci_password  = "changeme"
+    ci_ip        = "10.0.0.20/24"
+    ci_gateway   = "10.0.0.1"
+    tags         = "dev"
+    description  = "Developer sandbox"
+    agent        = true
+  }
+}
+
+# Containers
+containers = {
+  monitor = {
+    hostname       = "monitor"
+    vmid           = 400
+    ostemplate     = "local:vztmpl/debian-12-standard_12.11-1_amd64.tar.zst"
+    os_type        = "debian"
+    password       = "changeme"
+    unprivileged   = true
+    cpu_cores      = 2
+    memory         = 1024
+    swap           = 1024
+    rootfs_size    = "8"
+    rootfs_storage = "local-lvm"
+    network_bridge = "vmbr0"
+    ip_address     = "10.0.0.30/24"
+    ip_gateway     = "10.0.0.1"
+    dns_nameserver = "1.1.1.1"
+    dns_domain     = "example.local"
+  }
+
+  dns = {
+    hostname       = "dns"
+    vmid           = 401
+    ostemplate     = "local:vztmpl/alpine-3.20-default_20240806_amd64.tar.xz"
+    os_type        = "alpine"
+    password       = "changeme"
+    unprivileged   = true
+    cpu_cores      = 1
+    memory         = 256
+    rootfs_size    = "2"
+    rootfs_storage = "local-lvm"
+    network_bridge = "vmbr0"
+    ip_address     = "10.0.0.31/24"
+    ip_gateway     = "10.0.0.1"
+    dns_nameserver = "1.1.1.1"
+  }
+}
+
+# Network Interfaces
+networks = {
+  vmbr1 = {
+    type         = "bridge"
+    name         = "vmbr1"
+    comment      = "Production bridge"
+    bridge_ports = ""
+    bridge_stp   = false
+    bridge_fd    = 0
+  }
+
+  bond0 = {
+    type        = "bond"
+    name        = "bond0"
+    comment     = "LAGG bond"
+    bond_mode   = "802.3ad"
+    bond_members = ["eno1", "eno2"]
+    bond_xmit_hash_policy = "layer3+4"
+  }
+}
+
+# Resource Pools
+pools = {
+  production = {
+    pool_id = "production"
+    comment = "Production workloads"
+    members = [200, 201]
+  }
+
+  dev = {
+    pool_id = "development"
+    comment = "Development workloads"
+    members = [300, 400, 401]
+  }
+}

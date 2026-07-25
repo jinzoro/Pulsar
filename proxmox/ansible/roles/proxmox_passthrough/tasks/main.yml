@@ -1,0 +1,110 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Passthrough Role - tasks/main.yml
+
+- name: Detect CPU type for IOMMU mode
+  ansible.builtin.set_fact:
+    iommu_mode: >-
+      {{ 'intel' if ansible_processor[0] | search('Intel')
+         else 'amd' }}
+  tags: proxmox_passthrough
+
+- name: Enable IOMMU in GRUB (Intel)
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^\s*GRUB_CMDLINE_LINUX_DEFAULT='
+    line: >-
+      GRUB_CMDLINE_LINUX_DEFAULT="quiet
+      intel_iommu=on iommu=pt
+      {% for mod in vfio_pci_modules %} vfio-pci.ids={{ pci_devices | map(attribute='vendor') | zip(pci_devices | map(attribute='device')) | map('join', ':') | join(',') }}{% endfor %}"
+    state: present
+  when: iommu_mode == 'intel'
+  notify: update grub
+  tags: proxmox_passthrough
+
+- name: Enable IOMMU in GRUB (AMD)
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^\s*GRUB_CMDLINE_LINUX_DEFAULT='
+    line: >-
+      GRUB_CMDLINE_LINUX_DEFAULT="quiet
+      amd_iommu=on iommu=pt
+      {% for mod in vfio_pci_modules %} vfio-pci.ids={{ pci_devices | map(attribute='vendor') | zip(pci_devices | map(attribute='device')) | map('join', ':') | join(',') }}{% endfor %}"
+    state: present
+  when: iommu_mode == 'amd'
+  notify: update grub
+  tags: proxmox_passthrough
+
+- name: Configure VFIO modules
+  ansible.builtin.lineinfile:
+    path: /etc/modules
+    regexp: "^{{ item }}$"
+    line: "{{ item }}"
+    state: present
+  loop: "{{ vfio_pci_modules }}"
+  notify: update initramfs
+  tags: proxmox_passthrough
+
+- name: Blacklist GPU drivers
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/blacklist-gpu.conf
+    regexp: "^blacklist {{ item }}$"
+    line: "blacklist {{ item }}"
+    state: present
+  loop: "{{ blacklist_modules }}"
+  notify: update initramfs
+  tags: proxmox_passthrough
+
+- name: Create VFIO configuration
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/vfio.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% for dev in pci_devices %}
+      options vfio-pci ids={{ dev.vendor }}:{{ dev.device }}
+      {% endfor %}
+      softdep nvidia pre: vfio-pci
+      softdep amdgpu pre: vfio-pci
+  notify: update initramfs
+  tags: proxmox_passthrough
+
+- name: Configure GRUB default IOMMU parameters
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^\s*GRUB_CMDLINE_LINUX='
+    line: >-
+      GRUB_CMDLINE_LINUX="quiet"
+    insertafter: '^\s*GRUB_CMDLINE_LINUX_DEFAULT='
+    state: present
+  notify: update grub
+  tags: proxmox_passthrough
+
+- name: Update GRUB
+  ansible.builtin.command: update-grub
+  changed_when: true
+  tags: proxmox_passthrough
+
+- name: Update initramfs
+  ansible.builtin.command: update-initramfs -u
+  changed_when: true
+  when: update_initramfs | default(true)
+  tags: proxmox_passthrough
+
+- name: Verify IOMMU status
+  ansible.builtin.shell: dmesg | grep -i iommu | tail -5
+  register: iommu_status
+  changed_when: false
+  tags: proxmox_passthrough
+
+- name: Display IOMMU status
+  ansible.builtin.debug:
+    msg: "{{ iommu_status.stdout_lines }}"
+  tags: proxmox_passthrough
+
+- name: Reboot to apply IOMMU changes
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+    msg: "Rebooting to enable IOMMU for device passthrough"
+  when: reboot_after_iommu | default(false)
+  tags: proxmox_passthrough

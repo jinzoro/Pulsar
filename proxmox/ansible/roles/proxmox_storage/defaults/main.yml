@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Storage Role - defaults/main.yml
+
+storage_backends:
+  - name: local
+    type: dir
+    content: ["vztmpl", "iso", "backup"]
+    path: /var/lib/vz
+    nodes: []
+
+  - name: local-lvm
+    type: lvmthin
+    content: ["images", "rootdir"]
+    vgname: pve
+    thinpool: data
+    nodes: []
+
+#  - name: fast-storage
+#    type: zfs
+#    content: ["images", "rootdir", "vztmpl", "iso", "backup"]
+#    zpool: fast-pool
+#    nodes: []
+
+#  - name: nfs-backup
+#    type: nfs
+#    content: ["backup", "vztmpl", "iso"]
+#    server: 10.0.0.100
+#    export: /mnt/pve/nfs-backup
+#    nodes: []
+
+#  - name: ceph-ssd
+#    type: rbd
+#    content: ["images", "rootdir"]
+#    pool: ceph-ssd
+#    monhost: "10.0.0.1,10.0.0.2,10.0.0.3"
+#    nodes: []
+
+storage_shared_options: ""
+storage_remove_unmanaged: false

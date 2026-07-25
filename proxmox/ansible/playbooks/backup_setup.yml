@@ -1,0 +1,12 @@
+---
+# SPDX-License-Identifier: MIT
+# Setup backup schedules and retention
+
+- name: Configure backup schedules
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_backup
+      tags: [backup_setup]

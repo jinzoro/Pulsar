@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cluster Role - meta/main.yml
+
+galaxy_info:
+  role_name: proxmox_cluster
+  description: Bootstrap and verify a Proxmox VE cluster
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies:
+  - role: proxmox_install

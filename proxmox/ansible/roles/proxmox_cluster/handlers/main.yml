@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cluster Role - handlers/main.yml
+
+- name: restart pve-cluster
+  ansible.builtin.systemd:
+    name: pve-cluster
+    state: restarted
+
+- name: restart pve-qemu-server
+  ansible.builtin.systemd:
+    name: pve-qemu-server
+    state: restarted

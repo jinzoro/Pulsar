@@ -1,0 +1,34 @@
+---
+# SPDX-License-Identifier: MIT
+# Configure network on all Proxmox nodes
+
+- name: Configure Proxmox VE networking
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_network
+      tags: [network_setup]
+
+- name: Verify network connectivity
+  hosts: pve_nodes
+  become: true
+  tasks:
+    - name: Check network interfaces
+      ansible.builtin.command: ip -brief addr show
+      register: net_interfaces
+      changed_when: false
+
+    - name: Display network interfaces
+      ansible.builtin.debug:
+        msg: "{{ net_interfaces.stdout_lines }}"
+
+    - name: Check default route
+      ansible.builtin.command: ip route show default
+      register: default_route
+      changed_when: false
+
+    - name: Display default route
+      ansible.builtin.debug:
+        msg: "{{ default_route.stdout }}"

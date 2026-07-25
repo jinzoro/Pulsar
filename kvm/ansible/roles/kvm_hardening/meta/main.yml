@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: MIT
+# KVM Hardening Role - meta/main.yml
+
+galaxy_info:
+  role_name: kvm_hardening
+  description: Security hardening for KVM/libvirt hosts
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies:
+  - role: kvm_install

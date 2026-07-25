@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cluster Role - defaults/main.yml
+
+cluster_name: "pve-cluster"
+first_node: false
+cluster_join_address: ""
+ring0_address: "{{ ansible_default_ipv4.address }}"
+ring1_address: ""
+expected_nodes: 3

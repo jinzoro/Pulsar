@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: MIT
+# Proxmox CT Deploy Role - tasks/main.yml
+
+- name: Gather existing container list
+  ansible.builtin.command: pct list
+  register: existing_cts
+  changed_when: false
+  failed_when: false
+  tags: proxmox_ct_deploy
+
+- name: Parse existing CT VMIDs
+  ansible.builtin.set_fact:
+    existing_ct_vmid_list: >-
+      {{ existing_cts.stdout_lines | default([])[1:] | default([])
+         | map('regex_replace', '^\s*(\d+)\s+.*', '\1')
+         | list }}
+  tags: proxmox_ct_deploy
+
+- name: Create LXC containers
+  community.general.proxmox_container:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    hostname: "{{ item.hostname | default(item.name) }}"
+    template: "{{ item.template }}"
+    cpu: "{{ item.cpu | default(proxmox_ct_default_cpu) }}"
+    memory: "{{ item.memory | default(proxmox_ct_default_memory) }}"
+    swap: "{{ item.swap | default(proxmox_ct_default_swap) }}"
+    disk: "{{ item.rootfs_size | default(proxmox_ct_default_rootfs_size) }}"
+    storage: "{{ item.rootfs_storage | default(proxmox_default_storage) }}"
+    unprivileged: "{{ item.unprivileged | default(proxmox_ct_default_unprivileged) }}"
+    nesting: "{{ item.nesting | default(false) }}"
+    password: "{{ item.password | default(omit) }}"
+    pubkey: "{{ item.pubkey | default(omit) }}"
+    onboot: "{{ item.onboot | default(false) }}"
+    state: "{{ item.state | default('present') }}"
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "{{ item.name }} (VMID {{ item.vmid }})"
+  when:
+    - item.state | default('present') != 'absent'
+    - item.vmid | string not in existing_ct_vmid_list
+  tags: proxmox_ct_deploy
+
+- name: Configure container network interfaces
+  ansible.builtin.command: >-
+    pct set {{ item.vmid }}
+    --net0 name=eth0,bridge={{ item.net_bridge | default('vmbr0') }},
+    ip={{ item.net_ip | default('dhcp') }},type=veth
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "{{ item.name }} network"
+  when:
+    - item.state | default('present') != 'absent'
+    - item.net_ip is defined
+    - item.vmid | string in existing_ct_vmid_list
+  changed_when: true
+  tags: proxmox_ct_deploy
+
+- name: Start containers if requested
+  community.general.proxmox_container:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: started
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "Start {{ item.name }}"
+  when:
+    - item.state | default('present') == 'started'
+  tags: proxmox_ct_deploy
+
+- name: Stop containers if requested
+  community.general.proxmox_container:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: stopped
+    force: true
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "Stop {{ item.name }}"
+  when:
+    - item.state | default('present') == 'stopped'
+  tags: proxmox_ct_deploy
+
+- name: Delete containers if requested
+  community.general.proxmox_container:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: absent
+    force: true
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "Delete {{ item.name }}"
+  when:
+    - item.state | default('present') == 'absent'
+  tags: proxmox_ct_deploy
+
+- name: Display container deployment summary
+  ansible.builtin.debug:
+    msg: "Container '{{ item.name }}' (VMID {{ item.vmid }}) deployed on {{ item.node | default(proxmox_node) }}"
+  loop: "{{ proxmox_cts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.state | default('present') != 'absent'
+  tags: proxmox_ct_deploy

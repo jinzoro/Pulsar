@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: MIT
+# KVM Install Role - defaults/main.yml
+
+kvm_packages:
+  - qemu-kvm
+  - libvirt-daemon-system
+  - libvirt-clients
+  - virtinst
+  - bridge-utils
+  - ovmf
+  - swtpm
+  - swtpm-tools
+  - libguestfs-tools
+  - virt-manager
+  - ebtables
+  - dnsmasq
+  - libosinfo-bin
+  - cpu-checker
+
+libvirt_user: "root"
+libvirt_group: "libvirt"
+
+enable_default_network: true
+enable_default_storage: true
+default_storage_path: "/var/lib/libvirt/images"
+
+libvirt_tls: false
+libvirt_sasl: false

@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Network Role - defaults/main.yml
+
+proxmox_bridges:
+  - name: "vmbr0"
+    comment: "Primary bridge - management"
+    ports:
+      - "eth0"
+    address: "10.0.0.11/24"
+    gateway: "10.0.0.1"
+    vlan_aware: false
+    stp: true
+    fd: 15
+    mtu: ""
+    state: present
+
+  - name: "vmbr1"
+    comment: "Storage network bridge"
+    ports: []
+    address: "10.0.1.11/24"
+    gateway: ""
+    vlan_aware: true
+    stp: true
+    fd: 15
+    mtu: ""
+    state: present
+
+  - name: "vmbr2"
+    comment: "VM traffic bridge"
+    ports: []
+    address: "10.0.2.11/24"
+    gateway: ""
+    vlan_aware: false
+    stp: false
+    fd: 15
+    mtu: ""
+    state: present
+
+proxmox_bonds:
+  - name: "bond0"
+    comment: "LACP bond for VM traffic"
+    slaves:
+      - "eth1"
+      - "eth2"
+    mode: "802.3ad"
+    hash: "layer3+4"
+    mtu: 9000
+    bridge: ""
+    address: ""
+    state: present
+
+proxmox_vlans:
+  - name: "vmbr1.100"
+    parent: "vmbr1"
+    vid: 100
+    address: "10.0.100.11/24"
+    comment: "Management VLAN 100"
+
+  - name: "vmbr1.200"
+    parent: "vmbr1"
+    vid: 200
+    address: "10.0.200.11/24"
+    comment: "Storage VLAN 200"
+
+proxmox_routes:
+  - dest: "0.0.0.0/0"
+    gateway: "10.0.0.1"
+    comment: "Default route"
+
+  - dest: "10.0.0.0/8"
+    gateway: "10.0.0.1"
+    comment: "Internal network"
+    state: absent
+
+proxmox_dns:
+  nameservers:
+    - "1.1.1.1"
+    - "8.8.8.8"
+  search: "example.com"
+
+network_interfaces_template: "interfaces.j2"

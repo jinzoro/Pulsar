@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: MIT
+# Default variables for all Proxmox Ansible roles
+
+# Proxmox API connection
+proxmox_api_url: "https://pve1.example.com:8006"
+proxmox_user: "root@pam"
+proxmox_token_id: ""
+proxmox_token_secret: ""
+proxmox_node: "pve1"
+proxmox_verify_ssl: false
+
+# Storage defaults
+proxmox_default_storage: "local-lvm"
+proxmox_backup_storage: "local"
+proxmox_iso_storage: "local"
+
+# VM defaults
+proxmox_vm_default_cores: 2
+proxmox_vm_default_memory: 2048
+proxmox_vm_default_disk_size: "32G"
+proxmox_vm_default_disk_bus: "virtio-scsi-single"
+proxmox_vm_default_net_model: "virtio"
+proxmox_vm_default_net_bridge: "vmbr0"
+proxmox_vm_default_os_type: "l26"
+proxmox_vm_default_bios: "seabios"
+proxmox_vm_default_machine: "q35"
+proxmox_vm_default_cpu_type: "host"
+
+# CT defaults
+proxmox_ct_default_cpu: 1
+proxmox_ct_default_memory: 512
+proxmox_ct_default_swap: 512
+proxmox_ct_default_rootfs_size: "8G"
+proxmox_ct_default_unprivileged: true
+
+# Backup defaults
+proxmox_backup_mode: "snapshot"
+proxmox_backup_compress: "zstd"
+proxmox_backup_retention_daily: 7
+proxmox_backup_retention_weekly: 4
+proxmox_backup_retention_monthly: 6
+
+# Network defaults
+proxmox_default_bridge: "vmbr0"
+
+# SSH
+ansible_user: "root"
+ansible_become: true

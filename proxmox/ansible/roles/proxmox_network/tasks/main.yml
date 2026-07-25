@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Network Role - tasks/main.yml
+
+- name: Backup current network configuration
+  ansible.builtin.copy:
+    src: /etc/network/interfaces
+    dest: "/etc/network/interfaces.bak.{{ ansible_date_time.epoch }}"
+    remote_src: true
+    force: true
+  tags: proxmox_network
+
+- name: Deploy network interfaces template
+  ansible.builtin.template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "ifup --no-act --interfaces %s || true"
+  register: network_config_changed
+  notify: reload network interfaces
+  tags: proxmox_network
+
+- name: Create bridge interfaces via systemd-networkd
+  ansible.builtin.copy:
+    dest: "/etc/systemd/network/{{ item.name }}.network"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Match]
+      Name={{ item.name }}
+
+      [Network]
+      VLAN={{ item.name }}.*
+      Bridge={{ item.bridge | default('') }}
+  loop: "{{ proxmox_bridges }}"
+  loop_control:
+    label: "Bridge: {{ item.name }}"
+  when: item.state | default('present') == 'present'
+  tags: proxmox_network
+
+- name: Create VLAN interfaces
+  ansible.builtin.copy:
+    dest: "/etc/systemd/network/{{ item.name }}.netdev"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [NetDev]
+      Name={{ item.name }}
+      VLAN={{ item.parent }}.{{ item.vid }}
+
+      [VLAN]
+      Id={{ item.vid }}
+  loop: "{{ proxmox_vlans }}"
+  loop_control:
+    label: "VLAN: {{ item.name }}"
+  tags: proxmox_network
+
+- name: Create bond interfaces
+  ansible.builtin.copy:
+    dest: "/etc/systemd/network/{{ item.name }}.netdev"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [NetDev]
+      Name={{ item.name }}
+      Kind=bond
+
+      [Bond]
+      Mode={{ item.mode }}
+      TransmitHashPolicy={{ item.hash | default('layer3+4') }}
+      MIIMonitor={{ item.miimon | default(100) }}
+      LACPTransmitRate={{ item.lacp_rate | default('fast') }}
+  loop: "{{ proxmox_bonds }}"
+  loop_control:
+    label: "Bond: {{ item.name }}"
+  when: proxmox_bonds | default([]) | length > 0
+  tags: proxmox_network
+
+- name: Apply network configuration
+  ansible.builtin.command: ifreload -a
+  register: ifreload_result
+  changed_when: "'reloaded' in ifreload_result.stderr or ifreload_result.rc == 0"
+  failed_when: false
+  tags: proxmox_network
+
+- name: Wait for network connectivity
+  ansible.builtin.wait_for:
+    timeout: 5
+  tags: proxmox_network
+
+- name: Verify network interfaces
+  ansible.builtin.command: ip -brief link show
+  register: ip_link
+  changed_when: false
+  tags: proxmox_network
+
+- name: Display network status
+  ansible.builtin.debug:
+    msg: "{{ ip_link.stdout_lines }}"
+  tags: proxmox_network

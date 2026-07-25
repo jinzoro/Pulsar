@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MIT
+# Proxmox CT Deploy Role - defaults/main.yml
+
+proxmox_cts:
+  - name: web-ct
+    vmid: 200
+    node: "{{ proxmox_node }}"
+    template: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+    cpu: 2
+    memory: 1024
+    swap: 1024
+    rootfs_size: "8G"
+    rootfs_storage: "{{ proxmox_default_storage }}"
+    net_ip: "10.0.0.200/24"
+    net_bridge: "vmbr0"
+    hostname: "web-ct"
+    password: ""
+    unprivileged: true
+    nesting: false
+    onboot: true
+    state: present
+
+  - name: monitor-ct
+    vmid: 201
+    node: "{{ proxmox_node }}"
+    template: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+    cpu: 1
+    memory: 512
+    swap: 512
+    rootfs_size: "8G"
+    rootfs_storage: "{{ proxmox_default_storage }}"
+    net_ip: "10.0.0.201/24"
+    net_bridge: "vmbr0"
+    hostname: "monitor-ct"
+    password: ""
+    unprivileged: true
+    nesting: false
+    onboot: true
+    state: present
+
+#  - name: dns-ct
+#    vmid: 202
+#    node: "{{ proxmox_node }}"
+#    template: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+#    cpu: 1
+#    memory: 256
+#    swap: 256
+#    rootfs_size: "4G"
+#    rootfs_storage: "{{ proxmox_default_storage }}"
+#    net_ip: "10.0.0.202/24"
+#    net_bridge: "vmbr0"
+#    hostname: "dns-ct"
+#    password: ""
+#    unprivileged: true
+#    nesting: false
+#    onboot: true
+#    state: present

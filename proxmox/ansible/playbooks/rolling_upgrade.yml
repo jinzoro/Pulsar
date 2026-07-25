@@ -1,0 +1,68 @@
+---
+# SPDX-License-Identifier: MIT
+# Rolling upgrade of Proxmox VE cluster (one node at a time)
+
+- name: Rolling upgrade of Proxmox VE cluster
+  hosts: pve_nodes
+  become: true
+  serial: 1
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    patch_reboot_timeout: 600
+    patch_drain_ha: true
+  tasks:
+    - name: Display node being upgraded
+      ansible.builtin.debug:
+        msg: "Starting upgrade on {{ ansible_hostname }}"
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 0
+
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        upgrade: dist
+        autoclean: true
+        autoremove: true
+        dpkg_options: "force-confdef,force-confold"
+      register: upgrade_result
+
+    - name: Check if reboot required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Display upgrade result
+      ansible.builtin.debug:
+        msg: >-
+          {{ ansible_hostname }}:
+          packages_changed={{ upgrade_result.changed }},
+          reboot_required={{ reboot_required.stat.exists }}
+
+    - name: Reboot if required
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ patch_reboot_timeout }}"
+        msg: "Rolling upgrade reboot"
+      when: reboot_required.stat.exists
+
+    - name: Wait for node to be available
+      ansible.builtin.pause:
+        seconds: 30
+      when: reboot_required.stat.exists
+
+    - name: Verify node is healthy
+      ansible.builtin.command: pvecm status
+      register: node_health
+      changed_when: false
+      retries: 12
+      delay: 10
+      until: "'Votequorum' in node_health.stdout"
+      when: reboot_required.stat.exists
+
+    - name: Display post-upgrade status
+      ansible.builtin.debug:
+        msg: >-
+          {{ ansible_hostname }} upgrade complete,
+          cluster={{ 'healthy' if 'Votequorum' in node_health.stdout | default('') else 'pending' }}

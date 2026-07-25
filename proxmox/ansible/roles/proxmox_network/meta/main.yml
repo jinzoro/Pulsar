@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Network Role - meta/main.yml
+
+galaxy_info:
+  role_name: proxmox_network
+  description: Configure network bridges, bonds, and VLANs on Proxmox VE
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies: []

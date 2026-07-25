@@ -1,0 +1,175 @@
+# SPDX-License-Identifier: MIT
+# Proxmox VM Deploy Role - tasks/main.yml
+
+- name: Deploy Proxmox VMs
+  community.general.proxmox:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    name: "{{ item.name }}"
+    cores: "{{ item.cores | default(proxmox_vm_default_cores) }}"
+    memory: "{{ item.memory | default(proxmox_vm_default_memory) }}"
+    cpu: "{{ item.cpu_type | default(proxmox_vm_default_cpu_type) }}"
+    scsihw: "{{ item.scsihw | default('virtio-scsi-single') }}"
+    bios: "{{ item.bios | default(proxmox_vm_default_bios) }}"
+    machine: "{{ item.machine | default(proxmox_vm_default_machine) }}"
+    ostype: "{{ item.os_type | default(proxmox_vm_default_os_type) }}"
+    description: "{{ item.description | default('') }}"
+    tags: "{{ item.tags | default(omit) }}"
+    agent: "{{ item.agent | default(true) }}"
+    state: "{{ item.state | default('present') }}"
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "{{ item.name }} (VMID {{ item.vmid }})"
+  when: item.state | default('present') != 'absent'
+  tags: proxmox_vm_deploy
+
+- name: Configure VM disks
+  community.general.proxmox_disk:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    disk: "{{ item.disk_bus | default(proxmox_vm_default_disk_bus) }}"
+    size: "{{ item.disk_size | default(proxmox_vm_default_disk_size) }}"
+    storage: "{{ item.disk_storage | default(proxmox_default_storage) }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "{{ item.name }} disk"
+  when:
+    - item.state | default('present') != 'absent'
+    - item.disk_size is defined
+    - item.disk_bus | default('') != 'ide'
+  tags: proxmox_vm_deploy
+
+- name: Configure VM network interfaces
+  community.general.proxmox_nic:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    interface: "net0"
+    model: "{{ item.net_model | default(proxmox_vm_default_net_model) }}"
+    bridge: "{{ item.net_bridge | default(proxmox_vm_default_net_bridge) }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "{{ item.name }} NIC"
+  when: item.state | default('present') != 'absent'
+  tags: proxmox_vm_deploy
+
+- name: Configure cloud-init for VMs
+  community.general.proxmox_vm:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    name: "{{ item.name }}"
+    cicustom: "{{ item.cicustom | default(omit) }}"
+    ciuser: "{{ item.ci_user | default(omit) }}"
+   cipassword: "{{ item.ci_password | default(omit) }}"
+    sshkeys: "{{ item.ci_sshkeys | default(omit) }}"
+    ipconfig: "{{ item.ipconfig | default(omit) }}"
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "{{ item.name }} cloud-init"
+  when:
+    - item.state | default('present') != 'absent'
+    - item.cloudinit is defined
+    - item.cloudinit | length > 0
+  tags: proxmox_vm_deploy
+
+- name: Start VMs if requested
+  community.general.proxmox:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: started
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "Start {{ item.name }}"
+  when:
+    - item.state | default('present') == 'started'
+  tags: proxmox_vm_deploy
+
+- name: Stop VMs if requested
+  community.general.proxmox:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: stopped
+    force: true
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "Stop {{ item.name }}"
+  when:
+    - item.state | default('present') == 'stopped'
+  tags: proxmox_vm_deploy
+
+- name: Delete VMs if requested
+  community.general.proxmox:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: absent
+    force: true
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "Delete {{ item.name }}"
+  when:
+    - item.state | default('present') == 'absent'
+  tags: proxmox_vm_deploy
+
+- name: Verify deployed VMs
+  community.general.proxmox:
+    node: "{{ item.node | default(proxmox_node) }}"
+    vmid: "{{ item.vmid }}"
+    state: current
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ proxmox_vms }}"
+  loop_control:
+    label: "Verify {{ item.name }}"
+  register: vm_status
+  when: item.state | default('present') != 'absent'
+  failed_when: false
+  tags: proxmox_vm_deploy
+
+- name: Display VM deployment summary
+  ansible.builtin.debug:
+    msg: >-
+      VM '{{ item.item.name }}' (VMID {{ item.item.vmid }}) - exists: {{ item is not failed }}
+  loop: "{{ vm_status.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: vm_status.results is defined
+  tags: proxmox_vm_deploy

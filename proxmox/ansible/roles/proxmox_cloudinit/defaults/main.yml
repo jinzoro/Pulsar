@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cloud-Init Role - defaults/main.yml
+
+cloud_images:
+  - name: "debian-12"
+    url: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
+    format: "qcow2"
+    storage: "local"
+    vmid: 9000
+    description: "Debian 12 Cloud-Init Template"
+    cpu: 2
+    memory: 2048
+    disk_size: "8G"
+
+  - name: "ubuntu-24.04"
+    url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+    format: "qcow2"
+    storage: "local"
+    vmid: 9001
+    description: "Ubuntu 24.04 Cloud-Init Template"
+    cpu: 2
+    memory: 2048
+    disk_size: "8G"
+
+  - name: "rocky-9"
+    url: "https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
+    format: "qcow2"
+    storage: "local"
+    vmid: 9002
+    description: "Rocky Linux 9 Cloud-Init Template"
+    cpu: 2
+    memory: 2048
+    disk_size: "8G"
+
+#  - name: "almalinux-9"
+#    url: "https://repo.almalinux.org/almalinux/9.4/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+#    format: "qcow2"
+#    storage: "local"
+#    vmid: 9003
+#    description: "AlmaLinux 9 Cloud-Init Template"
+#    cpu: 2
+#    memory: 2048
+#    disk_size: "8G"
+
+cloud_init_defaults:
+  ciuser: "admin"
+  cipassword: ""
+  ipconfig: "ip=dhcp"
+  nameserver: "1.1.1.1 8.8.8.8"
+  searchdomain: "example.com"
+  sshkeys: []
+  cicustom: ""

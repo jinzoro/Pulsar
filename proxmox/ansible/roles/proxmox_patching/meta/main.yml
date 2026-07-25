@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Patching Role - meta/main.yml
+
+galaxy_info:
+  role_name: proxmox_patching
+  description: Rolling update and patching for Proxmox VE clusters
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies: []

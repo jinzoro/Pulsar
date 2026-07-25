@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: MIT
+# KVM VM Deploy Role - defaults/main.yml
+
+kvm_vms:
+  - name: "web-server"
+    vcpus: 2
+    memory: 4096
+    disk_size: "32G"
+    disk_bus: "virtio"
+    storage_pool: "default"
+    network: "default"
+    network_model: "virtio"
+    iso: ""
+    cloud_init: ""
+    os_type: "linux"
+    arch: "x86_64"
+    machine_type: "q35"
+    cpu_model: "host"
+    boot: "cdrom,hd"
+    autostart: true
+    state: "present"
+
+  - name: "db-server"
+    vcpus: 4
+    memory: 8192
+    disk_size: "64G"
+    disk_bus: "virtio"
+    storage_pool: "default"
+    network: "default"
+    network_model: "virtio"
+    iso: ""
+    cloud_init: ""
+    os_type: "linux"
+    arch: "x86_64"
+    machine_type: "q35"
+    cpu_model: "host"
+    boot: "cdrom,hd"
+    autostart: true
+    state: "present"
+
+#  - name: "app-server"
+#    vcpus: 2
+#    memory: 4096
+#    disk_size: "48G"
+#    disk_bus: "virtio"
+#    storage_pool: "default"
+#    network: "default"
+#    network_model: "virtio"
+#    iso: "/var/lib/libvirt/images/ubuntu-24.04.iso"
+#    os_type: "linux"
+#    arch: "x86_64"
+#    machine_type: "q35"
+#    cpu_model: "host"
+#    boot: "cdrom,hd"
+#    autostart: true
+#    state: "present"
+
+kvm_default_vcpus: 2
+kvm_default_memory: 2048
+kvm_default_disk_size: "32G"
+kvm_default_storage_pool: "default"
+kvm_default_network: "default"
+kvm_virt_install_timeout: 600

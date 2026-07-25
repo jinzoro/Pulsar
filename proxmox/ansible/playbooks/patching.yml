@@ -1,0 +1,13 @@
+---
+# SPDX-License-Identifier: MIT
+# Patch all Proxmox nodes (one at a time)
+
+- name: Patch Proxmox nodes (serial rolling update)
+  hosts: pve_nodes
+  become: true
+  serial: 1
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_patching
+      tags: [patching]

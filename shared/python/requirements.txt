@@ -1,0 +1,9 @@
+# =============================================================================
+# shared/python/requirements.txt — Python dependencies for shared modules
+# =============================================================================
+# Core dependencies (pydantic is optional but recommended for validation)
+# =============================================================================
+pyyaml>=6.0
+pydantic>=2.0
+requests>=2.28.0
+paramiko>=3.0.0

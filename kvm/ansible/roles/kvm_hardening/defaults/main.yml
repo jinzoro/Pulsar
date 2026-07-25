@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: MIT
+# KVM Hardening Role - defaults/main.yml
+
+libvirt_user: "root"
+
+libvirt_access_policy: "polkit"
+libvirt_unix_sock_group: "libvirt"
+libvirt_unix_sock_ro_perms: "0777"
+libvirt_unix_sock_rw_perms: "0770"
+
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_auth: false
+ssh_pubkey_auth: true
+ssh_max_auth_tries: 3
+ssh_x11_forwarding: false
+ssh_allow_groups:
+  - "ssh-users"
+  - "admin"
+
+kvm_firewall_enabled: true
+kvm_firewall_allowed_ports:
+  - { port: "22", proto: "tcp", comment: "SSH" }
+  - { port: "5900-5999", proto: "tcp", comment: "VNC" }
+  - { port: "5931-5940", proto: "tcp", comment: "SPICE" }
+  - { port: "16509", proto: "tcp", comment: "Libvirt RPC" }
+  - { port: "16514", proto: "tcp", comment: "Libvirt TLS" }
+  - { port: "6080-6099", proto: "tcp", comment: "noVNC proxy" }
+
+libvirt_qemu_conf:
+  - setting: "user"
+    value: '"root"'
+  - setting: "group"
+    value: '"root"'
+  - setting: "dynamic_ownership"
+    value: '"1"'
+  - setting: "remember_owner"
+    value: '"1"'
+  - setting: "migration_port_min"
+    value: '"49152"'
+  - setting: "migration_port_max"
+    value: '"49215"'
+  - setting: "spice_tls"
+    value: '"1"'
+  - setting: "spice_tls_x509_dir"
+    value: '"/etc/pki/libvirt/spice"'

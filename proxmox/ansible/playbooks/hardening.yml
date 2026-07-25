@@ -1,0 +1,45 @@
+---
+# SPDX-License-Identifier: MIT
+# Apply security hardening to Proxmox nodes
+
+- name: Security hardening for Proxmox VE
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_hardening
+      tags: [hardening]
+
+- name: Verify hardening settings
+  hosts: pve_nodes
+  become: true
+  tasks:
+    - name: Check SSH configuration
+      ansible.builtin.command: sshd -T | grep -E '^(port|permitrootlogin|passwordauthentication|pubkeyauthentication)'
+      register: ssh_config
+      changed_when: false
+
+    - name: Display SSH settings
+      ansible.builtin.debug:
+        msg: "{{ ssh_config.stdout_lines }}"
+
+    - name: Check fail2ban status
+      ansible.builtin.command: fail2ban-client status
+      register: fail2ban_status
+      changed_when: false
+      failed_when: false
+
+    - name: Display fail2ban status
+      ansible.builtin.debug:
+        msg: "{{ fail2ban_status.stdout_lines | default(['fail2ban not running']) }}"
+
+    - name: Check auditd status
+      ansible.builtin.command: auditctl -l
+      register: auditd_rules
+      changed_when: false
+      failed_when: false
+
+    - name: Display audit rules
+      ansible.builtin.debug:
+        msg: "{{ auditd_rules.stdout_lines | default([]) }}"

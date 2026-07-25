@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+# KVM Hardening Role - handlers/main.yml
+
+- name: restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: restart libvirtd
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: restarted
+    daemon_reload: true
+
+- name: reload firewall
+  ansible.builtin.command: netfilter-persistent reload
+  changed_when: true
+  failed_when: false

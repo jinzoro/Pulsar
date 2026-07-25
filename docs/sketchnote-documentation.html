@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxmox-KVM SwissKnife — Engineering Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Architects+Daughter&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink-black: #1a1a2e;
+    --ink-blue: #2563eb;
+    --ink-blue-light: #60a5fa;
+    --ink-red: #dc2626;
+    --ink-red-light: #fca5a5;
+    --ink-green: #16a34a;
+    --ink-orange: #ea580c;
+    --paper-white: #fefdfb;
+    --paper-line: #c8d6e5;
+    --paper-margin: #e74c3c;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --page-width: 210mm;
+    --page-height: 297mm;
+    --hand: 'Caveat', cursive;
+    --hand-alt: 'Patrick Hand', cursive;
+    --hand-alt2: 'Architects Daughter', cursive;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e8e4df;
+    font-family: var(--hand);
+    color: var(--ink-black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 30px;
+  }
+
+  /* ── A4 Page ── */
+  .page {
+    width: var(--page-width);
+    min-height: var(--page-height);
+    background: var(--paper-white);
+    position: relative;
+    padding: 25mm 20mm 20mm 25mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  /* Spiral binding */
+  .page::before {
+    content: '';
+    position: absolute;
+    left: 8mm;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 8px,
+      #999 8px,
+      #999 10px,
+      transparent 10px,
+      transparent 18px
+    );
+  }
+
+  /* Ruled lines */
+  .page::after {
+    content: '';
+    position: absolute;
+    left: 22mm;
+    right: 15mm;
+    top: 25mm;
+    bottom: 20mm;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 7.5mm,
+      var(--paper-line) 7.5mm,
+      var(--paper-line) 7.6mm
+    );
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* Margin line */
+  .margin-line {
+    position: absolute;
+    left: 22mm;
+    top: 20mm;
+    bottom: 15mm;
+    width: 1.5px;
+    background: var(--paper-margin);
+    opacity: 0.35;
+  }
+
+  /* ── Typography ── */
+  .title {
+    font-family: var(--hand);
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ink-red);
+    line-height: 1.1;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .subtitle {
+    font-family: var(--hand-alt);
+    font-size: 16px;
+    color: var(--ink-blue);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--hand);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-red);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title .icon {
+    font-size: 24px;
+  }
+
+  .section-underline {
+    height: 3px;
+    background: linear-gradient(90deg, var(--ink-red), var(--ink-red-light), transparent);
+    border-radius: 2px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .body-text {
+    font-family: var(--hand);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink-black);
+    position: relative;
+    z-index: 1;
+  }
+
+  .label {
+    font-family: var(--hand-alt);
+    font-size: 14px;
+    color: var(--ink-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* ── Boxes ── */
+  .rounded-box {
+    border: 2px solid var(--ink-blue);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: rgba(37, 99, 235, 0.03);
+    position: relative;
+    z-index: 1;
+  }
+
+  .rounded-box.red {
+    border-color: var(--ink-red);
+    background: rgba(220, 38, 38, 0.03);
+  }
+
+  .rounded-box.green {
+    border-color: var(--ink-green);
+    background: rgba(22, 163, 74, 0.03);
+  }
+
+  .rounded-box.orange {
+    border-color: var(--ink-orange);
+    background: rgba(234, 88, 12, 0.03);
+  }
+
+  .dashed-box {
+    border: 2px dashed var(--ink-blue-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Hand-drawn elements ── */
+  .hand-arrow {
+    display: inline-block;
+    color: var(--ink-blue);
+    font-size: 22px;
+    font-family: var(--hand);
+  }
+
+  .hand-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--ink-blue);
+    border-radius: 50%;
+    font-family: var(--hand);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink-blue);
+    flex-shrink: 0;
+  }
+
+  .hand-circle.red {
+    border-color: var(--ink-red);
+    color: var(--ink-red);
+  }
+
+  .hand-bullet {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--ink-blue);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .hand-bullet.red { background: var(--ink-red); }
+  .hand-bullet.green { background: var(--ink-green); }
+  .hand-bullet.orange { background: var(--ink-orange); }
+
+  /* ── Layout helpers ── */
+  .flex { display: flex; position: relative; z-index: 1; }
+  .flex-col { flex-direction: column; }
+  .flex-row { flex-direction: row; }
+  .gap-4 { gap: 4px; }
+  .gap-6 { gap: 6px; }
+  .gap-8 { gap: 8px; }
+  .gap-10 { gap: 10px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .justify-between { justify-content: space-between; }
+  .flex-1 { flex: 1; }
+  .flex-wrap { flex-wrap: wrap; }
+  .mt-4 { margin-top: 4px; }
+  .mt-6 { margin-top: 6px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-10 { margin-top: 10px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 4px; }
+  .mb-6 { margin-bottom: 6px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-10 { margin-bottom: 10px; }
+  .mb-12 { margin-bottom: 12px; }
+  .p-8 { padding: 8px; }
+  .p-10 { padding: 10px; }
+  .p-12 { padding: 12px; }
+  .w-full { width: 100%; }
+  .text-center { text-align: center; }
+  .text-sm { font-size: 16px; }
+  .text-xs { font-size: 14px; }
+  .text-lg { font-size: 24px; }
+  .font-bold { font-weight: 700; }
+  .text-red { color: var(--ink-red); }
+  .text-blue { color: var(--ink-blue); }
+  .text-green { color: var(--ink-green); }
+  .text-orange { color: var(--ink-orange); }
+
+  /* ── Diagram boxes ── */
+  .diagram-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 2px solid var(--ink-blue);
+    border-radius: 10px;
+    background: rgba(37, 99, 235, 0.05);
+    font-family: var(--hand);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink-black);
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .diagram-node.red {
+    border-color: var(--ink-red);
+    background: rgba(220, 38, 38, 0.05);
+  }
+
+  .diagram-node.green {
+    border-color: var(--ink-green);
+    background: rgba(22, 163, 74, 0.05);
+  }
+
+  .diagram-node.orange {
+    border-color: var(--ink-orange);
+    background: rgba(234, 88, 12, 0.05);
+  }
+
+  .diagram-node.small {
+    padding: 4px 10px;
+    font-size: 14px;
+    border-width: 1.5px;
+  }
+
+  .diagram-arrow-down {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    color: var(--ink-blue);
+    font-size: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .diagram-arrow-down::after {
+    content: '▼';
+  }
+
+  /* ── SVG diagrams ── */
+  .svg-diagram {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Card grid ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .feature-card {
+    border: 1.5px solid var(--ink-blue);
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: rgba(37, 99, 235, 0.03);
+    position: relative;
+    z-index: 1;
+  }
+
+  .feature-card .card-icon {
+    font-size: 22px;
+    margin-bottom: 2px;
+  }
+
+  .feature-card .card-title {
+    font-family: var(--hand);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink-blue);
+  }
+
+  .feature-card .card-desc {
+    font-family: var(--hand);
+    font-size: 14px;
+    color: var(--ink-black);
+    line-height: 1.3;
+  }
+
+  /* ── Tree structure ── */
+  .tree {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-black);
+    background: rgba(37, 99, 235, 0.03);
+    border: 1.5px solid var(--ink-blue-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tree .folder { color: var(--ink-blue); font-weight: 700; }
+  .tree .file { color: var(--ink-black); }
+  .tree .highlight { color: var(--ink-red); font-weight: 700; }
+
+  /* ── Flow diagram ── */
+  .flow-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flow-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flow-arrow {
+    color: var(--ink-blue);
+    font-family: var(--hand);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* ── Tech pill ── */
+  .tech-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--ink-blue);
+    border-radius: 20px;
+    font-family: var(--hand);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink-blue);
+    background: rgba(37, 99, 235, 0.04);
+    position: relative;
+    z-index: 1;
+  }
+
+  .tech-pill.red {
+    border-color: var(--ink-red);
+    color: var(--ink-red);
+    background: rgba(220, 38, 38, 0.04);
+  }
+
+  .tech-pill.green {
+    border-color: var(--ink-green);
+    color: var(--ink-green);
+    background: rgba(22, 163, 74, 0.04);
+  }
+
+  .tech-pill.orange {
+    border-color: var(--ink-orange);
+    color: var(--ink-orange);
+    background: rgba(234, 88, 12, 0.04);
+  }
+
+  /* ── Highlight box ── */
+  .highlight-box {
+    background: rgba(220, 38, 38, 0.06);
+    border-left: 4px solid var(--ink-red);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .info-box {
+    background: rgba(37, 99, 235, 0.06);
+    border-left: 4px solid var(--ink-blue);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .success-box {
+    background: rgba(22, 163, 74, 0.06);
+    border-left: 4px solid var(--ink-green);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Checklist ── */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--hand);
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--ink-blue);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--ink-green);
+  }
+
+  /* ── Page numbers ── */
+  .page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 20mm;
+    font-family: var(--hand-alt);
+    font-size: 13px;
+    color: #999;
+    z-index: 1;
+  }
+
+  /* ── Section divider ── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ink-blue-light), transparent);
+    margin: 10px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Two column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Stamp style ── */
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--ink-red);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-family: var(--hand);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-red);
+    transform: rotate(-3deg);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    body { background: white; padding: 0; gap: 0; }
+    .page { box-shadow: none; margin: 0; page-break-after: always; }
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 1: HEADER + PURPOSE + ARCHITECTURE OVERVIEW              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <!-- HEADER -->
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <div class="title">Proxmox-KVM SwissKnife</div>
+      <div class="subtitle">Full Automation Suite + TUI Swiss-Knife — v1.0.0</div>
+    </div>
+    <div class="stamp">INTERNAL</div>
+  </div>
+
+  <div class="flex gap-12 mb-10">
+    <div class="flex flex-col">
+      <span class="label">Author</span>
+      <span class="body-text">Infrastructure Team</span>
+    </div>
+    <div class="flex flex-col">
+      <span class="label">Date</span>
+      <span class="body-text">July 2025</span>
+    </div>
+    <div class="flex flex-col">
+      <span class="label">License</span>
+      <span class="body-text">MIT</span>
+    </div>
+  </div>
+
+  <div class="info-box mb-12">
+    <div class="body-text text-blue font-bold">Production-grade automation suite for Proxmox VE 8.x+ and generic KVM/QEMU — covering every administrative task with Bash, Python, Go, Ansible, Terraform, and Packer, unified by a Go TUI application.</div>
+  </div>
+
+  <!-- SECTION 2: PURPOSE -->
+  <div class="section-title"><span class="icon">🎯</span> Project Purpose</div>
+  <div class="section-underline"></div>
+
+  <div class="two-col gap-12">
+    <div class="rounded-box">
+      <div class="text-blue font-bold mb-4" style="font-size:18px;">Problem</div>
+      <div class="body-text text-sm">Proxmox and KVM administration requires dozens of CLIs, APIs, and config files. No single tool covers the full lifecycle.</div>
+    </div>
+    <div class="rounded-box green">
+      <div class="text-green font-bold mb-4" style="font-size:18px;">Solution</div>
+      <div class="body-text text-sm">Unified automation suite with 340+ files, 6 languages, and a TUI that orchestrates everything from one binary.</div>
+    </div>
+  </div>
+
+  <div class="flex gap-16 mt-8">
+    <div class="flex flex-col flex-1">
+      <div class="text-blue font-bold text-sm mb-4">Who uses this?</div>
+      <div class="body-text text-sm"><span class="hand-bullet"></span> Sysadmins managing Proxmox clusters</div>
+      <div class="body-text text-sm"><span class="hand-bullet"></span> DevOps engineers automating KVM hosts</div>
+      <div class="body-text text-sm"><span class="hand-bullet"></span> Infrastructure teams at scale</div>
+    </div>
+    <div class="flex flex-col flex-1">
+      <div class="text-green font-bold text-sm mb-4">Expected outcome</div>
+      <div class="body-text text-sm"><span class="hand-bullet green"></span> 10x faster VM/CT provisioning</div>
+      <div class="body-text text-sm"><span class="hand-bullet green"></span> Zero-config cluster management</div>
+      <div class="body-text text-sm"><span class="hand-bullet green"></span> Single TUI for all operations</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: ARCHITECTURE OVERVIEW -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">🏗</span> Architecture Overview</div>
+    <div class="section-underline"></div>
+
+    <svg class="svg-diagram" width="680" height="230" viewBox="0 0 680 230">
+      <!-- User / Operator -->
+      <rect x="10" y="20" width="110" height="45" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="65" y="48" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#dc2626">👤 Operator</text>
+
+      <!-- Arrow -->
+      <line x1="120" y1="42" x2="155" y2="42" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- TUI -->
+      <rect x="160" y="15" width="110" height="55" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="215" y="38" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="700" fill="#2563eb">🖥 TUI App</text>
+      <text x="215" y="56" text-anchor="middle" font-family="Caveat" font-size="12" fill="#2563eb">Go + Bubble Tea</text>
+
+      <!-- Arrow -->
+      <line x1="270" y1="42" x2="305" y2="42" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Executor Layer -->
+      <rect x="310" y="8" width="120" height="70" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="370" y="30" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="700" fill="#16a34a">⚡ Executor</text>
+      <text x="370" y="46" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">Bash | Python</text>
+      <text x="370" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">Ansible | Go API</text>
+
+      <!-- Arrows from executor to backends -->
+      <line x1="370" y1="78" x2="370" y2="100" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Backend row -->
+      <rect x="20" y="105" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="67" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Proxmox</text>
+      <text x="67" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">REST API v2</text>
+
+      <rect x="130" y="105" width="95" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+      <text x="177" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">KVM</text>
+      <text x="177" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">libvirt + virsh</text>
+
+      <rect x="240" y="105" width="95" height="50" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="287" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">Ansible</text>
+      <text x="287" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Fleet deploy</text>
+
+      <rect x="350" y="105" width="95" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="397" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">Terraform</text>
+      <text x="397" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">IaC</text>
+
+      <rect x="460" y="105" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="507" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Packer</text>
+      <text x="507" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Image baking</text>
+
+      <rect x="570" y="105" width="100" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+      <text x="620" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">Shared</text>
+      <text x="620" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">SSH, notify, health</text>
+
+      <!-- Storage layer -->
+      <line x1="370" y1="155" x2="370" y2="178" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <rect x="130" y="180" width="480" height="40" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="370" y="205" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="600" fill="#dc2626">💾 ZFS • Ceph • LVM • NFS • PBS • iSCSI • GlusterFS</text>
+
+      <!-- Arrow markers -->
+      <defs>
+        <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="page-number">Page 1 / 6</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 2: COMPONENTS + WORKFLOW                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <div class="section-title"><span class="icon">📦</span> Components</div>
+  <div class="section-underline"></div>
+
+  <div class="three-col gap-8">
+    <!-- Component cards -->
+    <div class="rounded-box">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle red">B</div>
+        <div class="font-bold text-red" style="font-size:17px;">Bash Scripts</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> 36 scripts (22 PVE + 14 KVM)</div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> Quick CLI operations</div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> shellcheck compliant</div>
+      <div class="tech-pill red mt-6">bash 5 / getopt / jq / curl</div>
+    </div>
+
+    <div class="rounded-box">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle">P</div>
+        <div class="font-bold text-blue" style="font-size:17px;">Python Modules</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> 67 files (27 PVE + 19 KVM)</div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> API wrappers & managers</div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> Async batch operations</div>
+      <div class="tech-pill mt-6">Python 3.12 / proxmoxer / httpx</div>
+    </div>
+
+    <div class="rounded-box green">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle" style="border-color:#16a34a;color:#16a34a;">G</div>
+        <div class="font-bold text-green" style="font-size:17px;">Go Packages</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> 40 files (CLI + TUI + API)</div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> High-perf concurrent ops</div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> Single binary output</div>
+      <div class="tech-pill green mt-6">Go 1.22 / cobra / bubbletea</div>
+    </div>
+
+    <div class="rounded-box orange">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle" style="border-color:#ea580c;color:#ea580c;">A</div>
+        <div class="font-bold text-orange" style="font-size:17px;">Ansible</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet orange"></span> 23 roles + 15 playbooks</div>
+      <div class="body-text text-xs"><span class="hand-bullet orange"></span> Fleet-wide provisioning</div>
+      <div class="body-text text-xs"><span class="hand-bullet orange"></span> Idempotent config mgmt</div>
+      <div class="tech-pill orange mt-6">Ansible 2.16+ / FQCNs</div>
+    </div>
+
+    <div class="rounded-box">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle">T</div>
+        <div class="font-bold text-blue" style="font-size:17px;">Terraform</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> 4 reusable modules</div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> VM, CT, Network, Pool</div>
+      <div class="body-text text-xs"><span class="hand-bullet"></span> bpg/proxmox provider</div>
+      <div class="tech-pill mt-6">Terraform 1.x / HCL2</div>
+    </div>
+
+    <div class="rounded-box red">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle red">Pk</div>
+        <div class="font-bold text-red" style="font-size:17px;">Packer</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> 6 templates</div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> Proxmox + QEMU builders</div>
+      <div class="body-text text-xs"><span class="hand-bullet red"></span> Golden image baking</div>
+      <div class="tech-pill red mt-6">Packer / HCL2</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: WORKFLOW -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">🔄</span> Execution Workflow</div>
+    <div class="section-underline"></div>
+
+    <svg class="svg-diagram" width="680" height="160" viewBox="0 0 680 160">
+      <!-- Step 1 -->
+      <rect x="5" y="30" width="100" height="55" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="55" y="52" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">① User Input</text>
+      <text x="55" y="68" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">TUI / CLI / API</text>
+      <text x="55" y="78" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">YAML spec</text>
+
+      <!-- Arrow -->
+      <line x1="105" y1="57" x2="130" y2="57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Step 2 -->
+      <rect x="135" y="30" width="100" height="55" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="185" y="52" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">② Validate</text>
+      <text x="185" y="68" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Prereqs check</text>
+      <text x="185" y="78" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Auth + dry-run</text>
+
+      <line x1="235" y1="57" x2="260" y2="57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Step 3 -->
+      <rect x="265" y="30" width="100" height="55" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="315" y="52" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">③ Execute</text>
+      <text x="315" y="68" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Bash / Python</text>
+      <text x="315" y="78" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Ansible / Go API</text>
+
+      <line x1="365" y1="57" x2="390" y2="57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Step 4 -->
+      <rect x="395" y="30" width="100" height="55" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="445" y="52" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">④ Apply</text>
+      <text x="445" y="68" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Proxmox API</text>
+      <text x="445" y="78" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">libvirt / QMP</text>
+
+      <line x1="495" y1="57" x2="520" y2="57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Step 5 -->
+      <rect x="525" y="30" width="100" height="55" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="575" y="52" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">⑤ Verify</text>
+      <text x="575" y="68" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Health check</text>
+      <text x="575" y="78" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">Report status</text>
+
+      <line x1="625" y1="57" x2="650" y2="57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Step 6 -->
+      <rect x="655" y="30" width="20" height="55" rx="5" fill="#16a34a" stroke="#16a34a" stroke-width="2"/>
+      <text x="665" y="62" text-anchor="middle" font-family="Caveat" font-size="11" font-weight="700" fill="white" transform="rotate(-90 665 62)">✓</text>
+
+      <!-- Bottom: notification + logging -->
+      <rect x="5" y="105" width="200" height="40" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="105" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#2563eb">📝 Logs → /var/log/proxmox-swissknife/</text>
+
+      <rect x="220" y="105" width="200" height="40" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="320" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#dc2626">🔔 Alerts → Slack / Telegram / Email</text>
+
+      <rect x="435" y="105" width="240" height="40" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="555" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#16a34a">📊 Metrics → Prometheus / Grafana</text>
+    </svg>
+  </div>
+
+  <div class="mt-8">
+    <div class="highlight-box">
+      <div class="body-text text-sm"><span class="text-red font-bold">⚠ Idempotent:</span> Every operation checks current state before applying. Safe to re-run any script at any time.</div>
+    </div>
+  </div>
+
+  <div class="page-number">Page 2 / 6</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 3: TECHNOLOGIES + INFRASTRUCTURE                         -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <div class="section-title"><span class="icon">⚙</span> Technologies</div>
+  <div class="section-underline"></div>
+
+  <div class="two-col gap-12">
+    <div>
+      <div class="text-blue font-bold text-sm mb-6">Backend / Automation</div>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <span class="tech-pill red">Bash 5.2</span>
+        <span class="tech-pill">Python 3.12</span>
+        <span class="tech-pill green">Go 1.22</span>
+        <span class="tech-pill orange">Ansible 2.16</span>
+      </div>
+      <div class="text-blue font-bold text-sm mb-6">Infrastructure</div>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <span class="tech-pill">Terraform</span>
+        <span class="tech-pill red">Packer</span>
+        <span class="tech-pill green">Proxmox VE 8.x</span>
+        <span class="tech-pill">QEMU/KVM</span>
+      </div>
+    </div>
+    <div>
+      <div class="text-blue font-bold text-sm mb-6">Libraries & Frameworks</div>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <span class="tech-pill">proxmoxer</span>
+        <span class="tech-pill red">libvirt-python</span>
+        <span class="tech-pill green">bubbletea</span>
+        <span class="tech-pill">lipgloss</span>
+        <span class="tech-pill orange">cobra</span>
+        <span class="tech-pill">viper</span>
+        <span class="tech-pill red">zerolog</span>
+        <span class="tech-pill">httpx</span>
+        <span class="tech-pill green">pydantic</span>
+        <span class="tech-pill">rich</span>
+      </div>
+      <div class="text-blue font-bold text-sm mb-6">Storage / Backup</div>
+      <div class="flex flex-wrap gap-4">
+        <span class="tech-pill red">ZFS</span>
+        <span class="tech-pill">Ceph</span>
+        <span class="tech-pill green">LVM-thin</span>
+        <span class="tech-pill orange">PBS</span>
+        <span class="tech-pill">NFS</span>
+        <span class="tech-pill red">GlusterFS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: INFRASTRUCTURE -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">🌐</span> Infrastructure</div>
+    <div class="section-underline"></div>
+
+    <svg class="svg-diagram" width="680" height="170" viewBox="0 0 680 170">
+      <!-- Proxmox Cluster -->
+      <rect x="10" y="10" width="200" height="80" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="110" y="35" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#dc2626">🖥 Proxmox Cluster</text>
+      <rect x="20" y="48" width="55" height="32" rx="6" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="47" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Node 1</text>
+      <rect x="82" y="48" width="55" height="32" rx="6" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="109" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Node 2</text>
+      <rect x="144" y="48" width="55" height="32" rx="6" fill="white" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="171" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Node 3</text>
+
+      <!-- KVM Hosts -->
+      <rect x="230" y="10" width="140" height="80" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="300" y="35" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#2563eb">🐧 KVM Hosts</text>
+      <rect x="240" y="48" width="55" height="32" rx="6" fill="white" stroke="#2563eb" stroke-width="1.5"/>
+      <text x="267" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">KVM-1</text>
+      <rect x="305" y="48" width="55" height="32" rx="6" fill="white" stroke="#2563eb" stroke-width="1.5"/>
+      <text x="332" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">KVM-2</text>
+
+      <!-- Storage -->
+      <rect x="390" y="10" width="140" height="80" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="460" y="35" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#16a34a">💾 Storage</text>
+      <rect x="400" y="48" width="40" height="32" rx="6" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="420" y="69" text-anchor="middle" font-family="Caveat" font-size="10" fill="#16a34a">ZFS</text>
+      <rect x="445" y="48" width="40" height="32" rx="6" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="465" y="69" text-anchor="middle" font-family="Caveat" font-size="10" fill="#16a34a">Ceph</text>
+      <rect x="490" y="48" width="30" height="32" rx="6" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="505" y="69" text-anchor="middle" font-family="Caveat" font-size="10" fill="#16a34a">NFS</text>
+
+      <!-- PBS -->
+      <rect x="550" y="10" width="120" height="80" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="610" y="35" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#ea580c">🔄 PBS</text>
+      <rect x="560" y="48" width="100" height="32" rx="6" fill="white" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="610" y="69" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Backup Server</text>
+
+      <!-- Connection lines -->
+      <line x1="210" y1="50" x2="230" y2="50" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="370" y1="50" x2="390" y2="50" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="530" y1="50" x2="550" y2="50" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+      <!-- Network layer -->
+      <rect x="10" y="110" width="660" height="45" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="340" y="137" text-anchor="middle" font-family="Caveat" font-size="14" fill="#2563eb">🌐 Network: vmbr0 (mgmt) • VLAN-aware bridges • OVS • SDN (VXLAN/EVPN) • Bonds (LACP)</text>
+    </svg>
+  </div>
+
+  <!-- SECTION 8: FOLDER STRUCTURE -->
+  <div class="mt-8">
+    <div class="section-title"><span class="icon">📁</span> Folder Structure</div>
+    <div class="section-underline"></div>
+
+    <div class="two-col gap-12">
+      <div class="tree">
+<span class="folder">proxmox-kvm-swissknife/</span>
+├── <span class="highlight">shared/</span>          ← Common utilities
+│   ├── bash/lib/<span class="highlight">common.sh</span>
+│   ├── python/          (5 modules)
+│   └── go/sshexec/
+├── <span class="highlight">proxmox/</span>         ← PVE-specific
+│   ├── bash/            (22 scripts)
+│   ├── python/          (27 modules)
+│   ├── ansible/         (17 roles)
+│   └── terraform/       (4 modules)
+├── <span class="highlight">kvm/</span>             ← Generic KVM
+│   ├── bash/            (14 scripts)
+│   ├── python/          (19 modules)
+│   └── ansible/         (5 roles)
+├── <span class="folder">packer/</span>           (6 templates)
+├── <span class="folder">go/</span>               (TUI + CLI)
+│   ├── cmd/             (3 binaries)
+│   └── internal/        (15+ packages)
+├── <span class="folder">tests/</span>            (30 test files)
+├── <span class="folder">docs/</span>             (10 doc files)
+└── <span class="highlight">config/</span>           (settings.yaml)
+      </div>
+      <div class="flex flex-col gap-8">
+        <div class="rounded-box">
+          <div class="text-blue font-bold text-sm mb-4">Key Design Principle</div>
+          <div class="body-text text-sm"><span class="text-red font-bold">/proxmox/</span> — Only PVE API, CLIs, configs</div>
+          <div class="body-text text-sm"><span class="text-blue font-bold">/kvm/</span> — Only libvirt, virsh, qemu-img</div>
+          <div class="body-text text-sm"><span class="text-green font-bold">/shared/</span> — Usable by both, zero deps</div>
+        </div>
+        <div class="rounded-box green">
+          <div class="text-green font-bold text-sm mb-4">340 Files Across 6 Languages</div>
+          <div class="body-text text-xs">37 Bash · 67 Python · 40 Go · 134 YAML · 17 TF · 6 HCL · 30 Tests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-number">Page 3 / 6</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 4: SECURITY + DEPLOYMENT                                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <div class="section-title"><span class="icon">🔐</span> Security</div>
+  <div class="section-underline"></div>
+
+  <div class="two-col gap-12">
+    <div class="flex flex-col gap-6">
+      <div class="rounded-box red">
+        <div class="flex items-center gap-6 mb-6">
+          <span style="font-size:24px;">🛡</span>
+          <div class="text-red font-bold" style="font-size:17px;">Authentication</div>
+        </div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> API Token auth (PAM/PVE realms)</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> SSH key-based only (no passwords)</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> TFA: TOTP / WebAuthn / YubiKey</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> Token privilege separation</div>
+      </div>
+
+      <div class="rounded-box">
+        <div class="flex items-center gap-6 mb-6">
+          <span style="font-size:24px;">🔑</span>
+          <div class="text-blue font-bold" style="font-size:17px;">Secrets Management</div>
+        </div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Env vars / .env files (never hardcoded)</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Ansible Vault for playbooks</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> .gitignore excludes all secrets</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Token rotation support</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <div class="rounded-box green">
+        <div class="flex items-center gap-6 mb-6">
+          <span style="font-size:24px;">🔒</span>
+          <div class="text-green font-bold" style="font-size:17px;">Encryption & Network</div>
+        </div>
+        <div class="body-text text-xs"><span class="hand-bullet green"></span> TLS for all API communication</div>
+        <div class="body-text text-xs"><span class="hand-bullet green"></span> VNC/SPICE restricted to TLS only</div>
+        <div class="body-text text-xs"><span class="hand-bullet green"></span> Ceph msgr2 encryption</div>
+        <div class="body-text text-xs"><span class="hand-bullet green"></span> LUKS disk encryption support</div>
+      </div>
+
+      <div class="rounded-box orange">
+        <div class="flex items-center gap-6 mb-6">
+          <span style="font-size:24px;">🛡</span>
+          <div class="text-orange font-bold" style="font-size:17px;">Hardening (Ansible role)</div>
+        </div>
+        <div class="body-text text-xs"><span class="hand-bullet orange"></span> SSH: disable root, key-only, fail2ban</div>
+        <div class="body-text text-xs"><span class="hand-bullet orange"></span> Kernel: sysctl hardening (14 params)</div>
+        <div class="body-text text-xs"><span class="hand-bullet orange"></span> Auditd rules for all admin actions</div>
+        <div class="body-text text-xs"><span class="hand-bullet orange"></span> Automatic security updates</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 11: DEPLOYMENT -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">🚀</span> Deployment Flow</div>
+    <div class="section-underline"></div>
+
+    <svg class="svg-diagram" width="680" height="120" viewBox="0 0 680 120">
+      <!-- Clone -->
+      <rect x="5" y="20" width="85" height="55" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="47" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">① Clone</text>
+      <text x="47" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">git clone</text>
+      <line x1="90" y1="47" x2="110" y2="47" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Configure -->
+      <rect x="115" y="20" width="85" height="55" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="157" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">② Configure</text>
+      <text x="157" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">.env + yaml</text>
+      <line x1="200" y1="47" x2="220" y2="47" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Build -->
+      <rect x="225" y="20" width="85" height="55" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="267" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">③ Build</text>
+      <text x="267" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">make build</text>
+      <line x1="310" y1="47" x2="330" y2="47" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Lint + Test -->
+      <rect x="335" y="20" width="85" height="55" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <text x="377" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">④ Lint+Test</text>
+      <text x="377" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">make test</text>
+      <line x1="420" y1="47" x2="440" y2="47" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Deploy -->
+      <rect x="445" y="20" width="85" height="55" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="487" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">⑤ Deploy</text>
+      <text x="487" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">make install</text>
+      <line x1="530" y1="47" x2="550" y2="47" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Run -->
+      <rect x="555" y="20" width="85" height="55" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="597" y="43" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">⑥ Run</text>
+      <text x="597" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#1a1a2e">swissknife</text>
+
+      <!-- Makefile targets -->
+      <rect x="5" y="90" width="670" height="22" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="340" y="106" text-anchor="middle" font-family="Caveat" font-size="12" fill="#2563eb">make help · make build · make test · make lint · make install · make clean · make tui · make packer-build · make ansible-check</text>
+    </svg>
+  </div>
+
+  <!-- SECTION 12: KEY FEATURES -->
+  <div class="mt-10">
+    <div class="section-title"><span class="icon">✨</span> Key Features</div>
+    <div class="section-underline"></div>
+
+    <div class="card-grid">
+      <div class="feature-card">
+        <div class="card-icon">🖥</div>
+        <div class="card-title">Go TUI</div>
+        <div class="card-desc">Bubble Tea TUI with 15 views, fuzzy search, sparklines, live output streaming</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Idempotent</div>
+        <div class="card-desc">Every operation checks state first. Safe to re-run. Dry-run mode for all destructive actions.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Multi-Node</div>
+        <div class="card-desc">Cluster-aware operations. Rolling upgrades. Node evacuation. HA failover testing.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Packer Images</div>
+        <div class="card-desc">Automated golden-image baking for Ubuntu, Debian, Rocky, Windows on both PVE and KVM.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Monitoring</div>
+        <div class="card-desc">Prometheus metrics, threshold alerts, capacity reports, storage forecasting.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">🛡</div>
+        <div class="card-title">Hardened</div>
+        <div class="card-desc">SSH hardening, fail2ban, kernel sysctl, auditd, TFA, encrypted transport.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Multi-Language</div>
+        <div class="card-desc">Best tool per job: Bash for one-liners, Python for orchestration, Go for performance, Ansible for fleet.</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">📝</div>
+        <div class="card-title">Runbooks</div>
+        <div class="card-desc">6 step-by-step runbooks: node failure, storage full, failed migration, Ceph recovery, backup recovery, split-brain.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-number">Page 4 / 6</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 5: DATABASE + API ENDPOINTS                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <div class="section-title"><span class="icon">🗄</span> Data Model & API Endpoints</div>
+  <div class="section-underline"></div>
+
+  <div class="two-col gap-12">
+    <div>
+      <div class="text-blue font-bold text-sm mb-6">Proxmox REST API v2</div>
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <!-- Nodes -->
+        <rect x="10" y="10" width="260" height="40" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+        <text x="140" y="36" text-anchor="middle" font-family="Caveat" font-size="15" font-weight="700" fill="#dc2626">/nodes/{node}</text>
+
+        <!-- Lines down -->
+        <line x1="50" y1="50" x2="50" y2="70" stroke="#2563eb" stroke-width="1.5"/>
+        <line x1="140" y1="50" x2="140" y2="70" stroke="#2563eb" stroke-width="1.5"/>
+        <line x1="230" y1="50" x2="230" y2="70" stroke="#2563eb" stroke-width="1.5"/>
+
+        <!-- QEMU -->
+        <rect x="10" y="70" width="80" height="35" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+        <text x="50" y="93" text-anchor="middle" font-family="Caveat" font-size="12" fill="#2563eb">qemu/{vmid}</text>
+
+        <!-- Storage -->
+        <rect x="100" y="70" width="80" height="35" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="140" y="93" text-anchor="middle" font-family="Caveat" font-size="12" fill="#16a34a">storage/{s}</text>
+
+        <!-- Network -->
+        <rect x="190" y="70" width="80" height="35" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="230" y="93" text-anchor="middle" font-family="Caveat" font-size="12" fill="#ea580c">network/</text>
+
+        <!-- QEMU children -->
+        <line x1="30" y1="105" x2="30" y2="120" stroke="#2563eb" stroke-width="1"/>
+        <rect x="5" y="120" width="50" height="22" rx="4" fill="white" stroke="#2563eb" stroke-width="1"/>
+        <text x="30" y="136" text-anchor="middle" font-family="Caveat" font-size="10" fill="#2563eb">status</text>
+        <rect x="60" y="120" width="45" height="22" rx="4" fill="white" stroke="#2563eb" stroke-width="1"/>
+        <text x="82" y="136" text-anchor="middle" font-family="Caveat" font-size="10" fill="#2563eb">config</text>
+        <rect x="5" y="148" width="50" height="22" rx="4" fill="white" stroke="#2563eb" stroke-width="1"/>
+        <text x="30" y="164" text-anchor="middle" font-family="Caveat" font-size="10" fill="#2563eb">snapshot</text>
+        <rect x="60" y="148" width="45" height="22" rx="4" fill="white" stroke="#2563eb" stroke-width="1"/>
+        <text x="82" y="164" text-anchor="middle" font-family="Caveat" font-size="10" fill="#2563eb">resize</text>
+
+        <!-- Storage children -->
+        <line x1="140" y1="105" x2="140" y2="120" stroke="#16a34a" stroke-width="1"/>
+        <rect x="108" y="120" width="65" height="22" rx="4" fill="white" stroke="#16a34a" stroke-width="1"/>
+        <text x="140" y="136" text-anchor="middle" font-family="Caveat" font-size="10" fill="#16a34a">content</text>
+        <rect x="108" y="148" width="65" height="22" rx="4" fill="white" stroke="#16a34a" stroke-width="1"/>
+        <text x="140" y="164" text-anchor="middle" font-family="Caveat" font-size="10" fill="#16a34a">status</text>
+
+        <!-- Network children -->
+        <line x1="230" y1="105" x2="230" y2="120" stroke="#ea580c" stroke-width="1"/>
+        <rect x="198" y="120" width="65" height="22" rx="4" fill="white" stroke="#ea580c" stroke-width="1"/>
+        <text x="230" y="136" text-anchor="middle" font-family="Caveat" font-size="10" fill="#ea580c">interfaces</text>
+
+        <!-- Cluster -->
+        <rect x="10" y="185" width="260" height="35" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="140" y="208" text-anchor="middle" font-family="Caveat" font-size="15" font-weight="700" fill="#16a34a">/cluster/</text>
+
+        <rect x="10" y="228" width="80" height="25" rx="5" fill="white" stroke="#16a34a" stroke-width="1"/>
+        <text x="50" y="246" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">status</text>
+        <rect x="100" y="228" width="80" height="25" rx="5" fill="white" stroke="#16a34a" stroke-width="1"/>
+        <text x="140" y="246" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">resources</text>
+        <rect x="190" y="228" width="80" height="25" rx="5" fill="white" stroke="#16a34a" stroke-width="1"/>
+        <text x="230" y="246" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">ha/resources</text>
+      </svg>
+    </div>
+
+    <div>
+      <div class="text-blue font-bold text-sm mb-6">KVM / libvirt Endpoints</div>
+      <svg width="280" height="180" viewBox="0 0 280 180">
+        <rect x="10" y="10" width="260" height="35" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+        <text x="140" y="33" text-anchor="middle" font-family="Caveat" font-size="15" font-weight="700" fill="#2563eb">libvirt (virsh + QMP)</text>
+
+        <line x1="50" y1="45" x2="50" y2="60" stroke="#2563eb" stroke-width="1"/>
+        <line x1="140" y1="45" x2="140" y2="60" stroke="#2563eb" stroke-width="1"/>
+        <line x1="230" y1="45" x2="230" y2="60" stroke="#2563eb" stroke-width="1"/>
+
+        <rect x="10" y="60" width="80" height="30" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="50" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#dc2626">domain/*</text>
+
+        <rect x="100" y="60" width="80" height="30" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="140" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#16a34a">network/*</text>
+
+        <rect x="190" y="60" width="80" height="30" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="230" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#ea580c">pool/*</text>
+
+        <rect x="10" y="100" width="60" height="22" rx="4" fill="white" stroke="#dc2626" stroke-width="1"/>
+        <text x="40" y="116" text-anchor="middle" font-family="Caveat" font-size="10" fill="#dc2626">define</text>
+        <rect x="75" y="100" width="50" height="22" rx="4" fill="white" stroke="#dc2626" stroke-width="1"/>
+        <text x="100" y="116" text-anchor="middle" font-family="Caveat" font-size="10" fill="#dc2626">start</text>
+        <rect x="130" y="100" width="50" height="22" rx="4" fill="white" stroke="#dc2626" stroke-width="1"/>
+        <text x="155" y="116" text-anchor="middle" font-family="Caveat" font-size="10" fill="#dc2626">stop</text>
+        <rect x="185" y="100" width="80" height="22" rx="4" fill="white" stroke="#dc2626" stroke-width="1"/>
+        <text x="225" y="116" text-anchor="middle" font-family="Caveat" font-size="10" fill="#dc2626">snapshot-*</text>
+
+        <rect x="10" y="135" width="260" height="30" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="140" y="155" text-anchor="middle" font-family="Caveat" font-size="13" fill="#dc2626">QMP: query_status · stop · cont · migrate · snapshot · send_key</text>
+      </svg>
+
+      <div class="mt-8">
+        <div class="text-blue font-bold text-sm mb-6">CLI Wrappers</div>
+        <div class="flex flex-col gap-4">
+          <div class="rounded-box" style="padding:8px 10px;">
+            <div class="body-text text-xs"><span class="text-red font-bold">pmxctl</span> — Go CLI for Proxmox operations</div>
+          </div>
+          <div class="rounded-box green" style="padding:8px 10px;">
+            <div class="body-text text-xs"><span class="text-green font-bold">kvmctl</span> — Go CLI for KVM/libvirt operations</div>
+          </div>
+          <div class="rounded-box orange" style="padding:8px 10px;">
+            <div class="body-text text-xs"><span class="text-orange font-bold">swissknife</span> — Unified TUI application</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-number">Page 5 / 6</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE 6: FUTURE + SUMMARY + NOTES                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="margin-line"></div>
+
+  <div class="section-title"><span class="icon">🗺</span> Future Improvements</div>
+  <div class="section-underline"></div>
+
+  <div class="rounded-box" style="padding:14px 16px;">
+    <div class="two-col gap-12">
+      <div class="flex flex-col gap-6">
+        <div class="flex items-start gap-6">
+          <div class="hand-circle red" style="width:28px;height:28px;font-size:13px;">1</div>
+          <div>
+            <div class="body-text font-bold text-sm">Web Dashboard</div>
+            <div class="body-text text-xs">Real-time monitoring UI with Grafana integration and custom alerting rules</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-6">
+          <div class="hand-circle" style="width:28px;height:28px;font-size:13px;">2</div>
+          <div>
+            <div class="body-text font-bold text-sm">Terraform Provider Fork</div>
+            <div class="body-text text-xs">Custom provider with cluster-aware resources, rollback support</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-6">
+          <div class="hand-circle green" style="width:28px;height:28px;font-size:13px;">3</div>
+          <div>
+            <div class="body-text font-bold text-sm">Nix/NixOS Module</div>
+            <div class="body-text text-xs">Reproducible host configuration as a NixOS module</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-6">
+        <div class="flex items-start gap-6">
+          <div class="hand-circle orange" style="width:28px;height:28px;font-size:13px;">4</div>
+          <div>
+            <div class="body-text font-bold text-sm">CI/CD Pipeline</div>
+            <div class="body-text text-xs">GitHub Actions for automated testing, linting, and release publishing</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-6">
+          <div class="hand-circle red" style="width:28px;height:28px;font-size:13px;">5</div>
+          <div>
+            <div class="body-text font-bold text-sm">Multi-Cluster Support</div>
+            <div class="body-text text-xs">Federated management across independent Proxmox clusters</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-6">
+          <div class="hand-circle" style="width:28px;height:28px;font-size:13px;">6</div>
+          <div>
+            <div class="body-text font-bold text-sm">Plugin System</div>
+            <div class="body-text text-xs">Allow community extensions for custom operations and integrations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 14: SUMMARY -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">📋</span> Summary — Key Points</div>
+    <div class="section-underline"></div>
+
+    <div class="highlight-box" style="padding:14px 16px;">
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center gap-8">
+          <div class="hand-circle red" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-red font-bold">340 production files</span> across 6 languages — Bash, Python, Go, Ansible, Terraform, Packer</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-blue font-bold">Complete coverage</span> of Proxmox VE 8.x and generic KVM/QEMU administration</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle green" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-green font-bold">Go TUI application</span> with 15 views, fuzzy search, live output, and single-binary deployment</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle orange" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-orange font-bold">23 Ansible roles</span> + 15 playbooks for fleet-wide provisioning and rolling updates</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle red" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-red font-bold">Security-first</span> — API tokens, SSH keys, TFA, fail2ban, kernel hardening, encrypted transport</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-blue font-bold">30 test files</span> (BATS + pytest + Go) covering all modules with mocked APIs</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle green" style="width:36px;height:36px;font-size:16px;">✓</div>
+          <div class="body-text text-sm"><span class="text-green font-bold">6 runbooks</span> for critical scenarios — node failure, storage full, migration failure, Ceph recovery, backup recovery, split-brain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 15: NOTES -->
+  <div class="mt-12">
+    <div class="section-title"><span class="icon">📌</span> Notes — Remember</div>
+    <div class="section-underline"></div>
+
+    <div class="two-col gap-12">
+      <div class="dashed-box">
+        <div class="text-red font-bold text-sm mb-4">⚠ Implementation Tips</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> Always run <span class="mono">make lint</span> before committing</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> Test with <span class="mono">--dry-run</span> on production clusters</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> Use <span class="mono">config/settings.yaml</span> over .env for team configs</div>
+        <div class="body-text text-xs"><span class="hand-bullet red"></span> Verify API tokens have least-privilege permissions</div>
+      </div>
+
+      <div class="dashed-box">
+        <div class="text-blue font-bold text-sm mb-4">🔧 Deployment Notes</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Requires Go 1.22+, Python 3.12+, Ansible 2.16+</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> TUI: <span class="mono">make tui && ./bin/swissknife</span></div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Packer: install packer first, then <span class="mono">make packer-build</span></div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Run <span class="mono">make test</span> after any changes</div>
+      </div>
+    </div>
+
+    <div class="mt-8 success-box">
+      <div class="body-text text-sm"><span class="text-green font-bold">✅ Pro tip:</span> Start with the TUI (<span class="mono">swissknife</span>) for day-to-day ops. Use Ansible playbooks for fleet-wide changes. Use Bash scripts for cron jobs and automation.</div>
+    </div>
+  </div>
+
+  <div class="page-number">Page 6 / 6</div>
+</div>
+
+</body>
+</html>

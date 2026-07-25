@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Firewall Role - meta/main.yml
+
+galaxy_info:
+  role_name: proxmox_firewall
+  description: Configure Proxmox VE firewall rules, IPsets, and security policies
+  author: proxmox-kvm-swissknife
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+dependencies: []

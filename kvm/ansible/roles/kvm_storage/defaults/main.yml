@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MIT
+# KVM Storage Role - defaults/main.yml
+
+storage_pools:
+  - name: "default"
+    type: "dir"
+    target_path: "/var/lib/libvirt/images"
+    autostart: true
+    state: active
+
+  - name: "fast"
+    type: "dir"
+    target_path: "/mnt/fast-storage/libvirt/images"
+    autostart: true
+    state: active
+
+#  - name: "lvm"
+#    type: "logical"
+#    target_path: "/dev/vg0"
+#    vg_name: "vg0"
+#    autostart: true
+#    state: active
+
+#  - name: "zfs"
+#    type: "zfs"
+#    target_path: "tank/libvirt"
+#    zpool_name: "tank"
+#    autostart: true
+#    state: active
+
+#  - name: "nfs"
+#    type: "netfs"
+#    host: "10.0.0.100"
+#    source_path: "/mnt/pve/nfs-storage"
+#    target_path: "/mnt/nfs-storage"
+#    format: "nfs"
+#    autostart: true
+#    state: active
+
+storage_create_directories: true

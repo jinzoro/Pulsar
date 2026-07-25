@@ -1,0 +1,68 @@
+---
+# SPDX-License-Identifier: MIT
+# Complete KVM host setup playbook
+
+- name: Install and configure KVM host
+  hosts: kvm_hosts
+  become: true
+  roles:
+    - role: kvm_install
+      tags: [kvm_install]
+
+    - role: kvm_network
+      tags: [kvm_network]
+
+    - role: kvm_storage
+      tags: [kvm_storage]
+
+    - role: kvm_hardening
+      tags: [kvm_hardening]
+
+- name: Verify KVM installation
+  hosts: kvm_hosts
+  become: true
+  tasks:
+    - name: Check KVM module status
+      ansible.builtin.command: lsmod | grep kvm
+      register: kvm_modules
+      changed_when: false
+
+    - name: Display KVM modules
+      ansible.builtin.debug:
+        msg: "{{ kvm_modules.stdout_lines }}"
+
+    - name: Check libvirtd status
+      ansible.builtin.systemd:
+        name: libvirtd
+      register: libvirtd_status
+
+    - name: Display libvirtd status
+      ansible.builtin.debug:
+        msg: "libvirtd: {{ libvirtd_status.status.ActiveState }}"
+
+    - name: List virtual networks
+      community.libvirt.virt_net:
+        command: list_nets
+      register: libvirt_nets
+
+    - name: Display virtual networks
+      ansible.builtin.debug:
+        msg: "Networks: {{ libvirt_nets.list_nets | default([]) }}"
+
+    - name: List storage pools
+      community.libvirt.virt_pool:
+        command: list_pools
+      register: libvirt_pools
+
+    - name: Display storage pools
+      ansible.builtin.debug:
+        msg: "Pools: {{ libvirt_pools.list_pools | default([]) }}"
+
+    - name: List VMs
+      community.libvirt.virt:
+        command: list_vms
+      register: libvirt_vms
+
+    - name: Display VMs
+      ansible.builtin.debug:
+        msg: "VMs: {{ libvirt_vms.list_vms | default([]) }}"

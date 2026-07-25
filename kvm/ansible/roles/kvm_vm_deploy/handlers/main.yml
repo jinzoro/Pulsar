@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+# KVM VM Deploy Role - handlers/main.yml
+
+- name: restart VM
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: restarted
+
+- name: shutdown VM
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: shutdown

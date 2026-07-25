@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: MIT
+# Proxmox SDN Role - tasks/main.yml
+
+- name: Check existing SDN zones
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn/zones"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_zones
+  tags: proxmox_sdn
+
+- name: Set existing zone names
+  ansible.builtin.set_fact:
+    existing_zone_names: >-
+      {{ existing_zones.json.data | default([])
+         | map(attribute='zone') | list }}
+  tags: proxmox_sdn
+
+- name: Create SDN zones via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn/zones"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      zone: "{{ item.name }}"
+      type: "{{ item.type }}"
+      vnet_autosync: "{{ item.vnet_autosync | default(false) | int }}"
+      dns: "{{ item.dns | default(omit) }}"
+      ipam: "{{ item.ipam | default(omit) }}"
+      exitnodes: "{{ item.exitnodes | default(omit) }}"
+      advertise_subnets: "{{ item.advertise_subnets | default(omit) }}"
+      mac: "{{ item.mac | default(omit) }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ sdn_zones }}"
+  loop_control:
+    label: "Zone: {{ item.name }} ({{ item.type }})"
+  when: item.name not in existing_zone_names
+  tags: proxmox_sdn
+
+- name: Create SDN vnets via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn/vnets"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      vnet: "{{ item.name }}"
+      zone: "{{ item.zone }}"
+      alias: "{{ item.alias | default(omit) }}"
+      vlan: "{{ item.vlan | default(omit) }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ sdn_vnets }}"
+  loop_control:
+    label: "VNet: {{ item.name }}"
+  tags: proxmox_sdn
+
+- name: Create SDN subnets via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn/vnets/{{ item.vnet }}/subnets"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      subnet: "{{ item.cidr }}"
+      gateway: "{{ item.gateway | default(omit) }}"
+      dhcp_range_start: "{{ item.dhcp_range_start | default(omit) }}"
+      dhcp_range_end: "{{ item.dhcp_range_end | default(omit) }}"
+      snat: "{{ item.snat | default(false) | int }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ sdn_subnets }}"
+  loop_control:
+    label: "Subnet: {{ item.vnet }}/{{ item.cidr }}"
+  when: sdn_subnets | default([]) | length > 0
+  tags: proxmox_sdn
+
+- name: Apply SDN configuration
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body: {}
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  when: sdn_apply | default(true)
+  tags: proxmox_sdn
+
+- name: Verify SDN status
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/sdn"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: sdn_status
+  tags: proxmox_sdn
+
+- name: Display SDN configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      SDN: {{ sdn_zones | length }} zones,
+      {{ sdn_vnets | length }} vnets,
+      {{ sdn_subnets | length }} subnets configured
+  tags: proxmox_sdn

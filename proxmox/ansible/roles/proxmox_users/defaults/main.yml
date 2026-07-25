@@ -1,0 +1,101 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Users Role - defaults/main.yml
+
+proxmox_user_groups:
+  - name: "admin"
+    comment: "Full administrators"
+  - name: "readonly"
+    comment: "Read-only users"
+  - name: "backup"
+    comment: "Backup operators"
+  - name: "vm-operator"
+    comment: "VM operators"
+
+proxmox_user_roles:
+  - name: "PVEAdmin"
+    comment: "Full administrative access"
+    privileges:
+      - / - Datastore.Allocate
+      - / - Datastore.AllocateSpace
+      - / - Datastore.AllocateTemplate
+      - / - Datastore.Audit
+      - / - Pool.Allocate
+      - / - Sys.Audit
+      - / - Sys.Console
+      - / - Sys.Modify
+      - / - VM.Allocate
+      - / - VM.AllocateVMID
+      - / - VM.Audit
+      - / - VM.Backup
+      - / - VM.Clone
+      - / - VM.Config.CDROM
+      - / - VM.Config.CPU
+      - / - VM.Config.Disk
+      - / - VM.Config.HWType
+      - / - VM.Config.Memory
+      - / - VM.Config.Network
+      - / - VM.Config.Options
+      - / - VM.Console
+      - / - VM.Migrate
+      - / - VM.PowerMgmt
+      - / - VM.Snapshot
+      - / - VM.Snapshot.Rollback
+      - / - Storage.Allocate
+      - / - Storage.Audit
+
+  - name: "PVEReadOnly"
+    comment: "Read-only access"
+    privileges:
+      - / - Datastore.Audit
+      - / - Sys.Audit
+      - / - VM.Audit
+
+  - name: "PVEBackupOperator"
+    comment: "Backup and restore operator"
+    privileges:
+      - / - Datastore.Allocate
+      - / - Datastore.Audit
+      - / - VM.Audit
+      - / - VM.Backup
+
+proxmox_users:
+  - name: "admin"
+    realm: "pam"
+    email: "admin@example.com"
+    groups:
+      - "admin"
+    comment: "Primary administrator"
+
+  - name: "automation"
+    realm: "pam"
+    email: "automation@example.com"
+    groups:
+      - "admin"
+    comment: "Ansible automation user"
+
+  - name: "viewer"
+    realm: "pam"
+    email: "viewer@example.com"
+    groups:
+      - "readonly"
+    comment: "Read-only viewer"
+
+proxmox_acls:
+  - path: "/"
+    type: "group"
+    identifier: "admin"
+    roleid: "PVEAdmin"
+    propagate: true
+
+  - path: "/"
+    type: "group"
+    identifier: "readonly"
+    roleid: "PVEReadOnly"
+    propagate: true
+
+proxmox_api_tokens:
+  - user: "automation@pam"
+    token_name: "ansible"
+    comment: "Ansible automation token"
+    privileges: true
+    expire: ""

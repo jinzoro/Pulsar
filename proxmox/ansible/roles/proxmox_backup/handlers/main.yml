@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Backup Role - handlers/main.yml
+
+- name: reload vzdump cron
+  ansible.builtin.command: pvesr update
+  changed_when: true
+
+- name: restart vzdump
+  ansible.builtin.systemd:
+    name: vzdump
+    state: restarted

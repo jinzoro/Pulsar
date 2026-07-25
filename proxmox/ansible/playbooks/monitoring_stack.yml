@@ -1,0 +1,102 @@
+---
+# SPDX-License-Identifier: MIT
+# Deploy monitoring stack on Proxmox
+
+- name: Deploy monitoring stack (Prometheus + Grafana)
+  hosts: pve_nodes[0]
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    monitoring_container:
+      name: "monitoring"
+      vmid: 9100
+      template: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+      cpu: 2
+      memory: 2048
+      swap: 1024
+      rootfs_size: "20G"
+      rootfs_storage: "{{ proxmox_default_storage }}"
+      net_ip: "10.0.0.50/24"
+      net_bridge: "vmbr0"
+      hostname: "monitoring"
+      unprivileged: true
+      nesting: false
+      onboot: true
+      state: present
+
+    grafana_container:
+      name: "grafana"
+      vmid: 9101
+      template: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+      cpu: 1
+      memory: 1024
+      swap: 512
+      rootfs_size: "10G"
+      rootfs_storage: "{{ proxmox_default_storage }}"
+      net_ip: "10.0.0.51/24"
+      net_bridge: "vmbr0"
+      hostname: "grafana"
+      unprivileged: true
+      nesting: false
+      onboot: true
+      state: present
+  tasks:
+    - name: Check if monitoring container exists
+      ansible.builtin.command: pct list
+      register: existing_cts
+      changed_when: false
+
+    - name: Create monitoring container
+      ansible.builtin.command: >-
+        pct create {{ monitoring_container.vmid }}
+        {{ monitoring_container.template }}
+        --hostname {{ monitoring_container.hostname }}
+        --cores {{ monitoring_container.cpu }}
+        --memory {{ monitoring_container.memory }}
+        --swap {{ monitoring_container.swap }}
+        --rootfs {{ monitoring_container.rootfs_storage }}:{{ monitoring_container.rootfs_size }}
+        --net0 name=eth0,bridge={{ monitoring_container.net_bridge }},ip={{ monitoring_container.net_ip }},type=veth
+        --unprivileged {{ '1' if monitoring_container.unprivileged else '0' }}
+        --onboot {{ '1' if monitoring_container.onboot else '0' }}
+      when: "'monitoring' not in existing_cts.stdout"
+      register: monitoring_ct
+      failed_when: false
+
+    - name: Create Grafana container
+      ansible.builtin.command: >-
+        pct create {{ grafana_container.vmid }}
+        {{ grafana_container.template }}
+        --hostname {{ grafana_container.hostname }}
+        --cores {{ grafana_container.cpu }}
+        --memory {{ grafana_container.memory }}
+        --swap {{ grafana_container.swap }}
+        --rootfs {{ grafana_container.rootfs_storage }}:{{ grafana_container.rootfs_size }}
+        --net0 name=eth0,bridge={{ grafana_container.net_bridge }},ip={{ grafana_container.net_ip }},type=veth
+        --unprivileged {{ '1' if grafana_container.unprivileged else '0' }}
+        --onboot {{ '1' if grafana_container.onboot else '0' }}
+      when: "'grafana' not in existing_cts.stdout"
+      register: grafana_ct
+      failed_when: false
+
+    - name: Start monitoring containers
+      community.general.proxmox_container:
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item.vmid }}"
+        state: started
+        api_host: "{{ proxmox_node }}"
+        api_user: "{{ proxmox_user }}"
+        api_token_id: "{{ proxmox_token_id }}"
+        api_token_secret: "{{ proxmox_token_secret }}"
+        validate_certs: "{{ proxmox_verify_ssl }}"
+      loop:
+        - "{{ monitoring_container }}"
+        - "{{ grafana_container }}"
+      failed_when: false
+
+    - name: Display monitoring stack status
+      ansible.builtin.debug:
+        msg: >-
+          Monitoring stack deployed:
+          Prometheus at {{ monitoring_container.net_ip | regex_replace('/.*', '') }},
+          Grafana at {{ grafana_container.net_ip | regex_replace('/.*', '') }}:3000

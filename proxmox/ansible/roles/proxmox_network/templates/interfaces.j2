@@ -1,0 +1,80 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Proxmox Network Role - interfaces.j2 -->
+# {{ ansible_managed }}
+# Network configuration for {{ ansible_hostname }}
+
+auto lo
+iface lo inet loopback
+
+{% for bridge in proxmox_bridges %}
+auto {{ bridge.name }}
+iface {{ bridge.name }} inet static
+{% if bridge.address is defined and bridge.address | length > 0 %}
+    address {{ bridge.address }}
+{% endif %}
+{% if bridge.gateway is defined and bridge.gateway | length > 0 %}
+    gateway {{ bridge.gateway }}
+{% endif %}
+    bridge-ports {{ bridge.ports | default([]) | join(' ') }}
+    bridge-stp {{ 'on' if bridge.stp | default(true) else 'off' }}
+    bridge-fd {{ bridge.fd | default(15) }}
+{% if bridge.vlan_aware | default(false) %}
+    bridge-vlan-aware yes
+{% endif %}
+{% if bridge.mtu is defined and bridge.mtu | length > 0 %}
+    mtu {{ bridge.mtu }}
+{% endif %}
+    bridge-clsntprtl off
+    bridge-hairpin off
+{% if bridge.comment is defined %}
+    # {{ bridge.comment }}
+{% endif %}
+
+{% endfor %}
+
+{% for bond in proxmox_bonds %}
+auto {{ bond.name }}
+iface {{ bond.name }} inet manual
+    bond-slaves {{ bond.slaves | join(' ') }}
+    bond-mode {{ bond.mode }}
+    bond-xmit-hash-policy {{ bond.hash | default('layer3+4') }}
+    bond-miimon {{ bond.miimon | default(100) }}
+    bond-lacp-rate {{ bond.lacp_rate | default('fast') }}
+    bond-primary {{ bond.slaves[0] }}
+{% if bond.mtu is defined %}
+    mtu {{ bond.mtu }}
+{% endif %}
+{% if bond.comment is defined %}
+    # {{ bond.comment }}
+{% endif %}
+
+{% endfor %}
+
+{% for vlan in proxmox_vlans %}
+auto {{ vlan.name }}
+iface {{ vlan.name }} inet static
+    address {{ vlan.address }}
+    vlan-raw-device {{ vlan.parent }}
+    vlan_id {{ vlan.vid }}
+{% if vlan.comment is defined %}
+    # {{ vlan.comment }}
+{% endif %}
+
+{% endfor %}
+
+{% for route in proxmox_routes | default([]) %}
+{% if route.state | default('present') != 'absent' %}
+# Route: {{ route.comment | default(route.dest) }}
+up ip route add {{ route.dest }} via {{ route.gateway }}
+{% endif %}
+{% endfor %}
+
+{% if proxmox_dns is defined %}
+# DNS configuration
+{% for ns in proxmox_dns.nameservers | default([]) %}
+# nameserver {{ ns }}
+{% endfor %}
+{% if proxmox_dns.search is defined %}
+# search {{ proxmox_dns.search }}
+{% endif %}
+{% endif %}

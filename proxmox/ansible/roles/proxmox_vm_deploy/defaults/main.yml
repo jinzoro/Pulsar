@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: MIT
+# Proxmox VM Deploy Role - defaults/main.yml
+
+proxmox_vms:
+  - name: web-server
+    vmid: 100
+    node: "{{ proxmox_node }}"
+    cores: 2
+    memory: 4096
+    disk_size: "32G"
+    disk_storage: "{{ proxmox_default_storage }}"
+    disk_bus: "virtio-scsi-single"
+    net_model: "virtio"
+    net_bridge: "vmbr0"
+    iso: ""
+    template: ""
+    cpu_type: "host"
+    bios: "seabios"
+    machine: "q35"
+    os_type: "l26"
+    scsihw: "virtio-scsi-single"
+    agent: true
+    state: present
+    description: "Web Server"
+    tags: "web,prod"
+
+  - name: database-server
+    vmid: 101
+    node: "{{ proxmox_node }}"
+    cores: 4
+    memory: 8192
+    disk_size: "64G"
+    disk_storage: "{{ proxmox_default_storage }}"
+    disk_bus: "virtio-scsi-single"
+    net_model: "virtio"
+    net_bridge: "vmbr0"
+    iso: ""
+    template: ""
+    cpu_type: "host"
+    bios: "seabios"
+    machine: "q35"
+    os_type: "l26"
+    scsihw: "virtio-scsi-single"
+    agent: true
+    state: present
+    description: "Database Server"
+    tags: "db,prod"
+
+#  - name: app-server
+#    vmid: 102
+#    node: "{{ proxmox_node }}"
+#    cores: 2
+#    memory: 4096
+#    disk_size: "48G"
+#    disk_storage: "{{ proxmox_default_storage }}"
+#    disk_bus: "virtio-scsi-single"
+#    net_model: "virtio"
+#    net_bridge: "vmbr0"
+#    cloudinit: "local:cloudinit"
+#    ci_user: "admin"
+#    ci_password: ""
+#    ci_sshkeys: []
+#    ipconfig: "ip=10.0.0.102/24,gw=10.0.0.1"
+#    cpu_type: "host"
+#    bios: "ovmf"
+#    machine: "q35"
+#    os_type: "l26"
+#    scsihw: "virtio-scsi-single"
+#    agent: true
+#    state: present
+#    description: "Application Server"
+#    tags: "app,prod"

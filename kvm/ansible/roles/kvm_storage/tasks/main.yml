@@ -1,0 +1,102 @@
+# SPDX-License-Identifier: MIT
+# KVM Storage Role - tasks/main.yml
+
+- name: List existing storage pools
+  community.libvirt.virt_pool:
+    command: list_pools
+  register: existing_pools
+  tags: kvm_storage
+
+- name: Create storage pool directories
+  ansible.builtin.file:
+    path: "{{ item.target_path }}"
+    state: directory
+    owner: root
+    group: libvirt
+    mode: "0771"
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Directory: {{ item.target_path }}"
+  when:
+    - storage_create_directories | default(true)
+    - item.type == 'dir'
+    - item.target_path | dirname is not in existing_pools | default({})
+  tags: kvm_storage
+
+- name: Define storage pools
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    state: present
+    type: "{{ item.type }}"
+    target:
+      path: "{{ item.target_path }}"
+    autostart: "{{ item.autostart | default(false) }}"
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Pool: {{ item.name }} ({{ item.type }})"
+  when: item.name not in existing_pools.list_pools | default([])
+  tags: kvm_storage
+
+- name: Build storage pools
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    state: build
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Build: {{ item.name }}"
+  when: item.name not in existing_pools.list_pools | default([])
+  failed_when: false
+  tags: kvm_storage
+
+- name: Start storage pools
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    state: active
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Start: {{ item.name }}"
+  when: item.state | default('active') == 'active'
+  tags: kvm_storage
+
+- name: Set storage pool autostart
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    autostart: true
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Autostart: {{ item.name }}"
+  when: item.autostart | default(false)
+  tags: kvm_storage
+
+- name: Stop storage pools if requested
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    state: inactive
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Stop: {{ item.name }}"
+  when: item.state | default('active') == 'inactive'
+  tags: kvm_storage
+
+- name: Delete storage pools if requested
+  community.libvirt.virt_pool:
+    name: "{{ item.name }}"
+    state: absent
+  loop: "{{ storage_pools }}"
+  loop_control:
+    label: "Delete: {{ item.name }}"
+  when: item.state | default('active') == 'absent'
+  tags: kvm_storage
+
+- name: Verify storage pool status
+  community.libvirt.virt_pool:
+    command: list_pools
+  register: final_pools
+  tags: kvm_storage
+
+- name: Display storage pool summary
+  ansible.builtin.debug:
+    msg: >-
+      Storage pools: {{ final_pools.list_pools | default([]) }},
+      Total: {{ final_pools.list_pools | default([]) | length }}
+  tags: kvm_storage

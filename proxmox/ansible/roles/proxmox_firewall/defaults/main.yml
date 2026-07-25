@@ -1,0 +1,102 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Firewall Role - defaults/main.yml
+
+firewall_enabled: true
+firewall_policy: "ACCEPT"
+
+cluster_firewall_rules:
+  - name: "Allow SSH from management"
+    type: "in"
+    macro: "SSH"
+    source: "10.0.0.0/24"
+    action: "ACCEPT"
+    comment: "Management SSH access"
+    enabled: true
+
+  - name: "Allow Proxmox API"
+    type: "in"
+    dport: "8006"
+    proto: "tcp"
+    source: "10.0.0.0/24"
+    action: "ACCEPT"
+    comment: "Proxmox web interface"
+    enabled: true
+
+  - name: "Allow HA corosync"
+    type: "in"
+    dport: "5402-5405"
+    proto: "udp"
+    action: "ACCEPT"
+    comment: "Corosync cluster communication"
+    enabled: true
+
+  - name: "Drop invalid"
+    type: "in"
+    state: "INVALID"
+    action: "DROP"
+    comment: "Drop invalid packets"
+    enabled: true
+
+  - name: "Allow established"
+    type: "in"
+    state: "ESTABLISHED,RELATED"
+    action: "ACCEPT"
+    comment: "Allow established connections"
+    enabled: true
+
+  - name: "Default deny inbound"
+    type: "in"
+    action: "DROP"
+    comment: "Default deny all inbound"
+    enabled: true
+
+node_firewall_rules:
+  - name: "Allow SSH"
+    type: "in"
+    macro: "SSH"
+    source: "10.0.0.0/24"
+    action: "ACCEPT"
+    comment: "SSH access"
+    enabled: true
+
+  - name: "Allow ICMP"
+    type: "in"
+    macro: "ICMP"
+    action: "ACCEPT"
+    comment: "Allow ping"
+    enabled: true
+
+  - name: "Allow Proxmox web"
+    type: "in"
+    dport: "8006"
+    proto: "tcp"
+    source: "10.0.0.0/24"
+    action: "ACCEPT"
+    comment: "Proxmox API"
+    enabled: true
+
+  - name: "Allow VNC for VMs"
+    type: "in"
+    dport: "5900-5999"
+    proto: "tcp"
+    action: "ACCEPT"
+    comment: "VNC console"
+    enabled: false
+
+ipsets:
+  - name: "management"
+    comment: "Management network hosts"
+    entries:
+      - "10.0.0.1"
+      - "10.0.0.2"
+      - "10.0.0.0/24"
+
+  - name: "monitoring"
+    comment: "Monitoring servers"
+    entries:
+      - "10.0.0.50"
+      - "10.0.0.51"
+
+  - name: "blocked"
+    comment: "Blocked hosts"
+    entries: []

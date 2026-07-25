@@ -1,0 +1,113 @@
+# SPDX-License-Identifier: MIT
+# KVM VM Deploy Role - tasks/main.yml
+
+- name: List existing VMs
+  community.libvirt.virt:
+    command: list_vms
+  register: existing_vms
+  tags: kvm_vm_deploy
+
+- name: Create VMs using virt-install
+  ansible.builtin.command: >-
+    virt-install
+    --name {{ item.name }}
+    --vcpus {{ item.vcpus | default(kvm_default_vcpus) }}
+    --memory {{ item.memory | default(kvm_default_memory) }}
+    --disk size={{ item.disk_size | default(kvm_default_disk_size) }},bus={{ item.disk_bus | default('virtio') }},pool={{ item.storage_pool | default(kvm_default_storage_pool) }}
+    --network bridge={{ item.network | default(kvm_default_network) }},model={{ item.network_model | default('virtio') }}
+    {% if item.iso is defined and item.iso | length > 0 %}--cdrom {{ item.iso }}{% endif %}
+    {% if item.cloud_init is defined and item.cloud_init | length > 0 %}--cloud-init={{ item.cloud_init }}{% endif %}
+    --os-variant {{ item.os_type | default('linux') }}
+    --arch {{ item.arch | default('x86_64') }}
+    --machine {{ item.machine_type | default('q35') }}
+    --cpu {{ item.cpu_model | default('host') }}
+    --boot {{ item.boot | default('cdrom,hd') }}
+    --import
+    --noautoconsole
+    --autostart
+    {% if item.description is defined %}--description '{{ item.description }}'{% endif %}
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Create VM: {{ item.name }}"
+  when:
+    - item.name not in existing_vms.list_vms | default([])
+    - item.state | default('present') == 'present'
+  register: vm_create_result
+  tags: kvm_vm_deploy
+
+- name: Wait for VMs to be defined
+  community.libvirt.virt:
+    command: list_vms
+  register: vm_list_check
+  retries: 5
+  delay: 5
+  until: item.name in vm_list_check.list_vms | default([])
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Wait for: {{ item.name }}"
+  when:
+    - item.name not in existing_vms.list_vms | default([])
+    - item.state | default('present') == 'present'
+  tags: kvm_vm_deploy
+
+- name: Start VMs
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    state: running
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Start: {{ item.name }}"
+  when:
+    - item.state | default('present') == 'started'
+    - item.name in vm_list_check.list_vms | default(existing_vms.list_vms | default([]))
+  tags: kvm_vm_deploy
+
+- name: Stop VMs
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    state: shutdown
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Stop: {{ item.name }}"
+  when:
+    - item.state | default('present') == 'stopped'
+    - item.name in existing_vms.list_vms | default([])
+  tags: kvm_vm_deploy
+
+- name: Delete VMs
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    state: absent
+    command: destroy
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Delete: {{ item.name }}"
+  when:
+    - item.state | default('present') == 'absent'
+    - item.name in existing_vms.list_vms | default([])
+  tags: kvm_vm_deploy
+
+- name: Undefine deleted VMs
+  community.libvirt.virt:
+    name: "{{ item.name }}"
+    command: undefine
+  loop: "{{ kvm_vms }}"
+  loop_control:
+    label: "Undefine: {{ item.name }}"
+  when:
+    - item.state | default('present') == 'absent'
+  failed_when: false
+  tags: kvm_vm_deploy
+
+- name: Verify deployed VMs
+  community.libvirt.virt:
+    command: list_vms
+  register: final_vms
+  tags: kvm_vm_deploy
+
+- name: Display VM deployment summary
+  ansible.builtin.debug:
+    msg: >-
+      Deployed VMs: {{ final_vms.list_vms | default([]) }},
+      Total: {{ final_vms.list_vms | default([]) | length }}
+  tags: kvm_vm_deploy

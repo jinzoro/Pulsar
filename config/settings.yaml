@@ -1,0 +1,186 @@
+# =============================================================================
+# proxmox-kvm-swissknife — Central Configuration
+# =============================================================================
+# Copy this file to settings.local.yaml and fill in your values.
+# Local settings override the defaults in this file.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Proxmox VE API Connection Settings
+# -----------------------------------------------------------------------------
+# Define one or more Proxmox VE hosts to manage.
+proxmox:
+  hosts:
+    # - name: "pve-primary"
+    #   api_url: "https://pve1.example.com:8006"
+    #   user: "root@pam"
+    #   token_id: "automation@pam!mytoken"
+    #   token_secret: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    #   node: "pve1"
+
+    # - name: "pve-secondary"
+    #   api_url: "https://pve2.example.com:8006"
+    #   user: "root@pam"
+    #   token_id: "automation@pam!mytoken"
+    #   token_secret: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    #   node: "pve2"
+
+# -----------------------------------------------------------------------------
+# libvirt / KVM URI Settings
+# -----------------------------------------------------------------------------
+# Define libvirt connection URIs for local or remote KVM management.
+kvm:
+  uris:
+    # - name: "local"
+    #   uri: "qemu:///system"
+
+    # - name: "remote-server"
+    #   uri: "qemu+ssh://root@192.168.1.100/system"
+
+    # - name: "remote-tls"
+    #   uri: "qemu+tls://root@192.168.1.101/system"
+
+# -----------------------------------------------------------------------------
+# Default Settings
+# -----------------------------------------------------------------------------
+# These defaults are used when a specific value is not provided by a command.
+defaults:
+  # Default Proxmox node name to target
+  # node: "pve1"
+
+  # Default storage pool for disk images
+  # storage: "local-lvm"
+
+  # Number of backups to retain per VM (0 = unlimited)
+  # backup_retention: 7
+
+  # Number of snapshots to retain per VM (0 = unlimited)
+  # snapshot_retention: 5
+
+  # Logging level: debug, info, warn, error
+  # log_level: "info"
+
+  # Directory for log files
+  # log_dir: "/var/log/proxmox-kvm-swissknife"
+
+  # When true, commands are printed but not executed (dry-run mode)
+  # dry_run: false
+
+  # Execution backend: local, ssh, ansible
+  # executor: "local"
+
+# -----------------------------------------------------------------------------
+# Notification Settings
+# -----------------------------------------------------------------------------
+# Configure notification channels for alerts and reports.
+notifications:
+  email:
+    # Enable email notifications
+    # enabled: false
+    # SMTP server hostname or IP
+    # smtp_host: "smtp.example.com"
+    # SMTP server port (typically 587 for TLS, 465 for SSL, 25 for plain)
+    # smtp_port: 587
+    # SMTP username for authentication
+    # smtp_user: "alerts@example.com"
+    # SMTP password (prefer environment variable PMX_SMTP_PASS)
+    # smtp_pass: ""
+    # Use TLS encryption for the SMTP connection
+    # use_tls: true
+    # Sender address shown in the From header
+    # from_addr: "proxmox-kvm-swissknife@example.com"
+    # Comma-separated list of recipient addresses
+    # to_addrs:
+    #   - "admin@example.com"
+
+  slack:
+    # Enable Slack notifications
+    # enabled: false
+    # Slack incoming webhook URL
+    # webhook_url: "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+    # Default channel to post messages to (optional, webhook default is used if omitted)
+    # channel: "#proxmox-alerts"
+    # Bot username displayed in Slack
+    # username: "proxmox-bot"
+
+  telegram:
+    # Enable Telegram notifications
+    # enabled: false
+    # Telegram Bot API token obtained from @BotFather
+    # bot_token: "123456789:ABCDEFGH_IJKLMNOPQRSTUVWXYZabcdefghi"
+    # Telegram chat ID (user or group) to send messages to
+    # chat_id: "-1001234567890"
+    # Parse mode for message formatting: HTML or MarkdownV2
+    # parse_mode: "HTML"
+
+  ntfy:
+    # Enable ntfy.sh (or self-hosted) push notifications
+    # enabled: false
+    # ntfy server URL (default: https://ntfy.sh)
+    # url: "https://ntfy.sh"
+    # Topic name to publish messages to
+    # topic: "proxmox-alerts"
+    # Access token for authenticated topics
+    # token: ""
+
+  pagerduty:
+    # Enable PagerDuty incident notifications
+    # enabled: false
+    # PagerDuty Events API v2 routing key (integration key)
+    # key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    # PagerDuty Events API v2 endpoint
+    # endpoint: "https://events.pagerduty.com/v2/enqueue"
+
+# -----------------------------------------------------------------------------
+# Alert Thresholds
+# -----------------------------------------------------------------------------
+# Define thresholds for monitoring alerts (percentages unless noted).
+alerts:
+  # CPU usage warning threshold (percent)
+  # cpu_warn: 75
+  # CPU usage critical threshold (percent)
+  # cpu_crit: 90
+
+  # Disk usage warning threshold (percent)
+  # disk_warn: 80
+  # Disk usage critical threshold (percent)
+  # disk_crit: 95
+
+  # Memory usage warning threshold (percent)
+  # mem_warn: 80
+  # Memory usage critical threshold (percent)
+  # mem_crit: 95
+
+  # Send alert when a backup job fails
+  # backup_failed: true
+
+# -----------------------------------------------------------------------------
+# TUI (Terminal User Interface) Settings
+# -----------------------------------------------------------------------------
+# Configure the interactive terminal dashboard.
+tui:
+  # Color theme: default, dark, light, monokai, solarized
+  # theme: "default"
+
+  # Dashboard auto-refresh interval in seconds
+  # refresh_interval: 5
+
+  # Default view on startup: overview, vms, storage, network, backups
+  # default_view: "overview"
+
+# -----------------------------------------------------------------------------
+# SSH Settings
+# -----------------------------------------------------------------------------
+# Default SSH connection parameters for remote command execution.
+ssh:
+  # Default SSH user for remote connections
+  # default_user: "root"
+
+  # Path to SSH private key file
+  # key_path: "~/.ssh/id_ed25519"
+
+  # SSH connection timeout in seconds
+  # timeout: 30
+
+  # Number of SSH connection retries on failure
+  # retry: 3

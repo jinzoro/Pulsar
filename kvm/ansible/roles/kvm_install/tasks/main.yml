@@ -1,0 +1,120 @@
+# SPDX-License-Identifier: MIT
+# KVM Install Role - tasks/main.yml
+
+- name: Ensure hardware virtualization support
+  ansible.builtin.command: egrep -c '(vmx|svm)' /proc/cpuinfo
+  register: virt_support
+  changed_when: false
+  failed_when: virt_support.stdout | int == 0
+  tags: kvm_install
+
+- name: Enable nested virtualization (Intel)
+  ansible.posix.sysctl:
+    name: "kvm-intel.nested"
+    value: "1"
+    state: present
+    reload: true
+  when: "'GenuineIntel' in ansible_processor"
+  tags: kvm_install
+
+- name: Enable nested virtualization (AMD)
+  ansible.posix.sysctl:
+    name: "kvm-amd.nested"
+    value: "1"
+    state: present
+    reload: true
+  when: "'AuthenticAMD' in ansible_processor"
+  tags: kvm_install
+
+- name: Install KVM packages
+  ansible.builtin.apt:
+    name: "{{ kvm_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags: kvm_install
+
+- name: Ensure libvirtd is started and enabled
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: started
+    enabled: true
+    daemon_reload: true
+  tags: kvm_install
+
+- name: Add user to libvirt group
+  ansible.builtin.user:
+    name: "{{ libvirt_user }}"
+    groups:
+      - libvirt
+      - kvm
+    append: true
+  when: libvirt_user != 'root'
+  tags: kvm_install
+
+- name: Enable default virtual network
+  community.libvirt.virt_net:
+    name: default
+    state: active
+  when: enable_default_network | default(true)
+  tags: kvm_install
+
+- name: Set default virtual network to autostart
+  community.libvirt.virt_net:
+    name: default
+    autostart: true
+  when: enable_default_network | default(true)
+  tags: kvm_install
+
+- name: Create default storage directory
+  ansible.builtin.file:
+    path: "{{ default_storage_path }}"
+    state: directory
+    owner: root
+    group: libvirt
+    mode: "0771"
+  when: enable_default_storage | default(true)
+  tags: kvm_install
+
+- name: Create default storage pool definition
+  community.libvirt.virt_pool:
+    name: default
+    state: present
+    target:
+      path: "{{ default_storage_path }}"
+    type: dir
+  when: enable_default_storage | default(true)
+  tags: kvm_install
+
+- name: Build and start default storage pool
+  community.libvirt.virt_pool:
+    name: default
+    state: active
+  when: enable_default_storage | default(true)
+  tags: kvm_install
+
+- name: Set default storage pool to autostart
+  community.libvirt.virt_pool:
+    name: default
+    autostart: true
+  when: enable_default_storage | default(true)
+  tags: kvm_install
+
+- name: Verify KVM installation
+  ansible.builtin.shell: |
+    echo "KVM modules:"
+    lsmod | grep kvm
+    echo "---"
+    echo "Libvirt version:"
+    virsh version
+    echo "---"
+    echo "Storage pools:"
+    virsh pool-list --all
+  register: kvm_verify
+  changed_when: false
+  tags: kvm_install
+
+- name: Display KVM installation status
+  ansible.builtin.debug:
+    msg: "{{ kvm_verify.stdout_lines }}"
+  tags: kvm_install

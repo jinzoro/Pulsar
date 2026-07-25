@@ -1,0 +1,26 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- KVM Network Role - network.xml.j2 -->
+<network>
+  <name>{{ item.name }}</name>
+{% if item.bridge is defined %}
+  <bridge name="{{ item.bridge }}" stp='on' delay='0'/>
+{% endif %}
+{% if item.forward is defined %}
+  <forward mode='{{ item.forward }}'/>
+{% endif %}
+{% if item.ip_address is defined and item.ip_address | length > 0 %}
+  <ip address='{{ item.ip_address }}' netmask='{{ item.netmask }}'>
+{% if item.dhcp_start is defined and item.dhcp_start | length > 0 %}
+    <dhcp>
+      <range start='{{ item.dhcp_start }}' end='{{ item.dhcp_end }}'/>
+    </dhcp>
+{% endif %}
+  </ip>
+{% endif %}
+{% if item.domain is defined and item.domain | length > 0 %}
+  <domain name='{{ item.domain }}'/>
+{% endif %}
+{% if item.dns_enable | default(false) %}
+  <dns enable='yes'/>
+{% endif %}
+</network>

@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Storage Role - handlers/main.yml
+
+- name: reload storage config
+  ansible.builtin.command: pvesm refresh
+
+- name: restart pvestatd
+  ansible.builtin.systemd:
+    name: pvestatd
+    state: restarted

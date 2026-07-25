@@ -1,0 +1,47 @@
+---
+# SPDX-License-Identifier: MIT
+# Deploy VMs via libvirt
+
+- name: Deploy KVM virtual machines
+  hosts: kvm_hosts
+  become: true
+  roles:
+    - role: kvm_vm_deploy
+      tags: [kvm_vm_deploy]
+
+- name: Verify deployed VMs
+  hosts: kvm_hosts
+  become: true
+  tasks:
+    - name: List all VMs
+      community.libvirt.virt:
+        command: list_vms
+      register: deployed_vms
+
+    - name: List running VMs
+      community.libvirt.virt:
+        command: list_vms --running
+      register: running_vms
+
+    - name: Display VM summary
+      ansible.builtin.debug:
+        msg: >-
+          VMs defined: {{ deployed_vms.list_vms | default([]) | length }},
+          VMs running: {{ running_vms.list_vms | default([]) | length }}
+
+    - name: Show VM details
+      community.libvirt.virt:
+        command: dumpxml
+        name: "{{ item }}"
+      loop: "{{ deployed_vms.list_vms | default([]) }}"
+      register: vm_details
+      tags: kvm_vm_deploy
+
+    - name: Display VM information
+      ansible.builtin.debug:
+        msg: >-
+          VM: {{ item.item }},
+          XML length: {{ item.stdout | length }} bytes
+      loop: "{{ vm_details.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item }}"

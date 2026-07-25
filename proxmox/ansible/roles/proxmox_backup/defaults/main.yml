@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Backup Role - defaults/main.yml
+
+backup_schedule:
+  - comment: "Nightly backup"
+    hour: "1"
+    minute: "0"
+    dayofweek: "*"
+    enabled: true
+    exclude: "local:backups"
+    job: "all"
+    mailto: ""
+    mail: false
+    mode: "snapshot"
+    compress: "zstd"
+    storage: "{{ proxmox_backup_storage }}"
+
+  - comment: "Weekend full backup"
+    hour: "2"
+    minute: "0"
+    dayofweek: "6"
+    enabled: true
+    exclude: "local:backups"
+    job: "all"
+    mailto: ""
+    mail: false
+    mode: "snapshot"
+    compress: "zstd"
+    storage: "{{ proxmox_backup_storage }}"
+
+backup_retention:
+  keep_daily: "{{ proxmox_backup_retention_daily }}"
+  keep_weekly: "{{ proxmox_backup_retention_weekly }}"
+  keep_monthly: "{{ proxmox_backup_retention_monthly }}"
+  keep_yearly: 2
+
+backup_prune: true
+backup_verify: false
+backup_notification: true
+backup_notification_email: ""

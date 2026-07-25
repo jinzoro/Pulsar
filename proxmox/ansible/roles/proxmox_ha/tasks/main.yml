@@ -1,0 +1,144 @@
+# SPDX-License-Identifier: MIT
+# Proxmox HA Role - tasks/main.yml
+
+- name: Gather existing HA configuration
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/groups"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_ha_groups
+  tags: proxmox_ha
+
+- name: Set existing HA group names
+  ansible.builtin.set_fact:
+    existing_ha_group_names: >-
+      {{ existing_ha_groups.json.data | default([])
+         | map(attribute='group')
+         | list }}
+  tags: proxmox_ha
+
+- name: Create HA groups via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/groups"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      group: "{{ item.name }}"
+      nodes: "{{ item.nodes | map(attribute='node') | join(',') }}"
+      no_failback: "{{ item.no_failback | default(false) | int }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ ha_groups }}"
+  loop_control:
+    label: "HA group: {{ item.name }}"
+  when: item.name not in existing_ha_group_names
+  tags: proxmox_ha
+
+- name: Gather existing HA resources
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_ha_resources
+  tags: proxmox_ha
+
+- name: Set existing HA resource SIDs
+  ansible.builtin.set_fact:
+    existing_ha_resource_sids: >-
+      {{ existing_ha_resources.json.data | default([])
+         | map(attribute='sid')
+         | list | map('string') | list }}
+  tags: proxmox_ha
+
+- name: Create HA VM resources via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      sid: "{{ item.sid }}"
+      type: "vm"
+      group: "{{ item.group }}"
+      max_restart: "{{ item.max_restart | default(3) }}"
+      max_relocate: "{{ item.max_relocate | default(1) }}"
+      state: "{{ item.state | default('started') }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ ha_resources }}"
+  loop_control:
+    label: "HA resource: {{ item.name }}"
+  when:
+    - item.type | default('vm') == 'vm'
+    - item.sid | string not in existing_ha_resource_sids
+  tags: proxmox_ha
+
+- name: Create HA CT resources via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      sid: "{{ item.sid }}"
+      type: "ct"
+      group: "{{ item.group }}"
+      max_restart: "{{ item.max_restart | default(3) }}"
+      max_relocate: "{{ item.max_relocate | default(1) }}"
+      state: "{{ item.state | default('started') }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ ha_resources }}"
+  loop_control:
+    label: "HA resource (CT): {{ item.name }}"
+  when:
+    - item.type | default('vm') == 'ct'
+    - item.sid | string not in existing_ha_resource_sids
+  tags: proxmox_ha
+
+- name: Enable hardware watchdog for fencing
+  community.general.proxmox:
+    node: "{{ proxmox_node }}"
+    vmid: 0
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  failed_when: false
+  when: ha_fencing | default(false)
+  tags: proxmox_ha
+
+- name: Verify HA group configuration
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/groups"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: verify_ha_groups
+  tags: proxmox_ha
+
+- name: Display HA configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      HA: {{ verify_ha_groups.json.data | default([]) | length }} groups,
+      {{ ha_resources | length }} resources configured
+  tags: proxmox_ha

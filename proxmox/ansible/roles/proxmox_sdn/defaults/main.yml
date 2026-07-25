@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: MIT
+# Proxmox SDN Role - defaults/main.yml
+
+sdn_zones:
+  - name: "simple"
+    type: "simple"
+    vnet_autosync: true
+    dns: "10.0.0.1"
+    ipam: "pve"
+    mac: ""
+    comment: "Simple zone for basic networking"
+
+  - name: "vxlan-zone"
+    type: "vxlan"
+    vnet_autosync: false
+    peers:
+      - "10.0.0.11"
+      - "10.0.0.12"
+      - "10.0.0.13"
+    exitnodes: "pve1,pve2,pve3"
+    mac: ""
+    comment: "VXLAN zone for cross-node networking"
+
+  - name: "evpn-zone"
+    type: "evpn"
+    vnet_autosync: false
+    mac: ""
+    advertise_subnets: true
+    exitnodes: "pve1,pve2,pve3"
+    advertise_subnets: true
+    comment: "EVPN zone for routed L2 domains"
+
+sdn_vnets:
+  - name: "mgmt-vnet"
+    zone: "simple"
+    alias: "Management Network"
+    vlan: ""
+
+  - name: "storage-vnet"
+    zone: "simple"
+    alias: "Storage Network"
+    vlan: ""
+
+  - name: "vm-vnet"
+    zone: "vxlan-zone"
+    alias: "VM VXLAN Network"
+    vlan: ""
+
+sdn_subnets:
+  - vnet: "mgmt-vnet"
+    type: "subnet"
+    cidr: "10.0.0.0/24"
+    gateway: "10.0.0.1"
+    dhcp_range_start: "10.0.0.100"
+    dhcp_range_end: "10.0.0.200"
+    snat: true
+    comment: "Management subnet"
+
+  - vnet: "storage-vnet"
+    type: "subnet"
+    cidr: "10.0.1.0/24"
+    gateway: "10.0.1.1"
+    snat: false
+    comment: "Storage subnet"
+
+sdn_enable: true
+sdn_apply: true

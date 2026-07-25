@@ -1,0 +1,39 @@
+---
+# SPDX-License-Identifier: MIT
+# Setup Proxmox VE cluster
+
+- name: Bootstrap Proxmox cluster - first node
+  hosts: pve_nodes[0]
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    first_node: true
+  roles:
+    - role: proxmox_cluster
+      tags: [cluster_setup]
+
+- name: Join Proxmox cluster - remaining nodes
+  hosts: pve_nodes[1:]
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    first_node: false
+    cluster_join_address: "{{ hostvars[groups['pve_nodes'][0]].ansible_default_ipv4.address }}"
+  roles:
+    - role: proxmox_cluster
+      tags: [cluster_setup]
+
+- name: Verify cluster health
+  hosts: pve_nodes[0]
+  become: true
+  tasks:
+    - name: Check cluster quorum
+      ansible.builtin.command: pvecm status
+      register: cluster_health
+      changed_when: false
+
+    - name: Display cluster health
+      ansible.builtin.debug:
+        msg: "{{ cluster_health.stdout_lines }}"

@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+# Proxmox ZFS Role - handlers/main.yml
+
+- name: reload zfs mount
+  ansible.builtin.command: zfs mount -a
+  changed_when: true
+
+- name: restart zfs.target
+  ansible.builtin.systemd:
+    name: zfs.target
+    state: restarted

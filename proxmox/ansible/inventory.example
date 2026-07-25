@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Ansible Inventory Example
+
+all:
+  children:
+    pve_nodes:
+      hosts:
+        pve1:
+          ansible_host: 192.168.1.10
+          pve_node: pve1
+        pve2:
+          ansible_host: 192.168.1.11
+          pve_node: pve2
+        pve3:
+          ansible_host: 192.168.1.12
+          pve_node: pve3
+    kvm_hosts:
+      hosts:
+        kvm1:
+          ansible_host: 192.168.1.20
+        kvm2:
+          ansible_host: 192.168.1.21

@@ -1,0 +1,13 @@
+---
+# SPDX-License-Identifier: MIT
+# Deploy LXC containers from variables
+
+- name: Deploy LXC containers from variables
+  hosts: pve_nodes[0]
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    cts_to_deploy: "{{ proxmox_cts | default([]) }}"
+  roles:
+    - role: proxmox_ct_deploy

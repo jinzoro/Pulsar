@@ -1,0 +1,160 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Hardening Role - tasks/main.yml
+
+- name: Harden SSH configuration
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^#?Port ', line: 'Port {{ ssh_port }}' }
+    - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin {{ ssh_permit_root_login }}' }
+    - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication {{ "yes" if not ssh_password_auth else "no" }}' }
+    - { regexp: '^#?PubkeyAuthentication', line: 'PubkeyAuthentication {{ "yes" if ssh_pubkey_auth else "no" }}' }
+    - { regexp: '^#?X11Forwarding', line: 'X11Forwarding {{ "yes" if ssh_x11_forwarding else "no" }}' }
+    - { regexp: '^#?MaxAuthTries', line: 'MaxAuthTries {{ ssh_max_auth_tries }}' }
+    - { regexp: '^#?ClientAliveInterval', line: 'ClientAliveInterval {{ ssh_client_alive_interval }}' }
+    - { regexp: '^#?ClientAliveCountMax', line: 'ClientAliveCountMax {{ ssh_client_alive_count_max }}' }
+  notify: restart sshd
+  tags: proxmox_hardening
+
+- name: Allow SSH access for configured groups
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE MANAGED SSH GROUPS"
+    insertafter: EOF
+    block: |
+      AllowGroups {{ ssh_allow_groups | join(' ') }}
+  notify: restart sshd
+  tags: proxmox_hardening
+
+- name: Install and configure fail2ban
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+  when: fail2ban_enabled | default(true)
+  tags: proxmox_hardening
+
+- name: Deploy fail2ban jail configuration
+  ansible.builtin.copy:
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [DEFAULT]
+      bantime = {{ fail2ban_bantime }}
+      findtime = {{ fail2ban_findtime }}
+      maxretry = {{ fail2ban_maxretry }}
+      ignoreip = {{ fail2ban_ignoreip }}
+
+      [sshd]
+      enabled = true
+      port = {{ ssh_port }}
+      filter = sshd
+      logpath = /var/log/auth.log
+      maxretry = {{ fail2ban_maxretry }}
+  notify: restart fail2ban
+  when: fail2ban_enabled | default(true)
+  tags: proxmox_hardening
+
+- name: Start and enable fail2ban
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: started
+    enabled: true
+  when: fail2ban_enabled | default(true)
+  tags: proxmox_hardening
+
+- name: Apply sysctl hardening parameters
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-hardening.conf
+  loop: "{{ sysctl_hardening | dict2items }}"
+  tags: proxmox_hardening
+
+- name: Install and configure auditd
+  ansible.builtin.apt:
+    name: auditd
+    state: present
+  when: auditd_enabled | default(true)
+  tags: proxmox_hardening
+
+- name: Deploy audit rules
+  ansible.builtin.lineinfile:
+    path: /etc/audit/rules.d/hardening.rules
+    regexp: "{{ item }}"
+    line: "{{ item }}"
+    state: present
+    create: true
+    mode: "0640"
+  loop: "{{ auditd_rules }}"
+  when: auditd_enabled | default(true)
+  notify: restart auditd
+  tags: proxmox_hardening
+
+- name: Start and enable auditd
+  ansible.builtin.systemd:
+    name: auditd
+    state: started
+    enabled: true
+  when: auditd_enabled | default(true)
+  tags: proxmox_hardening
+
+- name: Disable unused kernel modules
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/disable-unused.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% for mod in kernel_modules_disable %}
+      install {{ mod }} /bin/true
+      blacklist {{ mod }}
+      {% endfor %}
+  tags: proxmox_hardening
+
+- name: Set file permissions on sensitive files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: "/etc/passwd", mode: "0644" }
+    - { path: "/etc/shadow", mode: "0640" }
+    - { path: "/etc/group", mode: "0644" }
+    - { path: "/etc/gshadow", mode: "0640" }
+    - { path: "/etc/ssh/sshd_config", mode: "0600" }
+  tags: proxmox_hardening
+
+- name: Configure Proxmox TLS cipher suites
+  ansible.builtin.lineinfile:
+    path: /etc/default/pveproxy
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^#?SSLCIPHERS', line: 'SSLCIPHERS={{ pve_proxy_cipher_suites }}' }
+    - { regexp: '^#?SSL_MIN_VERSION', line: 'SSL_MIN_VERSION={{ tls_min_version }}' }
+  notify: restart pveproxy
+  tags: proxmox_hardening
+
+- name: Remove unauthorized SUID binaries
+  ansible.builtin.shell: |
+    find / -type f -perm -4000 -not -path '/proc/*' -not -path '/sys/*' 2>/dev/null | \
+    grep -v -E '/usr/bin/passwd|/usr/bin/sudo|/usr/bin/su|/usr/bin/newgrp|/usr/bin/chsh|/usr/bin/chfn|/usr/bin/gpasswd|/usr/lib/openssh/ssh-keysign|/usr/lib/dbus-1.0/dbus-daemon-launch-helper|/usr/sbin/unix_chkpwd'
+  register: suid_files
+  changed_when: false
+  tags: proxmox_hardening
+
+- name: Display unauthorized SUID binaries
+  ansible.builtin.debug:
+    msg: "{{ suid_files.stdout_lines | default([]) }}"
+  when: suid_files.stdout_lines | default([]) | length > 0
+  tags: proxmox_hardening

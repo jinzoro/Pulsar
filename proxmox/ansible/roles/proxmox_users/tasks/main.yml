@@ -1,0 +1,147 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Users Role - tasks/main.yml
+
+- name: Gather existing user groups
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/groups"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_groups
+  tags: proxmox_users
+
+- name: Set existing group names
+  ansible.builtin.set_fact:
+    existing_group_names: >-
+      {{ existing_groups.json.data | default([])
+         | map(attribute='groupid') | list }}
+  tags: proxmox_users
+
+- name: Create user groups
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/groups"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      groupid: "{{ item.name }}"
+      comment: "{{ item.comment | default(omit) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ proxmox_user_groups }}"
+  loop_control:
+    label: "Group: {{ item.name }}"
+  when: item.name not in existing_group_names
+  tags: proxmox_users
+
+- name: Gather existing roles
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/roles"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_roles
+  tags: proxmox_users
+
+- name: Set existing role names
+  ansible.builtin.set_fact:
+    existing_role_names: >-
+      {{ existing_roles.json.data | default([])
+         | map(attribute='roleid') | list }}
+  tags: proxmox_users
+
+- name: Create custom roles
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/roles"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      roleid: "{{ item.name }}"
+      comment: "{{ item.comment | default(omit) }}"
+      privileges: "{{ item.privileges | default([]) }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ proxmox_user_roles }}"
+  loop_control:
+    label: "Role: {{ item.name }}"
+  when: item.name not in existing_role_names
+  tags: proxmox_users
+
+- name: Gather existing users
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/users"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: existing_users
+  tags: proxmox_users
+
+- name: Set existing user names
+  ansible.builtin.set_fact:
+    existing_user_names: >-
+      {{ existing_users.json.data | default([])
+         | map(attribute='userid') | list }}
+  tags: proxmox_users
+
+- name: Create users
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/users"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      userid: "{{ item.name }}@{{ item.realm }}"
+      email: "{{ item.email | default(omit) }}"
+      groups: "{{ item.groups | default([]) | join(',') }}"
+      comment: "{{ item.comment | default(omit) }}"
+      enable: 1
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ proxmox_users }}"
+  loop_control:
+    label: "User: {{ item.name }}@{{ item.realm }}"
+  when: "'{{ item.name }}@{{ item.realm }}' not in existing_user_names"
+  tags: proxmox_users
+
+- name: Configure ACLs
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/access/acl"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      path: "{{ item.path }}"
+      type: "{{ item.type }}"
+      identifier: "{{ item.identifier }}"
+      roleid: "{{ item.roleid }}"
+      propagate: "{{ item.propagate | default(true) | int }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ proxmox_acls }}"
+  loop_control:
+    label: "ACL: {{ item.path }} -> {{ item.roleid }}"
+  tags: proxmox_users
+
+- name: Display user management summary
+  ansible.builtin.debug:
+    msg: >-
+      Users: {{ proxmox_users | length }} created,
+      Groups: {{ proxmox_user_groups | length }},
+      Roles: {{ proxmox_user_roles | length }},
+      ACLs: {{ proxmox_acls | length }}
+  tags: proxmox_users

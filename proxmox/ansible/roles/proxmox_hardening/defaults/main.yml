@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Hardening Role - defaults/main.yml
+
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_auth: false
+ssh_pubkey_auth: true
+ssh_x11_forwarding: false
+ssh_max_auth_tries: 3
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 2
+ssh_allow_groups:
+  - "ssh-users"
+  - "admin"
+
+fail2ban_enabled: true
+fail2ban_maxretry: 5
+fail2ban_bantime: 3600
+fail2ban_findtime: 600
+fail2ban_ignoreip: "127.0.0.1/8 10.0.0.0/24"
+
+sysctl_hardening:
+  net.ipv4.ip_forward: 1
+  net.ipv4.conf.all.rp_filter: 1
+  net.ipv4.conf.default.rp_filter: 1
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.default.accept_redirects: 0
+  net.ipv4.conf.all.send_redirects: 0
+  net.ipv4.conf.default.send_redirects: 0
+  net.ipv4.conf.all.accept_source_route: 0
+  net.ipv4.conf.default.accept_source_route: 0
+  net.ipv4.conf.all.log_martians: 1
+  net.ipv4.icmp_echo_ignore_broadcasts: 1
+  net.ipv4.icmp_ignore_bogus_error_responses: 1
+  net.ipv4.tcp_syncookies: 1
+  net.ipv6.conf.all.accept_redirects: 0
+  net.ipv6.conf.default.accept_redirects: 0
+  net.ipv6.conf.all.accept_source_route: 0
+  net.ipv6.conf.default.accept_source_route: 0
+  kernel.randomize_va_space: 2
+  fs.suid_dumpable: 0
+
+disable_root_user: true
+disable_password_auth: true
+
+auditd_enabled: true
+auditd_rules:
+  - "-w /etc/passwd -p wa -k identity"
+  - "-w /etc/group -p wa -k identity"
+  - "-w /etc/shadow -p wa -k identity"
+  - "-w /etc/sudoers -p wa -k sudoers"
+  - "-w /etc/pve/ -p wa -k proxmox-config"
+  - "-a always,exit -F arch=b64 -S execve -C uid!=root -F euid=root -k privilege-escalation"
+
+tls_min_version: "TLSv1.2"
+tls_ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
+pve_proxy_cipher_suites: "{{ tls_ciphers }}"
+
+kernel_modules_disable:
+  - "cramfs"
+  - "freevxfs"
+  - "hfs"
+  - "hfsplus"
+  - "jffs2"
+  - "udf"

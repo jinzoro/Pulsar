@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Cloud-Init Role - tasks/main.yml
+
+- name: Gather installed VM templates
+  ansible.builtin.command: qm list
+  register: existing_vms
+  changed_when: false
+  tags: proxmox_cloudinit
+
+- name: Parse existing VMIDs
+  ansible.builtin.set_fact:
+    existing_vmid_list: >-
+      {{ existing_vms.stdout_lines | default([])[1:] | default([])
+         | map('regex_replace', '^\s*(\d+)\s+.*', '\1')
+         | list }}
+  tags: proxmox_cloudinit
+
+- name: Download cloud-init images
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/var/lib/vz/template/qcow2/{{ item.name }}-cloudinit.qcow2"
+    mode: "0644"
+    timeout: 300
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Download: {{ item.name }}"
+  tags: proxmox_cloudinit
+
+- name: Create cloud-init VM templates
+  community.general.proxmox:
+    node: "{{ proxmox_node }}"
+    vmid: "{{ item.vmid }}"
+    name: "{{ item.name }}"
+    cores: "{{ item.cpu | default(cloud_init_defaults.cpu) }}"
+    memory: "{{ item.memory | default(cloud_init_defaults.memory) }}"
+    scsihw: "virtio-scsi-single"
+    bios: "seabios"
+    ostype: "l26"
+    description: "{{ item.description | default('Cloud-Init Template') }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Create template: {{ item.name }}"
+  when: item.vmid | string not in existing_vmid_list
+  tags: proxmox_cloudinit
+
+- name: Import cloud images into VMs
+  ansible.builtin.command: >-
+    qm disk import {{ item.vmid }}
+    /var/lib/vz/template/qcow2/{{ item.name }}-cloudinit.qcow2
+    {{ item.storage | default(proxmox_default_storage) }}
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Import: {{ item.name }}"
+  register: import_result
+  changed_when: "'Successfully' in import_result.stdout or import_result.rc == 0"
+  failed_when: false
+  when: item.vmid | string not in existing_vmid_list
+  tags: proxmox_cloudinit
+
+- name: Configure cloud-init drive
+  community.general.proxmox:
+    node: "{{ proxmox_node }}"
+    vmid: "{{ item.vmid }}"
+    scsihw: "virtio-scsi-single"
+    ide: "{{ item.storage | default(proxmox_default_storage) }}:cloudinit"
+    boot: "order=scsi0"
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Cloud-init drive: {{ item.name }}"
+  when: item.vmid | string not in existing_vmid_list
+  tags: proxmox_cloudinit
+
+- name: Set cloud-init defaults
+  ansible.builtin.command: >-
+    qm set {{ item.vmid }}
+    --ciuser {{ cloud_init_defaults.ciuser }}
+    --ipconfig0 {{ cloud_init_defaults.ipconfig }}
+    {% if cloud_init_defaults.nameserver | default('') | length > 0 %}--nameserver {{ cloud_init_defaults.nameserver }}{% endif %}
+    {% if cloud_init_defaults.searchdomain | default('') | length > 0 %}--searchdomain {{ cloud_init_defaults.searchdomain }}{% endif %}
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Set defaults: {{ item.name }}"
+  changed_when: true
+  when: item.vmid | string not in existing_vmid_list
+  tags: proxmox_cloudinit
+
+- name: Convert VMs to templates
+  community.general.proxmox:
+    node: "{{ proxmox_node }}"
+    vmid: "{{ item.vmid }}"
+    state: template
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ cloud_images }}"
+  loop_control:
+    label: "Template: {{ item.name }}"
+  when: item.vmid | string not in existing_vmid_list
+  tags: proxmox_cloudinit
+
+- name: Verify templates
+  ansible.builtin.command: qm list
+  register: template_list
+  changed_when: false
+  tags: proxmox_cloudinit
+
+- name: Display template list
+  ansible.builtin.debug:
+    msg: "{{ template_list.stdout_lines }}"
+  tags: proxmox_cloudinit

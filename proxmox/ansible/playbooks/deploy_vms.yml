@@ -1,0 +1,13 @@
+---
+# SPDX-License-Identifier: MIT
+# Deploy VMs from variables
+
+- name: Deploy VMs from variables
+  hosts: pve_nodes[0]
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    vms_to_deploy: "{{ proxmox_vms | default([]) }}"
+  roles:
+    - role: proxmox_vm_deploy

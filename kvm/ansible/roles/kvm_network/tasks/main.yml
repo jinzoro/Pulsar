@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: MIT
+# KVM Network Role - tasks/main.yml
+
+- name: List existing libvirt networks
+  community.libvirt.virt_net:
+    command: list_nets
+  register: existing_nets
+  tags: kvm_network
+
+- name: Define networks from XML template
+  ansible.builtin.template:
+    src: network.xml.j2
+    dest: "/tmp/libvirt-network-{{ item.name }}.xml"
+    mode: "0644"
+  loop: "{{ libvirt_networks }}"
+  loop_control:
+    label: "Template: {{ item.name }}"
+  register: network_templates
+  tags: kvm_network
+
+- name: Undefine existing networks before redefinition
+  community.libvirt.virt_net:
+    name: "{{ item.item.name }}"
+    command: undefine
+  loop: "{{ network_templates.results | default([]) }}"
+  loop_control:
+    label: "Undefine: {{ item.item.name }}"
+  when: item.item.name in existing_nets.list_nets | default([])
+  failed_when: false
+  tags: kvm_network
+
+- name: Define networks
+  community.libvirt.virt_net:
+    name: "{{ item.item.name }}"
+    command: define
+    xml: "{{ lookup('file', item.dest) }}"
+  loop: "{{ network_templates.results }}"
+  loop_control:
+    label: "Define: {{ item.item.name }}"
+  tags: kvm_network
+
+- name: Start networks
+  community.libvirt.virt_net:
+    name: "{{ item.name }}"
+    state: active
+  loop: "{{ libvirt_networks }}"
+  loop_control:
+    label: "Start: {{ item.name }}"
+  when: item.state | default('active') == 'active'
+  tags: kvm_network
+
+- name: Set network autostart
+  community.libvirt.virt_net:
+    name: "{{ item.name }}"
+    autostart: true
+  loop: "{{ libvirt_networks }}"
+  loop_control:
+    label: "Autostart: {{ item.name }}"
+  when: item.autostart | default(false)
+  tags: kvm_network
+
+- name: Stop networks if requested
+  community.libvirt.virt_net:
+    name: "{{ item.name }}"
+    state: inactive
+  loop: "{{ libvirt_networks }}"
+  loop_control:
+    label: "Stop: {{ item.name }}"
+  when: item.state | default('active') == 'inactive'
+  tags: kvm_network
+
+- name: Verify network status
+  community.libvirt.virt_net:
+    command: list_nets
+  register: final_networks
+  tags: kvm_network
+
+- name: Display network configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      Networks: {{ final_networks.list_nets | default([]) }},
+      Total: {{ final_networks.list_nets | default([]) | length }}
+  tags: kvm_network

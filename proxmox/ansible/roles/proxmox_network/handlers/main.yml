@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Network Role - handlers/main.yml
+
+- name: reload network interfaces
+  ansible.builtin.command: ifreload -a
+  register: ifreload_result
+  changed_when: "'reloaded' in ifreload_result.stderr"
+  failed_when: false
+
+- name: restart networking
+  ansible.builtin.systemd:
+    name: networking
+    state: restarted

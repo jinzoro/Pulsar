@@ -1,0 +1,122 @@
+# SPDX-License-Identifier: MIT
+# KVM Hardening Role - tasks/main.yml
+
+- name: Harden SSH configuration
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^#?Port ', line: 'Port {{ ssh_port }}' }
+    - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin {{ ssh_permit_root_login }}' }
+    - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication {{ "yes" if not ssh_password_auth else "no" }}' }
+    - { regexp: '^#?PubkeyAuthentication', line: 'PubkeyAuthentication {{ "yes" if ssh_pubkey_auth else "no" }}' }
+    - { regexp: '^#?X11Forwarding', line: 'X11Forwarding {{ "yes" if ssh_x11_forwarding else "no" }}' }
+    - { regexp: '^#?MaxAuthTries', line: 'MaxAuthTries {{ ssh_max_auth_tries }}' }
+  notify: restart sshd
+  tags: kvm_hardening
+
+- name: Allow SSH access for configured groups
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE MANAGED SSH GROUPS"
+    insertafter: EOF
+    block: |
+      AllowGroups {{ ssh_allow_groups | join(' ') }}
+  notify: restart sshd
+  tags: kvm_hardening
+
+- name: Configure libvirt access policy
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/libvirtd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^\s*unix_sock_group\s*=', line: 'unix_sock_group = "{{ libvirt_unix_sock_group }}"' }
+    - { regexp: '^\s*unix_sock_ro_perms\s*=', line: 'unix_sock_ro_perms = "{{ libvirt_unix_sock_ro_perms }}"' }
+    - { regexp: '^\s*unix_sock_rw_perms\s*=', line: 'unix_sock_rw_perms = "{{ libvirt_unix_sock_rw_perms }}"' }
+    - { regexp: '^\s*auth_unix_ro\s*=', line: 'auth_unix_ro = "polkit"' }
+    - { regexp: '^\s*auth_unix_rw\s*=', line: 'auth_unix_rw = "polkit"' }
+  notify: restart libvirtd
+  tags: kvm_hardening
+
+- name: Configure QEMU security settings
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/qemu.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.regexp_base }} = {{ item.value }}"
+    state: present
+  loop: "{{ libvirt_qemu_conf | map(attribute='setting') | zip(libvirt_qemu_conf) | map(attribute='1') | list }}"
+  loop_control:
+    label: "QEMU: {{ item.regexp_base }}={{ item.value }}"
+  vars:
+    item:
+      setting: "{{ item }}"
+      regexp_base: "{{ item }}"
+  notify: restart libvirtd
+  tags: kvm_hardening
+
+- name: Configure host firewall rules
+  ansible.builtin.lineinfile:
+    path: /etc/iptables/rules.v4
+    regexp: "{{ 'dpt:' + item.port if ':' not in item.port else item.port }}"
+    line: "-A INPUT -p {{ item.proto }} --dport {{ item.port }} -j ACCEPT"
+    state: present
+    create: true
+    mode: "0640"
+  loop: "{{ kvm_firewall_allowed_ports }}"
+  loop_control:
+    label: "Firewall: {{ item.proto }}/{{ item.port }}"
+  when: kvm_firewall_enabled | default(true)
+  notify: reload firewall
+  tags: kvm_hardening
+
+- name: Install iptables-persistent
+  ansible.builtin.apt:
+    name:
+      - iptables-persistent
+      - netfilter-persistent
+    state: present
+  when: kvm_firewall_enabled | default(true)
+  tags: kvm_hardening
+
+- name: Set kernel security parameters
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-kvm-hardening.conf
+  loop:
+    - { key: "net.ipv4.conf.all.rp_filter", value: "1" }
+    - { key: "net.ipv4.conf.default.rp_filter", value: "1" }
+    - { key: "net.ipv4.conf.all.accept_redirects", value: "0" }
+    - { key: "net.ipv4.conf.all.send_redirects", value: "0" }
+    - { key: "kernel.randomize_va_space", value: "2" }
+    - { key: "fs.suid_dumpable", value: "0" }
+  tags: kvm_hardening
+
+- name: Restrict libvirt log permissions
+  ansible.builtin.file:
+    path: /var/log/libvirt/qemu
+    state: directory
+    owner: root
+    group: libvirt
+    mode: "0750"
+  tags: kvm_hardening
+
+- name: Verify libvirt configuration
+  ansible.builtin.command: virsh version
+  register: virsh_version
+  changed_when: false
+  tags: kvm_hardening
+
+- name: Display hardening status
+  ansible.builtin.debug:
+    msg: >-
+      KVM hardening applied: SSH={{ ssh_port }}, Firewall={{ kvm_firewall_enabled }},
+      Libvirt={{ libvirt_access_policy }}
+  tags: kvm_hardening

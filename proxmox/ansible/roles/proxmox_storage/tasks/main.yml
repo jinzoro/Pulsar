@@ -1,0 +1,150 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Storage Role - tasks/main.yml
+
+- name: Gather existing storage configuration
+  ansible.builtin.command: pvesm status
+  register: existing_storage
+  changed_when: false
+  tags: proxmox_storage
+
+- name: Parse existing storage names
+  ansible.builtin.set_fact:
+    existing_storage_names: >-
+      {{ existing_storage.stdout_lines | default([])
+         | map('regex_replace', '^(\S+).*', '\1')
+         | list }}
+  tags: proxmox_storage
+
+- name: Configure directory storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: dir
+    content: "{{ item.content | default(['vztmpl', 'iso', 'backup']) }}"
+    path: "{{ item.path | default('/var/lib/vz') }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'dir'
+    - item.name not in existing_storage_names or storage_remove_unmanaged
+  tags: proxmox_storage
+
+- name: Configure LVM storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: lvm
+    content: "{{ item.content | default(['images', 'rootdir']) }}"
+    vgname: "{{ item.vgname }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'lvm'
+    - item.name not in existing_storage_names
+  tags: proxmox_storage
+
+- name: Configure LVM-thin storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: lvmthin
+    content: "{{ item.content | default(['images', 'rootdir']) }}"
+    vgname: "{{ item.vgname }}"
+    thinpool: "{{ item.thinpool }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'lvmthin'
+    - item.name not in existing_storage_names
+  tags: proxmox_storage
+
+- name: Configure ZFS storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: zfs
+    content: "{{ item.content | default(['images', 'rootdir']) }}"
+    zpool: "{{ item.zpool }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'zfs'
+    - item.name not in existing_storage_names
+  tags: proxmox_storage
+
+- name: Configure NFS storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: nfs
+    content: "{{ item.content | default(['backup', 'vztmpl', 'iso']) }}"
+    server: "{{ item.server }}"
+    export: "{{ item.export }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'nfs'
+    - item.name not in existing_storage_names
+  tags: proxmox_storage
+
+- name: Configure Ceph RBD storage backends
+  community.general.proxmox_storage:
+    name: "{{ item.name }}"
+    type: rbd
+    content: "{{ item.content | default(['images', 'rootdir']) }}"
+    pool: "{{ item.pool }}"
+    monhost: "{{ item.monhost }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ storage_backends }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.type == 'rbd'
+    - item.name not in existing_storage_names
+  tags: proxmox_storage
+
+- name: Verify storage status
+  ansible.builtin.command: pvesm status
+  register: final_storage_status
+  changed_when: false
+  tags: proxmox_storage
+
+- name: Display storage status
+  ansible.builtin.debug:
+    msg: "{{ final_storage_status.stdout_lines }}"
+  tags: proxmox_storage

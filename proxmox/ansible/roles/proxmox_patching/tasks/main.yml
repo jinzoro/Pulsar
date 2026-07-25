@@ -1,0 +1,180 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Patching Role - tasks/main.yml
+
+- name: Pre-flight check - gather system info
+  ansible.builtin.setup:
+    gather_subset:
+      - "!all"
+      - "!min"
+      - network
+      - hardware
+  tags: proxmox_patching
+
+- name: Pre-flight check - verify cluster quorum
+  ansible.builtin.command: pvecm status
+  register: cluster_check
+  changed_when: false
+  when: patch_pre_check | default(true)
+  tags: proxmox_patching
+
+- name: Drain HA resources from this node
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources"
+    method: GET
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  register: ha_resources_list
+  when: patch_drain_ha | default(true)
+  tags: proxmox_patching
+
+- name: Set HA resources on this node
+  ansible.builtin.set_fact:
+    local_ha_resources: >-
+      {{ ha_resources_list.json.data | default([])
+         | selectattr('node', 'equalto', proxmox_node)
+         | list }}
+  when:
+    - patch_drain_ha | default(true)
+    - ha_resources_list.json.data is defined
+  tags: proxmox_patching
+
+- name: Migrate HA resources off this node
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources/{{ item.sid }}/migrate"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      node: "{{ item.target_node | default('') }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ local_ha_resources | default([]) }}"
+  loop_control:
+    label: "Migrate HA resource: {{ item.sid }}"
+  when:
+    - patch_drain_ha | default(true)
+    - local_ha_resources | default([]) | length > 0
+  tags: proxmox_patching
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 0
+  when: patch_apt_update | default(true)
+  tags: proxmox_patching
+
+- name: Upgrade packages (dist-upgrade)
+  ansible.builtin.apt:
+    upgrade: dist
+    autoclean: true
+    autoremove: true
+    dpkg_options: "force-confdef,force-confold"
+  register: upgrade_result
+  tags: proxmox_patching
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_required
+  tags: proxmox_patching
+
+- name: Check if kernel is pending update
+  ansible.builtin.shell: |
+    CURRENT=$(uname -r)
+    PENDING=$(dpkg -l | grep linux-image | grep -E '^ii' | awk '{print $2}' | sort -V | tail -1 | sed 's/linux-image-//')
+    echo "current=$CURRENT pending=$PENDING"
+  register: kernel_check
+  changed_when: false
+  when: reboot_required.stat.exists | default(false)
+  tags: proxmox_patching
+
+- name: Reboot node if required
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ patch_reboot_timeout | default(600) }}"
+    msg: "Rebooting for patching"
+    pre_reboot_delay: 5
+    post_reboot_delay: 30
+  when:
+    - reboot_required.stat.exists | default(false)
+  tags: proxmox_patching
+
+- name: Wait for node to rejoin cluster
+  ansible.builtin.pause:
+    seconds: 30
+  when: reboot_required.stat.exists | default(false)
+  tags: proxmox_patching
+
+- name: Verify cluster quorum after reboot
+  ansible.builtin.command: pvecm status
+  register: post_reboot_quorum
+  changed_when: false
+  retries: 12
+  delay: 10
+  until: "'Votequorum' in post_reboot_quorum.stdout"
+  when:
+    - reboot_required.stat.exists | default(false)
+  tags: proxmox_patching
+
+- name: Restart Proxmox services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ patch_services_restart }}"
+  loop_control:
+    label: "Restart: {{ item }}"
+  failed_when: false
+  tags: proxmox_patching
+
+- name: Restore HA resources to this node
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/ha/resources/{{ item.sid }}/migrate"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      node: "{{ proxmox_node }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ local_ha_resources | default([]) }}"
+  loop_control:
+    label: "Restore HA resource: {{ item.sid }}"
+  when:
+    - patch_drain_ha | default(true)
+    - local_ha_resources | default([]) | length > 0
+  tags: proxmox_patching
+
+- name: Post-patch verification - check services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+  loop:
+    - "pve-cluster"
+    - "pvedaemon"
+    - "pveproxy"
+    - "pve-firewall"
+  register: service_check
+  failed_when: false
+  when: patch_post_check | default(true)
+  tags: proxmox_patching
+
+- name: Post-patch verification - check cluster
+  ansible.builtin.command: pvecm status
+  register: final_check
+  changed_when: false
+  when: patch_post_check | default(true)
+  tags: proxmox_patching
+
+- name: Display patching summary
+  ansible.builtin.debug:
+    msg: >-
+      Patching complete on {{ ansible_hostname }}:
+      upgraded={{ upgrade_result.changed | default(false) }},
+      reboot={{ reboot_required.stat.exists | default(false) }},
+      cluster={{ 'healthy' if 'Votequorum' in final_check.stdout | default('') else 'unknown' }}
+  tags: proxmox_patching

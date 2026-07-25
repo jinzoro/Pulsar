@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+# Proxmox VE vzdump.cron - managed by Ansible
+# Backup schedule configuration
+{% for job in backup_schedule %}
+
+# {{ job.comment | default('Backup job') }}
+{% if job.enabled | default(true) %}
+0 {{ job.hour | default('1') }} * * {{ job.dayofweek | default('*') }} root vzdump {{ job.job | default('all') }} --storage {{ job.storage | default(proxmox_backup_storage) }} --mode {{ job.mode | default('snapshot') }} --compress {{ job.compress | default('zstd') }} --exclude {{ job.exclude | default('local:backups') }} --quiet 1{% if job.mailto is defined and job.mailto | length > 0 %} --mailto {{ job.mailto }}{% endif %}{% if job.mail | default(false) %} --mail --mailfrom root@{{ ansible_fqdn }}{% endif %}
+
+{% else %}
+# {{ job.comment | default('Backup job') }} - DISABLED
+# 0 {{ job.hour | default('1') }} * * {{ job.dayofweek | default('*') }} root vzdump {{ job.job | default('all') }} --storage {{ job.storage | default(proxmox_backup_storage) }} --mode {{ job.mode | default('snapshot') }} --quiet 1
+{% endif %}
+{% endfor %}
+
+# Retention policy (applied via vzdump prune)
+# keep-daily: {{ backup_retention.keep_daily }}
+# keep-weekly: {{ backup_retention.keep_weekly }}
+# keep-monthly: {{ backup_retention.keep_monthly }}
+# keep-yearly: {{ backup_retention.keep_yearly }}

@@ -1,0 +1,37 @@
+---
+# SPDX-License-Identifier: MIT
+# Setup Ceph storage cluster
+
+- name: Deploy Ceph monitors
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_ceph
+      tags: [ceph_setup]
+
+- name: Verify Ceph cluster health
+  hosts: pve_nodes[0]
+  become: true
+  tasks:
+    - name: Check Ceph health
+      ansible.builtin.command: ceph health
+      register: ceph_health
+      changed_when: false
+      retries: 5
+      delay: 10
+      until: ceph_health.stdout in ['HEALTH_OK', 'HEALTH_WARN']
+
+    - name: Display Ceph status
+      ansible.builtin.debug:
+        msg: "{{ ceph_health.stdout }}"
+
+    - name: List Ceph pools
+      ansible.builtin.command: ceph osd pool ls detail
+      register: ceph_pools
+      changed_when: false
+
+    - name: Display Ceph pools
+      ansible.builtin.debug:
+        msg: "{{ ceph_pools.stdout_lines }}"

@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: MIT
+# Proxmox PBS Integration Role - defaults/main.yml
+
+pbs_servers:
+  - name: "pbs1"
+    host: "10.0.0.100"
+    port: 8007
+    fingerprint: ""
+    comment: "Primary PBS server"
+
+  - name: "pbs2"
+    host: "10.0.0.101"
+    port: 8007
+    fingerprint: ""
+    comment: "Secondary PBS server"
+
+pbs_datastores:
+  - name: "backup-datastore"
+    server: "pbs1"
+    datastore: "backups"
+    comment: "Main backup datastore"
+
+pbs_backup_jobs:
+  - comment: "Nightly VM backup to PBS"
+    schedule: "daily"
+    selection: "all"
+    mode: "snapshot"
+    compress: "zstd"
+    store: "backup-datastore"
+    enabled: true
+    maxfiles: 3
+
+  - comment: "Weekly full backup to PBS"
+    schedule: "Saturday"
+    selection: "all"
+    mode: "snapshot"
+    compress: "zstd"
+    store: "backup-datastore"
+    enabled: true
+    maxfiles: 2
+
+pbs_retention:
+  keep_last: 3
+  keep_daily: 7
+  keep_weekly: 4
+  keep_monthly: 6
+  keep_yearly: 2
+
+pbs_verification: true
+pbs_verify_schedule: "weekly"

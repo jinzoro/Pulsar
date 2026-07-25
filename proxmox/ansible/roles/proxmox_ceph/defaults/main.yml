@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Ceph Role - defaults/main.yml
+
+ceph_cluster_name: "ceph"
+ceph_release: "reef"
+ceph_network: "10.0.1.0/24"
+
+ceph_mon_host: "{{ ansible_default_ipv4.address }}"
+ceph_mon_id: "{{ ansible_hostname }}"
+
+ceph_osd_devices:
+  - "/dev/sdb"
+
+ceph_pools:
+  - name: "ceph-ssd"
+    pg_num: 128
+    pgp_num: 128
+    type: "replicated"
+    size: 3
+    min_size: 2
+    application: "rbd"
+
+  - name: "ceph-hdd"
+    pg_num: 64
+    pgp_num: 64
+    type: "replicated"
+    size: 3
+    min_size: 2
+    application: "rbd"
+
+ceph_mds: true
+ceph_mds_id: "{{ ansible_hostname }}"
+
+ceph_rgw: false
+ceph_rgw_port: 7480
+ceph_rgw_user: "rgw.admin"
+
+ceph_manager: true
+ceph_crush_rules:
+  - name: "ceph-ssd"
+    class: "ssd"
+  - name: "ceph-hdd"
+    class: "hdd"
+
+ceph_auth_supported: "cephx"
+ceph_public_network: "{{ ceph_network }}"
+ceph_cluster_network: "{{ ceph_network }}"

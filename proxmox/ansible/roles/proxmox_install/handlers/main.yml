@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Install Role - handlers/main.yml
+
+- name: restart pve-cluster
+  ansible.builtin.systemd:
+    name: pve-cluster
+    state: restarted
+
+- name: restart pvedaemon
+  ansible.builtin.systemd:
+    name: pvedaemon
+    state: restarted
+
+- name: restart pveproxy
+  ansible.builtin.systemd:
+    name: pveproxy
+    state: restarted

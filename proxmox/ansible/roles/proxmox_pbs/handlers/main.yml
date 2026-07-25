@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Proxmox PBS Integration Role - handlers/main.yml
+
+- name: refresh pbs storage
+  ansible.builtin.command: pvesm refresh
+  changed_when: true

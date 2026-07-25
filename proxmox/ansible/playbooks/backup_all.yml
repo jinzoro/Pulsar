@@ -1,0 +1,25 @@
+---
+# SPDX-License-Identifier: MIT
+# Backup all VMs and containers
+
+- name: Run backup on all nodes
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Trigger immediate backup of all VMs
+      ansible.builtin.command: >-
+        vzdump {{ item }}
+        --storage {{ proxmox_backup_storage }}
+        --mode snapshot
+        --compress zstd
+        --quiet 1
+      loop: "{{ groups['pve_nodes'] }}"
+      delegate_to: "{{ proxmox_node }}"
+      tags: backup_all
+
+    - name: Display backup results
+      ansible.builtin.debug:
+        msg: "Backup triggered for all VMs and containers"
+      tags: backup_all

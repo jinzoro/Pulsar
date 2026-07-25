@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Backup Role - tasks/main.yml
+
+- name: Gather existing vzdump configuration
+  ansible.builtin.shell: |
+    cat /etc/pve/vzdump.cron 2>/dev/null || echo "# no config"
+  register: existing_vzdump
+  changed_when: false
+  tags: proxmox_backup
+
+- name: Deploy vzdump cron configuration
+  ansible.builtin.template:
+    src: vzdump-cron.j2
+    dest: /etc/pve/vzdump.cron
+    owner: root
+    group: www-data
+    mode: "0640"
+    backup: true
+  notify: reload vzdump cron
+  tags: proxmox_backup
+
+- name: Create backup directories for each storage
+  ansible.builtin.file:
+    path: "/var/lib/vz/dump"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: proxmox_backup
+
+- name: Configure backup retention via API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_node }}:8006/api2/json/cluster/backup"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_user }}!={{ proxmox_token_id }}={{ proxmox_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      enabled: "{{ item.enabled | default(true) }}"
+      schedule: "{{ item.minute | default('0') }} {{ item.hour | default('1') }} * * {{ item.dayofweek | default('*') }}"
+      storage: "{{ item.storage | default(proxmox_backup_storage) }}"
+      mode: "{{ item.mode | default('snapshot') }}"
+      compress: "{{ item.compress | default('zstd') }}"
+      mailto: "{{ item.mailto | default('') }}"
+      mail: "{{ item.mail | default(false) }}"
+      exclude: "{{ item.exclude | default('') }}"
+      all: "{{ item.job | default('all') }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+    status_code: [200]
+  loop: "{{ backup_schedule }}"
+  loop_control:
+    label: "{{ item.comment | default('backup job') }}"
+  when: item.enabled | default(true)
+  tags: proxmox_backup
+
+- name: Prune old backups
+  ansible.builtin.command: >-
+    vzdump --prune
+    --keep-daily {{ backup_retention.keep_daily }}
+    --keep-weekly {{ backup_retention.keep_weekly }}
+    --keep-monthly {{ backup_retention.keep_monthly }}
+    --keep-yearly {{ backup_retention.keep_yearly }}
+  register: prune_result
+  changed_when: "'removed' in prune_result.stdout"
+  when: backup_prune | default(true)
+  tags: proxmox_backup
+
+- name: Verify backup storage is accessible
+  ansible.builtin.command: pvesm list "{{ proxmox_backup_storage }}"
+  register: backup_storage_check
+  changed_when: false
+  failed_when: false
+  tags: proxmox_backup
+
+- name: Display backup configuration summary
+  ansible.builtin.debug:
+    msg: >-
+      Backup schedule configured: {{ backup_schedule | length }} jobs,
+      retention: {{ backup_retention.keep_daily }}d/{{ backup_retention.keep_weekly }}w/{{ backup_retention.keep_monthly }}m
+  tags: proxmox_backup

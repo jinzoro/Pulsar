@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: MIT
+# KVM Network Role - defaults/main.yml
+
+libvirt_networks:
+  - name: "default"
+    bridge: "virbr0"
+    forward: "nat"
+    ip_address: "192.168.122.1"
+    netmask: "255.255.255.0"
+    dhcp_start: "192.168.122.2"
+    dhcp_end: "192.168.122.254"
+    domain: "local"
+    dns_enable: true
+    autostart: true
+    state: active
+
+  - name: "management"
+    bridge: "virbr1"
+    forward: "nat"
+    ip_address: "10.10.0.1"
+    netmask: "255.255.255.0"
+    dhcp_start: "10.10.0.100"
+    dhcp_end: "10.10.0.200"
+    domain: "mgmt.local"
+    dns_enable: true
+    autostart: true
+    state: active
+
+#  - name: "bridged"
+#    bridge: "br0"
+#    forward: "bridge"
+#    ip_address: ""
+#    netmask: ""
+#    dhcp_start: ""
+#    dhcp_end: ""
+#    domain: ""
+#    dns_enable: false
+#    autostart: true
+#    state: active
+
+#  - name: "isolated"
+#    bridge: "virbr2"
+#    forward: "none"
+#    ip_address: "172.16.0.1"
+#    netmask: "255.255.255.0"
+#    dhcp_start: "172.16.0.100"
+#    dhcp_end: "172.16.0.200"
+#    domain: "isolated.local"
+#    dns_enable: true
+#    autostart: true
+#    state: active
+
+libvirt_default_network: "default"

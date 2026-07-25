@@ -1,0 +1,46 @@
+---
+# SPDX-License-Identifier: MIT
+# Proxmox SwissKnife Master Playbook - run all roles by tag
+
+- name: Proxmox SwissKnife Master Playbook
+  hosts: pve_nodes
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - role: proxmox_install
+      tags: [install]
+    - role: proxmox_cluster
+      tags: [cluster]
+    - role: proxmox_storage
+      tags: [storage]
+    - role: proxmox_network
+      tags: [network]
+    - role: proxmox_ceph
+      tags: [ceph]
+    - role: proxmox_zfs
+      tags: [zfs]
+    - role: proxmox_users
+      tags: [users]
+    - role: proxmox_firewall
+      tags: [firewall]
+    - role: proxmox_ha
+      tags: [ha]
+    - role: proxmox_vm_deploy
+      tags: [vms]
+    - role: proxmox_ct_deploy
+      tags: [cts]
+    - role: proxmox_backup
+      tags: [backup]
+    - role: proxmox_pbs
+      tags: [pbs]
+    - role: proxmox_sdn
+      tags: [sdn]
+    - role: proxmox_passthrough
+      tags: [passthrough]
+    - role: proxmox_cloudinit
+      tags: [cloudinit]
+    - role: proxmox_hardening
+      tags: [hardening]
+    - role: proxmox_patching
+      tags: [patching]

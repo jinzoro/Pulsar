@@ -1,0 +1,84 @@
+# SPDX-License-Identifier: MIT
+# Proxmox ZFS Role - defaults/main.yml
+
+zfs_pools:
+  - name: "fast-pool"
+    type: "mirror"
+    devices:
+      - "/dev/nvme0n1"
+      - "/dev/nvme1n1"
+    ashift: 12
+    autoexpand: true
+    autotrim: "on"
+    state: present
+
+  - name: "bulk-pool"
+    type: "raidz1"
+    devices:
+      - "/dev/sda"
+      - "/dev/sdb"
+      - "/dev/sdc"
+    ashift: 12
+    autoexpand: true
+    autotrim: "off"
+    state: present
+
+zfs_datasets:
+  - name: "fast-pool/vms"
+    pool: "fast-pcl"
+    type: "filesystem"
+    mountpoint: "/fast-pool/vms"
+    compression: "lz4"
+    atime: "off"
+    xattr: "sa"
+    dnodesize: "auto"
+    recordsize: "128K"
+    logbias: "latency"
+
+  - name: "fast-pool/containers"
+    pool: "fast-pool"
+    type: "filesystem"
+    mountpoint: "/fast-pool/containers"
+    compression: "lz4"
+    atime: "off"
+    recordsize: "128K"
+
+  - name: "bulk-pool/backups"
+    pool: "bulk-pool"
+    type: "filesystem"
+    mountpoint: "/bulk-pool/backups"
+    compression: "zstd"
+    atime: "off"
+    recordsize: "1M"
+
+  - name: "fast-pool/vms/disk0"
+    pool: "fast-pool"
+    type: "volume"
+    volsize: "32G"
+    compression: "off"
+    recordsize: "128K"
+
+zfs_properties:
+  - pool: "fast-pool"
+    property: "dedup"
+    value: "off"
+
+  - pool: "bulk-pool"
+    property: "dedup"
+    value: "off"
+
+zfs_scrub_schedule: "weekly"
+zfs_scrub_day: "Sunday"
+zfs_scrub_hour: "3"
+zfs_auto_scrub: true
+
+zfs_snapshot_policy:
+  - name: "pre-upgrade"
+    recursive: true
+    keep: 3
+  - name: "daily"
+    recursive: true
+    keep: 7
+  - name: "weekly"
+    recursive: true
+    keep: 4

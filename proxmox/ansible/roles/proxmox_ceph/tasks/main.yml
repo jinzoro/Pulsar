@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Ceph Role - tasks/main.yml
+
+- name: Install ceph-common on all nodes
+  ansible.builtin.apt:
+    name:
+      - ceph-common
+      - ceph-mon
+      - ceph-osd
+      - ceph-mgr
+      - ceph-mds
+    state: present
+  tags: proxmox_ceph
+
+- name: Check if Ceph is already initialized
+  ansible.builtin.command: ceph --version
+  register: ceph_installed
+  changed_when: false
+  failed_when: false
+  tags: proxmox_ceph
+
+- name: Initialize Ceph cluster on first node
+  ansible.builtin.command: >-
+    pveceph init
+    --network {{ ceph_public_network }}
+    --cluster-name {{ ceph_cluster_name }}
+  when:
+    - ceph_installed.rc != 0
+    - inventory_hostname == groups['pve_nodes'][0]
+  tags: proxmox_ceph
+
+- name: Create Ceph monitors
+  ansible.builtin.command: pveceph mon create
+  register: mon_create
+  changed_when: "'already exists' not in mon_create.stdout"
+  failed_when: false
+  when: ceph_installed.rc == 0 or inventory_hostname == groups['pve_nodes'][0]
+  tags: proxmox_ceph
+
+- name: Create Ceph managers
+  ansible.builtin.command: pveceph mgr create
+  register: mgr_create
+  changed_when: "'already exists' not in mgr_create.stdout"
+  failed_when: false
+  when: ceph_manager | default(true)
+  tags: proxmox_ceph
+
+- name: Create Ceph MDS (for CephFS)
+  ansible.builtin.command: pveceph mds create
+  register: mds_create
+  changed_when: "'already exists' not in mds_create.stdout"
+  failed_when: false
+  when: ceph_mds | default(false)
+  tags: proxmox_ceph
+
+- name: Create Ceph OSDs
+  ansible.builtin.command: >-
+    pveceph osd create {{ item }}
+  loop: "{{ ceph_osd_devices }}"
+  loop_control:
+    label: "OSD: {{ item }}"
+  register: osd_create
+  changed_when: "'already exists' not in osd_create.stdout"
+  failed_when: false
+  tags: proxmox_ceph
+
+- name: Create Ceph pools
+  community.general.proxmox_pool:
+    name: "{{ item.name }}"
+    type: "{{ item.type | default('replicated') }}"
+    pg_num: "{{ item.pg_num | default(128) }}"
+    pgp_num: "{{ item.pgp_num | default(128) }}"
+    state: present
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"
+    validate_certs: "{{ proxmox_verify_ssl }}"
+  loop: "{{ ceph_pools }}"
+  loop_control:
+    label: "Pool: {{ item.name }}"
+  tags: proxmox_ceph
+
+- name: Set pool replication size
+  ansible.builtin.command: >-
+    ceph osd pool set {{ item.name }} size {{ item.size | default(3) }}
+  loop: "{{ ceph_pools }}"
+  loop_control:
+    label: "{{ item.name }} size={{ item.size | default(3) }}"
+  changed_when: true
+  tags: proxmox_ceph
+
+- name: Set pool minimum size
+  ansible.builtin.command: >-
+    ceph osd pool set {{ item.name }} min_size {{ item.min_size | default(2) }}
+  loop: "{{ ceph_pools }}"
+  loop_control:
+    label: "{{ item.name }} min_size={{ item.min_size | default(2) }}"
+  changed_when: true
+  tags: proxmox_ceph
+
+- name: Enable application on pools
+  ansible.builtin.command: >-
+    ceph osd pool application enable {{ item.name }} {{ item.application | default('rbd') }}
+  loop: "{{ ceph_pools }}"
+  loop_control:
+    label: "{{ item.name }} app={{ item.application | default('rbd') }}"
+  changed_when: true
+  tags: proxmox_ceph
+
+- name: Verify Ceph cluster health
+  ansible.builtin.command: ceph health
+  register: ceph_health
+  changed_when: false
+  retries: 5
+  delay: 10
+  until: ceph_health.stdout in ['HEALTH_OK', 'HEALTH_WARN']
+  tags: proxmox_ceph
+
+- name: Display Ceph status
+  ansible.builtin.debug:
+    msg: "{{ ceph_health.stdout }}"
+  tags: proxmox_ceph

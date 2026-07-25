@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: MIT
+# Proxmox HA Role - defaults/main.yml
+
+ha_groups:
+  - name: "group-node1"
+    nodes:
+      - node: "pve1"
+        priority: 1
+      - node: "pve2"
+        priority: 2
+      - node: "pve3"
+        priority: 3
+    no_failback: false
+
+  - name: "group-node2"
+    nodes:
+      - node: "pve2"
+        priority: 1
+      - node: "pve1"
+        priority: 2
+      - node: "pve3"
+        priority: 3
+    no_failback: false
+
+ha_resources:
+  - name: "web-server"
+    sid: 100
+    type: "vm"
+    group: "group-node1"
+    max_restart: 3
+    max_relocate: 1
+    state: started
+    comment: "High-availability web server"
+
+  - name: "db-server"
+    sid: 101
+    type: "vm"
+    group: "group-node2"
+    max_restart: 3
+    max_relocate: 1
+    state: started
+    comment: "High-availability database server"
+
+#  - name: "dns-ct"
+#    sid: 202
+#    type: "ct"
+#    group: "group-node1"
+#    max_restart: 5
+#    max_relocate: 2
+#    state: started
+#    comment: "DNS container"
+
+ha_fencing: false
+ha_fencing_type: "watchdog"

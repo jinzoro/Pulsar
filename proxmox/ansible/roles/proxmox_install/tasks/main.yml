@@ -1,0 +1,86 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Install Role - tasks/main.yml
+
+- name: Ensure prerequisites are installed
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+  tags: proxmox_install
+
+- name: Add Proxmox repository GPG key
+  ansible.builtin.apt_key:
+    url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
+    state: present
+  tags: proxmox_install
+
+- name: Add Proxmox repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://enterprise.proxmox.com/debian/pve bookworm pve-enterprise"
+    state: present
+    filename: pve-enterprise
+  when: proxmox_use_enterprise_repo | default(false)
+  tags: proxmox_install
+
+- name: Add Proxmox no-subscription repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription"
+    state: present
+    filename: pve-no-subscription
+  when: proxmox_use_nosubscription_repo | default(true)
+  tags: proxmox_install
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags: proxmox_install
+
+- name: Install Proxmox packages
+  ansible.builtin.apt:
+    name:
+      - proxmox-ve
+      - postfix
+      - open-iscsi
+      - chrony
+    state: present
+  tags: proxmox_install
+
+- name: Ensure chrony is running
+  ansible.builtin.systemd:
+    name: chrony
+    state: started
+    enabled: true
+  tags: proxmox_install
+
+- name: Ensure pve-cluster is running
+  ansible.builtin.systemd:
+    name: pve-cluster
+    state: started
+    enabled: true
+  tags: proxmox_install
+
+- name: Ensure pvedaemon is running
+  ansible.builtin.systemd:
+    name: pvedaemon
+    state: started
+    enabled: true
+  tags: proxmox_install
+
+- name: Ensure pveproxy is running
+  ansible.builtin.systemd:
+    name: pveproxy
+    state: started
+    enabled: true
+  tags: proxmox_install
+
+- name: Ensure pve-firewall is running
+  ansible.builtin.systemd:
+    name: pve-firewall
+    state: started
+    enabled: true
+  tags: proxmox_install

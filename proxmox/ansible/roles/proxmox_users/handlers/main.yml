@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Users Role - handlers/main.yml
+
+- name: reload access config
+  ansible.builtin.command: pveam refresh
+  changed_when: true

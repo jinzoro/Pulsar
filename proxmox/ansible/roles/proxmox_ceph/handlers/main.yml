@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+# Proxmox Ceph Role - handlers/main.yml
+
+- name: restart ceph-mon
+  ansible.builtin.systemd:
+    name: "ceph-mon@{{ ansible_hostname }}"
+    state: restarted
+
+- name: restart ceph-osd
+  ansible.builtin.systemd:
+    name: "ceph-osd@{{ item }}"
+    state: restarted
+
+- name: restart ceph-mgr
+  ansible.builtin.systemd:
+    name: "ceph-mgr@{{ ansible_hostname }}"
+    state: restarted
+
+- name: restart ceph-mds
+  ansible.builtin.systemd:
+    name: "ceph-mds@{{ ansible_hostname }}"
+    state: restarted

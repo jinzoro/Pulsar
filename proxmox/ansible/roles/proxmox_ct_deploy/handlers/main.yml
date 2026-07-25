@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+# Proxmox CT Deploy Role - handlers/main.yml
+
+- name: restart container
+  ansible.builtin.command: "pct reboot {{ ct_vmid }}"
+  changed_when: true
+
+- name: reload container config
+  ansible.builtin.command: "pct set {{ ct_vmid }} --description 'Updated via Ansible'"
+  changed_when: true

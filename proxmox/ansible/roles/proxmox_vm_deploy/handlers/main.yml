@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+# Proxmox VM Deploy Role - handlers/main.yml
+
+- name: reboot VM
+  community.general.proxmox:
+    node: "{{ proxmox_node }}"
+    vmid: "{{ vm_vmid }}"
+    state: restarted
+    api_host: "{{ proxmox_node }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ proxmox_token_secret }}"

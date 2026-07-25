@@ -592,7 +592,7 @@
   <div class="flex items-center justify-between mb-4">
     <div>
       <div class="title">Proxmox-KVM SwissKnife</div>
-      <div class="subtitle">Full Automation Suite + TUI Swiss-Knife — v1.0.0</div>
+      <div class="subtitle">Full Automation Suite + TUI + REST API + Web UI — v1.1.0</div>
     </div>
     <div class="stamp">INTERNAL</div>
   </div>
@@ -604,7 +604,7 @@
     </div>
     <div class="flex flex-col">
       <span class="label">Date</span>
-      <span class="body-text">July 2025</span>
+      <span class="body-text">July 2026</span>
     </div>
     <div class="flex flex-col">
       <span class="label">License</span>
@@ -612,8 +612,8 @@
     </div>
   </div>
 
-  <div class="info-box mb-12">
-    <div class="body-text text-blue font-bold">Production-grade automation suite for Proxmox VE 8.x+ and generic KVM/QEMU — covering every administrative task with Bash, Python, Go, Ansible, Terraform, and Packer, unified by a Go TUI application.</div>
+    <div class="info-box mb-12">
+    <div class="body-text text-blue font-bold">Production-grade automation suite for Proxmox VE 8.x+ and generic KVM/QEMU — covering every administrative task with Bash, Python, Go, Ansible, Terraform, and Packer, unified by a Go TUI application, a REST API gateway, and a SvelteKit web UI.</div>
   </div>
 
   <!-- SECTION 2: PURPOSE -->
@@ -651,71 +651,90 @@
     <div class="section-title"><span class="icon">🏗</span> Architecture Overview</div>
     <div class="section-underline"></div>
 
-    <svg class="svg-diagram" width="680" height="230" viewBox="0 0 680 230">
-      <!-- User / Operator -->
-      <rect x="10" y="20" width="110" height="45" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
-      <text x="65" y="48" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#dc2626">👤 Operator</text>
+    <svg class="svg-diagram" width="680" height="290" viewBox="0 0 680 290">
+  <!-- User / Operator -->
+  <rect x="10" y="10" width="110" height="45" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="65" y="38" text-anchor="middle" font-family="Caveat" font-size="16" font-weight="700" fill="#dc2626">👤 Operator</text>
 
-      <!-- Arrow -->
-      <line x1="120" y1="42" x2="155" y2="42" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <!-- Arrow to TUI -->
+  <line x1="65" y1="55" x2="65" y2="75" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-      <!-- TUI -->
-      <rect x="160" y="15" width="110" height="55" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-      <text x="215" y="38" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="700" fill="#2563eb">🖥 TUI App</text>
-      <text x="215" y="56" text-anchor="middle" font-family="Caveat" font-size="12" fill="#2563eb">Go + Bubble Tea</text>
+  <!-- TUI -->
+  <rect x="10" y="80" width="110" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="65" y="102" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">🖥 TUI App</text>
+  <text x="65" y="118" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">Go + Bubble Tea</text>
 
-      <!-- Arrow -->
-      <line x1="270" y1="42" x2="305" y2="42" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <!-- Arrow from TUI to Executor -->
+  <line x1="120" y1="105" x2="155" y2="105" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-      <!-- Executor Layer -->
-      <rect x="310" y="8" width="120" height="70" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
-      <text x="370" y="30" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="700" fill="#16a34a">⚡ Executor</text>
-      <text x="370" y="46" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">Bash | Python</text>
-      <text x="370" y="60" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">Ansible | Go API</text>
+  <!-- Executor Layer -->
+  <rect x="160" y="80" width="120" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="220" y="102" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">⚡ Executor</text>
+  <text x="220" y="118" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">Bash · Python · Ansible</text>
 
-      <!-- Arrows from executor to backends -->
-      <line x1="370" y1="78" x2="370" y2="100" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <!-- Arrow from Executor to Backends -->
+  <line x1="220" y1="130" x2="220" y2="150" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-      <!-- Backend row -->
-      <rect x="20" y="105" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-      <text x="67" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Proxmox</text>
-      <text x="67" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">REST API v2</text>
+  <!-- REST API Gateway (new) -->
+  <rect x="295" y="80" width="170" height="50" rx="10" fill="#fef2f2" stroke="#ea580c" stroke-width="2"/>
+  <text x="380" y="100" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">🌐 API Gateway</text>
+  <text x="380" y="116" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Go · net/http · :8443</text>
 
-      <rect x="130" y="105" width="95" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
-      <text x="177" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">KVM</text>
-      <text x="177" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">libvirt + virsh</text>
+  <!-- Arrow from API Gateway to Executor -->
+  <line x1="295" y1="105" x2="280" y2="105" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowOrange)"/>
 
-      <rect x="240" y="105" width="95" height="50" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
-      <text x="287" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">Ansible</text>
-      <text x="287" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Fleet deploy</text>
+  <!-- Web UI (new) -->
+  <rect x="480" y="80" width="190" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="575" y="100" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">🕸 Web UI</text>
+  <text x="575" y="116" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">SvelteKit · Dark Theme</text>
 
-      <rect x="350" y="105" width="95" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
-      <text x="397" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">Terraform</text>
-      <text x="397" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">IaC</text>
+  <!-- Arrow from Web UI to API Gateway -->
+  <line x1="480" y1="105" x2="465" y2="105" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowGreen)"/>
 
-      <rect x="460" y="105" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-      <text x="507" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Packer</text>
-      <text x="507" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Image baking</text>
+  <!-- Backend row -->
+  <rect x="20" y="155" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="67" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Proxmox</text>
+  <text x="67" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">REST API v2</text>
 
-      <rect x="570" y="105" width="100" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
-      <text x="620" y="126" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">Shared</text>
-      <text x="620" y="142" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">SSH, notify, health</text>
+  <rect x="130" y="155" width="95" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="177" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">KVM</text>
+  <text x="177" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">libvirt + virsh</text>
 
-      <!-- Storage layer -->
-      <line x1="370" y1="155" x2="370" y2="178" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <rect x="130" y="180" width="480" height="40" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <text x="370" y="205" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="600" fill="#dc2626">💾 ZFS • Ceph • LVM • NFS • PBS • iSCSI • GlusterFS</text>
+  <rect x="240" y="155" width="95" height="50" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="287" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">Ansible</text>
+  <text x="287" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Fleet deploy</text>
 
-      <!-- Arrow markers -->
-      <defs>
-        <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-          <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
-        </marker>
-      </defs>
-    </svg>
+  <rect x="350" y="155" width="95" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="397" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#16a34a">Terraform</text>
+  <text x="397" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">IaC</text>
+
+  <rect x="460" y="155" width="95" height="50" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="507" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#dc2626">Packer</text>
+  <text x="507" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Image baking</text>
+
+  <rect x="570" y="155" width="100" height="50" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="620" y="176" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#2563eb">Shared</text>
+  <text x="620" y="192" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">SSH, notify, health</text>
+
+  <line x1="340" y1="205" x2="340" y2="228" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="100" y="235" width="480" height="40" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="340" y="260" text-anchor="middle" font-family="Caveat" font-size="14" font-weight="600" fill="#dc2626">💾 ZFS • Ceph • LVM • NFS • PBS • iSCSI • GlusterFS</text>
+
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#16a34a"/>
+    </marker>
+  </defs>
+</svg>
   </div>
 
-  <div class="page-number">Page 1 / 6</div>
+  <div class="page-number">Page 1 / 7</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -796,6 +815,30 @@
     </div>
   </div>
 
+  <!-- New row for API Gateway + Web UI -->
+  <div class="two-col gap-8 mt-8">
+    <div class="rounded-box" style="border-color:#ea580c;">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle" style="border-color:#ea580c;color:#ea580c;">R</div>
+        <div class="font-bold" style="color:#ea580c;font-size:17px;">REST API Gateway</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet" style="background:#ea580c;"></span> Go HTTP server on :8443</div>
+      <div class="body-text text-xs"><span class="hand-bullet" style="background:#ea580c;"></span> 40+ endpoints (VMs, CTs, storage, cluster, HA, firewall, backups)</div>
+      <div class="body-text text-xs"><span class="hand-bullet" style="background:#ea580c;"></span> X-API-Key / Bearer auth, CORS, Prometheus /metrics</div>
+      <div class="tech-pill mt-6" style="border-color:#ea580c;color:#ea580c;">Go / net/http / zerolog</div>
+    </div>
+    <div class="rounded-box green">
+      <div class="flex items-center gap-6 mb-4">
+        <div class="hand-circle" style="border-color:#16a34a;color:#16a34a;">W</div>
+        <div class="font-bold text-green" style="font-size:17px;">Web UI</div>
+      </div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> SvelteKit SPA with dark theme</div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> Dashboard, VMs, Nodes, Containers, Storage, Settings</div>
+      <div class="body-text text-xs"><span class="hand-bullet green"></span> Dev proxy → :8443, production static build</div>
+      <div class="tech-pill green mt-6">SvelteKit / Svelte 5 / Vite</div>
+    </div>
+  </div>
+
   <!-- SECTION 5: WORKFLOW -->
   <div class="mt-12">
     <div class="section-title"><span class="icon">🔄</span> Execution Workflow</div>
@@ -865,7 +908,7 @@
     </div>
   </div>
 
-  <div class="page-number">Page 2 / 6</div>
+  <div class="page-number">Page 2 / 7</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -907,6 +950,9 @@
         <span class="tech-pill">httpx</span>
         <span class="tech-pill green">pydantic</span>
         <span class="tech-pill">rich</span>
+        <span class="tech-pill orange">SvelteKit</span>
+        <span class="tech-pill">Svelte 5</span>
+        <span class="tech-pill red">Vite</span>
       </div>
       <div class="text-blue font-bold text-sm mb-6">Storage / Backup</div>
       <div class="flex flex-wrap gap-4">
@@ -993,9 +1039,10 @@
 │   ├── python/          (19 modules)
 │   └── ansible/         (5 roles)
 ├── <span class="folder">packer/</span>           (6 templates)
-├── <span class="folder">go/</span>               (TUI + CLI)
-│   ├── cmd/             (3 binaries)
-│   └── internal/        (15+ packages)
+├── <span class="folder">go/</span>               (TUI + CLI + API Gateway)
+│   ├── cmd/             (4 binaries)
+│   └── internal/        (apiserver + 15+ packages)
+├── <span class="folder">web/</span>              (SvelteKit SPA — Dashboard, VMs, Nodes, Containers, Storage)
 ├── <span class="folder">tests/</span>            (30 test files)
 ├── <span class="folder">docs/</span>             (10 doc files)
 └── <span class="highlight">config/</span>           (settings.yaml)
@@ -1008,14 +1055,14 @@
           <div class="body-text text-sm"><span class="text-green font-bold">/shared/</span> — Usable by both, zero deps</div>
         </div>
         <div class="rounded-box green">
-          <div class="text-green font-bold text-sm mb-4">340 Files Across 6 Languages</div>
-          <div class="body-text text-xs">37 Bash · 67 Python · 40 Go · 134 YAML · 17 TF · 6 HCL · 30 Tests</div>
+          <div class="text-green font-bold text-sm mb-4">380+ Files Across 7 Languages</div>
+          <div class="body-text text-xs">37 Bash · 67 Python · 45 Go · 134 YAML · 17 TF · 6 HCL · 20 TypeScript/Svelte · 30 Tests</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="page-number">Page 3 / 6</div>
+  <div class="page-number">Page 3 / 7</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1131,6 +1178,16 @@
 
     <div class="card-grid">
       <div class="feature-card">
+        <div class="card-icon">🕸</div>
+        <div class="card-title">Web UI</div>
+        <div class="card-desc">SvelteKit SPA with dark theme, dashboard, VM/container/node/storage views, power actions, and Settings page</div>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">REST API</div>
+        <div class="card-desc">Go API gateway on :8443 with 40+ endpoints, X-API-Key auth, CORS, Prometheus metrics, and structured logging</div>
+      </div>
+      <div class="feature-card">
         <div class="card-icon">🖥</div>
         <div class="card-title">Go TUI</div>
         <div class="card-desc">Bubble Tea TUI with 15 views, fuzzy search, sparklines, live output streaming</div>
@@ -1173,7 +1230,7 @@
     </div>
   </div>
 
-  <div class="page-number">Page 4 / 6</div>
+  <div class="page-number">Page 4 / 7</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1279,7 +1336,7 @@
       </svg>
 
       <div class="mt-8">
-        <div class="text-blue font-bold text-sm mb-6">CLI Wrappers</div>
+        <div class="text-blue font-bold text-sm mb-6">CLI & Server Wrappers</div>
         <div class="flex flex-col gap-4">
           <div class="rounded-box" style="padding:8px 10px;">
             <div class="body-text text-xs"><span class="text-red font-bold">pmxctl</span> — Go CLI for Proxmox operations</div>
@@ -1290,12 +1347,36 @@
           <div class="rounded-box orange" style="padding:8px 10px;">
             <div class="body-text text-xs"><span class="text-orange font-bold">swissknife</span> — Unified TUI application</div>
           </div>
+          <div class="rounded-box red" style="padding:8px 10px;border-color:#ea580c;">
+            <div class="body-text text-xs"><span class="text-red font-bold">apigateway</span> — Go REST API server on :8443</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="text-blue font-bold text-sm mb-4">API Gateway Endpoints (/api/v1)</div>
+        <div class="flex flex-wrap gap-3">
+          <span class="tech-pill" style="font-size:10px;">GET /vms</span>
+          <span class="tech-pill red" style="font-size:10px;">POST /vms</span>
+          <span class="tech-pill green" style="font-size:10px;">GET /vms/{vmid}</span>
+          <span class="tech-pill orange" style="font-size:10px;">POST start/stop/shutdown</span>
+          <span class="tech-pill" style="font-size:10px;">POST clone/resize/migrate</span>
+          <span class="tech-pill red" style="font-size:10px;">/snapshots</span>
+          <span class="tech-pill green" style="font-size:10px;">/containers</span>
+          <span class="tech-pill" style="font-size:10px;">/nodes</span>
+          <span class="tech-pill orange" style="font-size:10px;">/cluster</span>
+          <span class="tech-pill" style="font-size:10px;">/storage</span>
+          <span class="tech-pill red" style="font-size:10px;">/backups</span>
+          <span class="tech-pill green" style="font-size:10px;">/pools</span>
+          <span class="tech-pill orange" style="font-size:10px;">/ha/groups</span>
+          <span class="tech-pill red" style="font-size:10px;">/firewall</span>
+          <span class="tech-pill" style="font-size:10px;">/metrics</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="page-number">Page 5 / 6</div>
+  <div class="page-number">Page 5 / 7</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1311,10 +1392,10 @@
     <div class="two-col gap-12">
       <div class="flex flex-col gap-6">
         <div class="flex items-start gap-6">
-          <div class="hand-circle red" style="width:28px;height:28px;font-size:13px;">1</div>
+          <div class="hand-circle green" style="width:28px;height:28px;font-size:13px;">✓</div>
           <div>
-            <div class="body-text font-bold text-sm">Web Dashboard</div>
-            <div class="body-text text-xs">Real-time monitoring UI with Grafana integration and custom alerting rules</div>
+            <div class="body-text font-bold text-sm" style="text-decoration:line-through;color:#94a3b8;">Web Dashboard</div>
+            <div class="body-text text-xs text-green">✅ Done — SvelteKit SPA with dark theme, dashboard, VM/CT/node/storage views, power actions</div>
           </div>
         </div>
         <div class="flex items-start gap-6">
@@ -1354,6 +1435,13 @@
             <div class="body-text text-xs">Allow community extensions for custom operations and integrations</div>
           </div>
         </div>
+        <div class="flex items-start gap-6">
+          <div class="hand-circle orange" style="width:28px;height:28px;font-size:13px;">7</div>
+          <div>
+            <div class="body-text font-bold text-sm">Web UI Real-time Metrics</div>
+            <div class="body-text text-xs">SSE/polling for live CPU, RAM, storage graphs with Chart.js</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1367,7 +1455,7 @@
       <div class="flex flex-col gap-6">
         <div class="flex items-center gap-8">
           <div class="hand-circle red" style="width:36px;height:36px;font-size:16px;">✓</div>
-          <div class="body-text text-sm"><span class="text-red font-bold">340 production files</span> across 6 languages — Bash, Python, Go, Ansible, Terraform, Packer</div>
+          <div class="body-text text-sm"><span class="text-red font-bold">380+ production files</span> across 7 languages — Bash, Python, Go, Ansible, Terraform, Packer, TypeScript/Svelte</div>
         </div>
         <div class="flex items-center gap-8">
           <div class="hand-circle" style="width:36px;height:36px;font-size:16px;">✓</div>
@@ -1379,7 +1467,11 @@
         </div>
         <div class="flex items-center gap-8">
           <div class="hand-circle orange" style="width:36px;height:36px;font-size:16px;">✓</div>
-          <div class="body-text text-sm"><span class="text-orange font-bold">23 Ansible roles</span> + 15 playbooks for fleet-wide provisioning and rolling updates</div>
+          <div class="body-text text-sm"><span class="text-orange font-bold">REST API gateway</span> on :8443 with 40+ endpoints, auth, CORS, and Prometheus metrics</div>
+        </div>
+        <div class="flex items-center gap-8">
+          <div class="hand-circle" style="width:36px;height:36px;font-size:16px;border-color:#16a34a;color:#16a34a;">✓</div>
+          <div class="body-text text-sm"><span class="text-green font-bold">SvelteKit Web UI</span> with dark theme, dashboard, VM/CT/node/storage views, and power actions</div>
         </div>
         <div class="flex items-center gap-8">
           <div class="hand-circle red" style="width:36px;height:36px;font-size:16px;">✓</div>
@@ -1415,17 +1507,20 @@
         <div class="text-blue font-bold text-sm mb-4">🔧 Deployment Notes</div>
         <div class="body-text text-xs"><span class="hand-bullet"></span> Requires Go 1.22+, Python 3.12+, Ansible 2.16+</div>
         <div class="body-text text-xs"><span class="hand-bullet"></span> TUI: <span class="mono">make tui && ./bin/swissknife</span></div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> API: <span class="mono">./bin/apigateway.exe</span> (config via env or apigateway.yaml)</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Web UI: <span class="mono">cd web && npm run dev</span> (proxies /api → :8443)</div>
+        <div class="body-text text-xs"><span class="hand-bullet"></span> Build web: <span class="mono">cd web && npm run build</span> → <span class="mono">web/build/</span></div>
         <div class="body-text text-xs"><span class="hand-bullet"></span> Packer: install packer first, then <span class="mono">make packer-build</span></div>
         <div class="body-text text-xs"><span class="hand-bullet"></span> Run <span class="mono">make test</span> after any changes</div>
       </div>
     </div>
 
     <div class="mt-8 success-box">
-      <div class="body-text text-sm"><span class="text-green font-bold">✅ Pro tip:</span> Start with the TUI (<span class="mono">swissknife</span>) for day-to-day ops. Use Ansible playbooks for fleet-wide changes. Use Bash scripts for cron jobs and automation.</div>
+      <div class="body-text text-sm"><span class="text-green font-bold">✅ Pro tip:</span> Start with the TUI (<span class="mono">swissknife</span>) for day-to-day ops. Use the REST API gateway for web integrations and automation scripts. Use the Web UI for visual management. Use Ansible playbooks for fleet-wide changes. Use Bash scripts for cron jobs and automation.</div>
     </div>
   </div>
 
-  <div class="page-number">Page 6 / 6</div>
+  <div class="page-number">Page 7 / 7</div>
 </div>
 
 </body>

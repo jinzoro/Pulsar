@@ -1,0 +1,1487 @@
+{
+  "go/cmd/kvmctl/main.go": {
+    "mtime": 1784982483.5665596,
+    "ast_hash": "0a288b3e751974378c66547f008513da",
+    "semantic_hash": "0a288b3e751974378c66547f008513da"
+  },
+  "go/cmd/pmxctl/main.go": {
+    "mtime": 1784983004.2464755,
+    "ast_hash": "37ac36eaef17a7aa883b1b9b172e389d",
+    "semantic_hash": "37ac36eaef17a7aa883b1b9b172e389d"
+  },
+  "go/cmd/swissknife/main.go": {
+    "mtime": 1784983688.2280693,
+    "ast_hash": "501c2720ab72d1b0b774da5632e40d5b",
+    "semantic_hash": "501c2720ab72d1b0b774da5632e40d5b"
+  },
+  "go/go.mod": {
+    "mtime": 1784982358.8856285,
+    "ast_hash": "7e20658ca9288705b8ba335889d2a432",
+    "semantic_hash": "7e20658ca9288705b8ba335889d2a432"
+  },
+  "go/internal/config/config.go": {
+    "mtime": 1784982528.5832887,
+    "ast_hash": "0c37266dbae8e5621a9851128d08b168",
+    "semantic_hash": "0c37266dbae8e5621a9851128d08b168"
+  },
+  "go/internal/kvm/disk.go": {
+    "mtime": 1784982915.7835217,
+    "ast_hash": "9ccf1cdf05ba6369ba7df670c5f829bc",
+    "semantic_hash": "9ccf1cdf05ba6369ba7df670c5f829bc"
+  },
+  "go/internal/kvm/libvirt.go": {
+    "mtime": 1784983015.9082184,
+    "ast_hash": "d95b98639f49afcbd38ecc9d3f845249",
+    "semantic_hash": "d95b98639f49afcbd38ecc9d3f845249"
+  },
+  "go/internal/kvm/monitor.go": {
+    "mtime": 1784982996.7513945,
+    "ast_hash": "269a907eb0b09360641def3f56597c11",
+    "semantic_hash": "269a907eb0b09360641def3f56597c11"
+  },
+  "go/internal/kvm/network.go": {
+    "mtime": 1784983035.149549,
+    "ast_hash": "f488beef45eb8cfaa58cd76100a69c92",
+    "semantic_hash": "f488beef45eb8cfaa58cd76100a69c92"
+  },
+  "go/internal/kvm/qmp.go": {
+    "mtime": 1784983006.1730382,
+    "ast_hash": "f2ae74205e121179a3b2d7ca4cb66d39",
+    "semantic_hash": "f2ae74205e121179a3b2d7ca4cb66d39"
+  },
+  "go/internal/kvm/snapshot.go": {
+    "mtime": 1784982941.7994876,
+    "ast_hash": "b4752bcbf0f5d3b50fd607742b8a0fe4",
+    "semantic_hash": "b4752bcbf0f5d3b50fd607742b8a0fe4"
+  },
+  "go/internal/kvm/vm.go": {
+    "mtime": 1784982894.2283723,
+    "ast_hash": "1238e9892cdaab4f9e4a20259717d393",
+    "semantic_hash": "1238e9892cdaab4f9e4a20259717d393"
+  },
+  "go/internal/proxmox/backup.go": {
+    "mtime": 1784982641.4317424,
+    "ast_hash": "110f1b5748a8e7c34fedfefd74c4f9d5",
+    "semantic_hash": "110f1b5748a8e7c34fedfefd74c4f9d5"
+  },
+  "go/internal/proxmox/client.go": {
+    "mtime": 1784982546.567148,
+    "ast_hash": "270c31860564b882c323bda8a17b2629",
+    "semantic_hash": "270c31860564b882c323bda8a17b2629"
+  },
+  "go/internal/proxmox/cluster.go": {
+    "mtime": 1784982660.0968227,
+    "ast_hash": "bf58007010c3a24423c1162401e64e09",
+    "semantic_hash": "bf58007010c3a24423c1162401e64e09"
+  },
+  "go/internal/proxmox/container.go": {
+    "mtime": 1784982591.5019667,
+    "ast_hash": "d43fb99d8abfad7117fe0a578c219d67",
+    "semantic_hash": "d43fb99d8abfad7117fe0a578c219d67"
+  },
+  "go/internal/proxmox/firewall.go": {
+    "mtime": 1784982702.917581,
+    "ast_hash": "5e649a386880177d0f3d3caffe1e3246",
+    "semantic_hash": "5e649a386880177d0f3d3caffe1e3246"
+  },
+  "go/internal/proxmox/ha.go": {
+    "mtime": 1784982680.0802374,
+    "ast_hash": "57d0c9acf5a086edbb55e65423512d6d",
+    "semantic_hash": "57d0c9acf5a086edbb55e65423512d6d"
+  },
+  "go/internal/proxmox/migration.go": {
+    "mtime": 1784982759.8811324,
+    "ast_hash": "d9872f7565aa2374371af7a22d4d4663",
+    "semantic_hash": "d9872f7565aa2374371af7a22d4d4663"
+  },
+  "go/internal/proxmox/monitor.go": {
+    "mtime": 1784982816.6842916,
+    "ast_hash": "8f7b3244e586d322428799b27abc9422",
+    "semantic_hash": "8f7b3244e586d322428799b27abc9422"
+  },
+  "go/internal/proxmox/network.go": {
+    "mtime": 1784982779.1373339,
+    "ast_hash": "b131bd3a57be121a3f5ba7e6a98da570",
+    "semantic_hash": "b131bd3a57be121a3f5ba7e6a98da570"
+  },
+  "go/internal/proxmox/sdn.go": {
+    "mtime": 1784982797.8531334,
+    "ast_hash": "cb5bda75867822c6f3bf0358c05c78b9",
+    "semantic_hash": "cb5bda75867822c6f3bf0358c05c78b9"
+  },
+  "go/internal/proxmox/snapshot.go": {
+    "mtime": 1784982737.138312,
+    "ast_hash": "2fe8ab070ae2c3422f048f55aad945ad",
+    "semantic_hash": "2fe8ab070ae2c3422f048f55aad945ad"
+  },
+  "go/internal/proxmox/storage.go": {
+    "mtime": 1784982610.529858,
+    "ast_hash": "b60f5c00bef86f009b703c9b8c896a75",
+    "semantic_hash": "b60f5c00bef86f009b703c9b8c896a75"
+  },
+  "go/internal/proxmox/user.go": {
+    "mtime": 1784982726.3389819,
+    "ast_hash": "b70b42cba8358e6a48abcaf335976cd5",
+    "semantic_hash": "b70b42cba8358e6a48abcaf335976cd5"
+  },
+  "go/internal/proxmox/vm.go": {
+    "mtime": 1784982570.9298265,
+    "ast_hash": "834ddb2a8b230cd9ff6c5f75b2282c79",
+    "semantic_hash": "834ddb2a8b230cd9ff6c5f75b2282c79"
+  },
+  "go/internal/tui/app.go": {
+    "mtime": 1784983666.4900317,
+    "ast_hash": "cfba66a54700cfe75591d85d5e0c5574",
+    "semantic_hash": "cfba66a54700cfe75591d85d5e0c5574"
+  },
+  "go/internal/tui/confirm.go": {
+    "mtime": 1784984030.4063394,
+    "ast_hash": "170aa105e1a83ffb186508722497ee41",
+    "semantic_hash": "170aa105e1a83ffb186508722497ee41"
+  },
+  "go/internal/tui/executor.go": {
+    "mtime": 1784983651.1862924,
+    "ast_hash": "b9946f39bc9d1941ef836676af85e7cf",
+    "semantic_hash": "b9946f39bc9d1941ef836676af85e7cf"
+  },
+  "go/internal/tui/form.go": {
+    "mtime": 1784983446.9059587,
+    "ast_hash": "c776cf6dff6aeb0dbf19dd0e2a3d7a4b",
+    "semantic_hash": "c776cf6dff6aeb0dbf19dd0e2a3d7a4b"
+  },
+  "go/internal/tui/log_viewer.go": {
+    "mtime": 1784984054.5966148,
+    "ast_hash": "a87cb6ebc5501edd4f16c9fbba94e334",
+    "semantic_hash": "a87cb6ebc5501edd4f16c9fbba94e334"
+  },
+  "go/internal/tui/menu.go": {
+    "mtime": 1784983312.4895022,
+    "ast_hash": "42f6cbb5d1febd3fd78fed60fedd8f4d",
+    "semantic_hash": "42f6cbb5d1febd3fd78fed60fedd8f4d"
+  },
+  "go/internal/tui/model.go": {
+    "mtime": 1784984116.7118907,
+    "ast_hash": "dc53619cc29c59dbf8270e372768ff4b",
+    "semantic_hash": "dc53619cc29c59dbf8270e372768ff4b"
+  },
+  "go/internal/tui/progress.go": {
+    "mtime": 1784983782.473294,
+    "ast_hash": "79432d9976410a8fa096dd82516f9f8f",
+    "semantic_hash": "79432d9976410a8fa096dd82516f9f8f"
+  },
+  "go/internal/tui/sparkline.go": {
+    "mtime": 1784983535.2262297,
+    "ast_hash": "034b39e3408c1b777ad5faa5716d8313",
+    "semantic_hash": "034b39e3408c1b777ad5faa5716d8313"
+  },
+  "go/internal/tui/styles.go": {
+    "mtime": 1784983210.431076,
+    "ast_hash": "74297268a7cdd9106c7031ddeeeccec1",
+    "semantic_hash": "74297268a7cdd9106c7031ddeeeccec1"
+  },
+  "go/internal/tui/views.go": {
+    "mtime": 1784983956.892002,
+    "ast_hash": "abdf10e0310c47419c7a1cec950f6d5e",
+    "semantic_hash": "abdf10e0310c47419c7a1cec950f6d5e"
+  },
+  "kvm/bash/kvm-backup-restore.sh": {
+    "mtime": 1784980739.0823953,
+    "ast_hash": "358b7e67077d503c80f7227af18c4b8a",
+    "semantic_hash": "358b7e67077d503c80f7227af18c4b8a"
+  },
+  "kvm/bash/kvm-backup.sh": {
+    "mtime": 1784980707.5736492,
+    "ast_hash": "2ce5b33fbd58570e626d4f4c99995c7a",
+    "semantic_hash": "2ce5b33fbd58570e626d4f4c99995c7a"
+  },
+  "kvm/bash/kvm-cloudinit.sh": {
+    "mtime": 1784980926.2361414,
+    "ast_hash": "f6dd3fd7bb1714f052265afecdaf41f0",
+    "semantic_hash": "f6dd3fd7bb1714f052265afecdaf41f0"
+  },
+  "kvm/bash/kvm-disk-image.sh": {
+    "mtime": 1784980484.0781143,
+    "ast_hash": "a3003b4ca52738079176498aedd42ea5",
+    "semantic_hash": "a3003b4ca52738079176498aedd42ea5"
+  },
+  "kvm/bash/kvm-health-check.sh": {
+    "mtime": 1784981052.1357517,
+    "ast_hash": "2a2ca8a47fb4ceea346dfe7aa2f54aaa",
+    "semantic_hash": "2a2ca8a47fb4ceea346dfe7aa2f54aaa"
+  },
+  "kvm/bash/kvm-iommu-setup.sh": {
+    "mtime": 1784980870.0780602,
+    "ast_hash": "5e2fe66cb9cfc8f96b8c604381ff9da0",
+    "semantic_hash": "5e2fe66cb9cfc8f96b8c604381ff9da0"
+  },
+  "kvm/bash/kvm-nested-virt.sh": {
+    "mtime": 1784980821.9181046,
+    "ast_hash": "28e296937f8121c227045636cb79eee2",
+    "semantic_hash": "28e296937f8121c227045636cb79eee2"
+  },
+  "kvm/bash/kvm-network-bridge.sh": {
+    "mtime": 1784980516.5413637,
+    "ast_hash": "17ef2e6f3f98fad6a655506b57335f84",
+    "semantic_hash": "17ef2e6f3f98fad6a655506b57335f84"
+  },
+  "kvm/bash/kvm-ovs.sh": {
+    "mtime": 1784980581.733811,
+    "ast_hash": "9033af2623f4c495c87978846018ca67",
+    "semantic_hash": "9033af2623f4c495c87978846018ca67"
+  },
+  "kvm/bash/kvm-passthrough.sh": {
+    "mtime": 1784980636.8402612,
+    "ast_hash": "a66c61ca84f5c02a298ced6570e0d58d",
+    "semantic_hash": "a66c61ca84f5c02a298ced6570e0d58d"
+  },
+  "kvm/bash/kvm-performance-tune.sh": {
+    "mtime": 1784980791.5501578,
+    "ast_hash": "25b97a4f5d3a805a8f4ef2c5693997dd",
+    "semantic_hash": "25b97a4f5d3a805a8f4ef2c5693997dd"
+  },
+  "kvm/bash/kvm-qemu-direct.sh": {
+    "mtime": 1784980974.1257572,
+    "ast_hash": "a8ccb1adc2428943dc13b340ed96e7a5",
+    "semantic_hash": "a8ccb1adc2428943dc13b340ed96e7a5"
+  },
+  "kvm/bash/kvm-snapshot.sh": {
+    "mtime": 1784980663.6196766,
+    "ast_hash": "09f45eec5741ee5d462c51089256dd70",
+    "semantic_hash": "09f45eec5741ee5d462c51089256dd70"
+  },
+  "kvm/bash/kvm-vm-lifecycle.sh": {
+    "mtime": 1784980441.7953475,
+    "ast_hash": "9961e48d95f33d70d79088ecbeb564ba",
+    "semantic_hash": "9961e48d95f33d70d79088ecbeb564ba"
+  },
+  "kvm/python/kvm_backing_chain.py": {
+    "mtime": 1784981830.2463927,
+    "ast_hash": "2f0689033a8ead3ef8b9e4d6b1800b1b",
+    "semantic_hash": "2f0689033a8ead3ef8b9e4d6b1800b1b"
+  },
+  "kvm/python/kvm_backup.py": {
+    "mtime": 1784982000.2689393,
+    "ast_hash": "13ffe1a72e4aaf5f7c21975342fe45ca",
+    "semantic_hash": "13ffe1a72e4aaf5f7c21975342fe45ca"
+  },
+  "kvm/python/kvm_cloudinit.py": {
+    "mtime": 1784982141.3954334,
+    "ast_hash": "f06fbae3d94ee718692e487db6d74125",
+    "semantic_hash": "f06fbae3d94ee718692e487db6d74125"
+  },
+  "kvm/python/kvm_cpu_pinning.py": {
+    "mtime": 1784982075.320092,
+    "ast_hash": "e81ec0c951af0afe0cc713d127340319",
+    "semantic_hash": "e81ec0c951af0afe0cc713d127340319"
+  },
+  "kvm/python/kvm_disk_encryption.py": {
+    "mtime": 1784981802.1228466,
+    "ast_hash": "c1745ee87e135f964043c114ea824569",
+    "semantic_hash": "c1745ee87e135f964043c114ea824569"
+  },
+  "kvm/python/kvm_disk_manager.py": {
+    "mtime": 1784981781.7461896,
+    "ast_hash": "ca05ccb4265359a4e46d0d1fed3f74f5",
+    "semantic_hash": "ca05ccb4265359a4e46d0d1fed3f74f5"
+  },
+  "kvm/python/kvm_gpu_passthrough.py": {
+    "mtime": 1784981938.2200198,
+    "ast_hash": "4d9966f4a55b3c9bf5b5af7ccacd3fc8",
+    "semantic_hash": "4d9966f4a55b3c9bf5b5af7ccacd3fc8"
+  },
+  "kvm/python/kvm_libvirt_client.py": {
+    "mtime": 1784981667.9423082,
+    "ast_hash": "a3572c08b1e66f0852a5d944ecfa9825",
+    "semantic_hash": "a3572c08b1e66f0852a5d944ecfa9825"
+  },
+  "kvm/python/kvm_monitoring.py": {
+    "mtime": 1784982258.0268073,
+    "ast_hash": "3c28d24e1140e1ed0542f8b6073c0ba5",
+    "semantic_hash": "3c28d24e1140e1ed0542f8b6073c0ba5"
+  },
+  "kvm/python/kvm_network_manager.py": {
+    "mtime": 1784981862.747877,
+    "ast_hash": "ab58fa54e6499ada1fcaaaaaa21a67ab",
+    "semantic_hash": "ab58fa54e6499ada1fcaaaaaa21a67ab"
+  },
+  "kvm/python/kvm_numa_topology.py": {
+    "mtime": 1784982098.3828273,
+    "ast_hash": "3613b8c6a61a271f5fcefacb6b4b9666",
+    "semantic_hash": "3613b8c6a61a271f5fcefacb6b4b9666"
+  },
+  "kvm/python/kvm_performance.py": {
+    "mtime": 1784982045.6325452,
+    "ast_hash": "59e3b2e0533171ddddb0b61971c182f5",
+    "semantic_hash": "59e3b2e0533171ddddb0b61971c182f5"
+  },
+  "kvm/python/kvm_qmp_client.py": {
+    "mtime": 1784982211.541517,
+    "ast_hash": "bd09d8567af524d079ff3f8c6044d105",
+    "semantic_hash": "bd09d8567af524d079ff3f8c6044d105"
+  },
+  "kvm/python/kvm_snapshot_manager.py": {
+    "mtime": 1784981960.6674426,
+    "ast_hash": "a253d1dbcbe5c0026eab00e7ecf1c8d8",
+    "semantic_hash": "a253d1dbcbe5c0026eab00e7ecf1c8d8"
+  },
+  "kvm/python/kvm_sriov_passthrough.py": {
+    "mtime": 1784981895.149448,
+    "ast_hash": "b85f4fca9f4524f36bb6a23e10a3fd16",
+    "semantic_hash": "b85f4fca9f4524f36bb6a23e10a3fd16"
+  },
+  "kvm/python/kvm_vm_fleet_deploy.py": {
+    "mtime": 1784982187.743826,
+    "ast_hash": "ed43c4b11ca342a5a8158c40abf9cdf3",
+    "semantic_hash": "ed43c4b11ca342a5a8158c40abf9cdf3"
+  },
+  "kvm/python/kvm_vm_manager.py": {
+    "mtime": 1784981718.091177,
+    "ast_hash": "d97555d832dea56274bf76776e5b9521",
+    "semantic_hash": "d97555d832dea56274bf76776e5b9521"
+  },
+  "kvm/python/kvm_vm_modify.py": {
+    "mtime": 1784981753.0562806,
+    "ast_hash": "6ff3a17d93d24b24bba5cfa578d5d0a5",
+    "semantic_hash": "6ff3a17d93d24b24bba5cfa578d5d0a5"
+  },
+  "packer/proxmox-debian-12.pkr.hcl": {
+    "mtime": 1784982410.606649,
+    "ast_hash": "0eae0ac23b66dac8749bca446577836b",
+    "semantic_hash": "0eae0ac23b66dac8749bca446577836b"
+  },
+  "packer/proxmox-rocky-9.pkr.hcl": {
+    "mtime": 1784982426.1786518,
+    "ast_hash": "4293e412e9e283a2dee3feb064368459",
+    "semantic_hash": "4293e412e9e283a2dee3feb064368459"
+  },
+  "packer/proxmox-ubuntu-2404.pkr.hcl": {
+    "mtime": 1784982391.3458436,
+    "ast_hash": "f8ee86f56b87869de3568657f6d9a7d6",
+    "semantic_hash": "f8ee86f56b87869de3568657f6d9a7d6"
+  },
+  "packer/proxmox-windows-2022.pkr.hcl": {
+    "mtime": 1784982453.2668161,
+    "ast_hash": "f2a92b2427cdc1160b6dd225ae1e169a",
+    "semantic_hash": "f2a92b2427cdc1160b6dd225ae1e169a"
+  },
+  "packer/qemu-debian-12.pkr.hcl": {
+    "mtime": 1784982485.8339326,
+    "ast_hash": "cf46d0b96457ba5c66d59da9bfffb235",
+    "semantic_hash": "cf46d0b96457ba5c66d59da9bfffb235"
+  },
+  "packer/qemu-ubuntu-2404.pkr.hcl": {
+    "mtime": 1784982471.536079,
+    "ast_hash": "f0c6abefecfa49fa63dfa8ce3cd25bc9",
+    "semantic_hash": "f0c6abefecfa49fa63dfa8ce3cd25bc9"
+  },
+  "proxmox/bash/pmx-backup-restore.sh": {
+    "mtime": 1784980510.9174662,
+    "ast_hash": "0f9ec47b474a7ed96efffb73b399fcef",
+    "semantic_hash": "0f9ec47b474a7ed96efffb73b399fcef"
+  },
+  "proxmox/bash/pmx-ceph.sh": {
+    "mtime": 1784980856.2722404,
+    "ast_hash": "2bca0ef6952d9c7d89c5eab6dea9f5f6",
+    "semantic_hash": "2bca0ef6952d9c7d89c5eab6dea9f5f6"
+  },
+  "proxmox/bash/pmx-cloudinit.sh": {
+    "mtime": 1784981341.177729,
+    "ast_hash": "cb7c976262a0b0df1ff66f648efb95a9",
+    "semantic_hash": "cb7c976262a0b0df1ff66f648efb95a9"
+  },
+  "proxmox/bash/pmx-cluster.sh": {
+    "mtime": 1784980540.1617615,
+    "ast_hash": "9694f0a2ae4aa7a12b1dcf47c008f17c",
+    "semantic_hash": "9694f0a2ae4aa7a12b1dcf47c008f17c"
+  },
+  "proxmox/bash/pmx-ct-lifecycle.sh": {
+    "mtime": 1784980434.7441986,
+    "ast_hash": "c391f60197dc8ab3989b7416e273277d",
+    "semantic_hash": "c391f60197dc8ab3989b7416e273277d"
+  },
+  "proxmox/bash/pmx-firewall.sh": {
+    "mtime": 1784980646.1178184,
+    "ast_hash": "555d6fd3ae3e05cdaeaa8421b91eec03",
+    "semantic_hash": "555d6fd3ae3e05cdaeaa8421b91eec03"
+  },
+  "proxmox/bash/pmx-gpu-passthrough.sh": {
+    "mtime": 1784981186.982285,
+    "ast_hash": "09ccefcf291302a931b08c6ea42f3bbf",
+    "semantic_hash": "09ccefcf291302a931b08c6ea42f3bbf"
+  },
+  "proxmox/bash/pmx-ha.sh": {
+    "mtime": 1784980585.2003958,
+    "ast_hash": "eaa8d1a5de8edf10513f1bf1ecd26f89",
+    "semantic_hash": "eaa8d1a5de8edf10513f1bf1ecd26f89"
+  },
+  "proxmox/bash/pmx-health-check.sh": {
+    "mtime": 1784981419.139276,
+    "ast_hash": "8498d4f176d2d10137794a3d1198e189",
+    "semantic_hash": "8498d4f176d2d10137794a3d1198e189"
+  },
+  "proxmox/bash/pmx-migration.sh": {
+    "mtime": 1784981460.4823735,
+    "ast_hash": "368ec0b71ffdadef77421b844e1c2fe5",
+    "semantic_hash": "368ec0b71ffdadef77421b844e1c2fe5"
+  },
+  "proxmox/bash/pmx-network.sh": {
+    "mtime": 1784981072.8762293,
+    "ast_hash": "0e01d3e538441914fc063c419b6b8a72",
+    "semantic_hash": "0e01d3e538441914fc063c419b6b8a72"
+  },
+  "proxmox/bash/pmx-node-maintenance.sh": {
+    "mtime": 1784981013.5679107,
+    "ast_hash": "4fe36d0cbfd6b3939a632ab2c7b88dc0",
+    "semantic_hash": "4fe36d0cbfd6b3939a632ab2c7b88dc0"
+  },
+  "proxmox/bash/pmx-pbs-integration.sh": {
+    "mtime": 1784980956.0247371,
+    "ast_hash": "88fca55d61d0a680a475300bfd35e2f0",
+    "semantic_hash": "88fca55d61d0a680a475300bfd35e2f0"
+  },
+  "proxmox/bash/pmx-pci-passthrough.sh": {
+    "mtime": 1784981240.6162622,
+    "ast_hash": "e63d461c11c518d3408e68ca00130a50",
+    "semantic_hash": "e63d461c11c518d3408e68ca00130a50"
+  },
+  "proxmox/bash/pmx-sdn.sh": {
+    "mtime": 1784981131.7573915,
+    "ast_hash": "14513910df80e3bd5e2748bd7dee465d",
+    "semantic_hash": "14513910df80e3bd5e2748bd7dee465d"
+  },
+  "proxmox/bash/pmx-snapshot.sh": {
+    "mtime": 1784980740.5328813,
+    "ast_hash": "a34ed8913c0be873f7b4ef33f5fa0049",
+    "semantic_hash": "a34ed8913c0be873f7b4ef33f5fa0049"
+  },
+  "proxmox/bash/pmx-sriov.sh": {
+    "mtime": 1784981286.361172,
+    "ast_hash": "2acd0c924409b58d0ec9e451fc68a64e",
+    "semantic_hash": "2acd0c924409b58d0ec9e451fc68a64e"
+  },
+  "proxmox/bash/pmx-storage.sh": {
+    "mtime": 1784980475.6755176,
+    "ast_hash": "65c4bddaa6b910fa97ef67645a355391",
+    "semantic_hash": "65c4bddaa6b910fa97ef67645a355391"
+  },
+  "proxmox/bash/pmx-template.sh": {
+    "mtime": 1784981452.3972027,
+    "ast_hash": "69c1b6ffd736aed4ec8e5af00b3f94a4",
+    "semantic_hash": "69c1b6ffd736aed4ec8e5af00b3f94a4"
+  },
+  "proxmox/bash/pmx-user-acl.sh": {
+    "mtime": 1784980711.2618032,
+    "ast_hash": "fd49e8b75652d8ebfb2ee20117546d0f",
+    "semantic_hash": "fd49e8b75652d8ebfb2ee20117546d0f"
+  },
+  "proxmox/bash/pmx-vm-lifecycle.sh": {
+    "mtime": 1784980385.890824,
+    "ast_hash": "781a3e47ea3b0df9ff41c95b66bb271d",
+    "semantic_hash": "781a3e47ea3b0df9ff41c95b66bb271d"
+  },
+  "proxmox/bash/pmx-zfs.sh": {
+    "mtime": 1784980916.1412468,
+    "ast_hash": "143d512e5302085e7ae9eb192e9ef10d",
+    "semantic_hash": "143d512e5302085e7ae9eb192e9ef10d"
+  },
+  "proxmox/python/pmx_alerting.py": {
+    "mtime": 1784982157.294991,
+    "ast_hash": "be520111f667a1a8d6af3da35ee926b7",
+    "semantic_hash": "be520111f667a1a8d6af3da35ee926b7"
+  },
+  "proxmox/python/pmx_backup_manager.py": {
+    "mtime": 1784981755.6513953,
+    "ast_hash": "46cbf73bdc37d6ef5174a9c043389695",
+    "semantic_hash": "46cbf73bdc37d6ef5174a9c043389695"
+  },
+  "proxmox/python/pmx_bulk_operations.py": {
+    "mtime": 1784982192.615911,
+    "ast_hash": "2d7aa24eda9e11b4821b1ca33c056a05",
+    "semantic_hash": "2d7aa24eda9e11b4821b1ca33c056a05"
+  },
+  "proxmox/python/pmx_capacity_report.py": {
+    "mtime": 1784982122.534744,
+    "ast_hash": "4476af6f8edf91b602d1511cea76c810",
+    "semantic_hash": "4476af6f8edf91b602d1511cea76c810"
+  },
+  "proxmox/python/pmx_ceph_manager.py": {
+    "mtime": 1784981884.6292517,
+    "ast_hash": "9753028963006f39650d30f4092147ca",
+    "semantic_hash": "9753028963006f39650d30f4092147ca"
+  },
+  "proxmox/python/pmx_certificate_manager.py": {
+    "mtime": 1784982170.9713638,
+    "ast_hash": "19de15b3d8fccbf652d973d970cd5415",
+    "semantic_hash": "19de15b3d8fccbf652d973d970cd5415"
+  },
+  "proxmox/python/pmx_cloudinit_manager.py": {
+    "mtime": 1784982009.4179256,
+    "ast_hash": "4434f2755f5fccc124812f720c95d83c",
+    "semantic_hash": "4434f2755f5fccc124812f720c95d83c"
+  },
+  "proxmox/python/pmx_cluster_manager.py": {
+    "mtime": 1784981771.4577131,
+    "ast_hash": "73e13b7875c9d2f26e8c6c7d8cbf9835",
+    "semantic_hash": "73e13b7875c9d2f26e8c6c7d8cbf9835"
+  },
+  "proxmox/python/pmx_ct_manager.py": {
+    "mtime": 1784981715.183863,
+    "ast_hash": "af2de8abbded36a5ee8eabd61df772ae",
+    "semantic_hash": "af2de8abbded36a5ee8eabd61df772ae"
+  },
+  "proxmox/python/pmx_firewall_manager.py": {
+    "mtime": 1784981804.9168975,
+    "ast_hash": "988b207a475a881e2c92f526a41afebb",
+    "semantic_hash": "988b207a475a881e2c92f526a41afebb"
+  },
+  "proxmox/python/pmx_ha_manager.py": {
+    "mtime": 1784981784.7081728,
+    "ast_hash": "704d897bbd48d904e6c1da71bd037262",
+    "semantic_hash": "704d897bbd48d904e6c1da71bd037262"
+  },
+  "proxmox/python/pmx_migration_manager.py": {
+    "mtime": 1784981867.5176747,
+    "ast_hash": "9a8a6dc644ddcf7e681ae55fc4dd75c6",
+    "semantic_hash": "9a8a6dc644ddcf7e681ae55fc4dd75c6"
+  },
+  "proxmox/python/pmx_monitoring.py": {
+    "mtime": 1784982083.0793376,
+    "ast_hash": "5e853e2853271cbf7a0640a1f55aeecf",
+    "semantic_hash": "5e853e2853271cbf7a0640a1f55aeecf"
+  },
+  "proxmox/python/pmx_network_manager.py": {
+    "mtime": 1784981942.9367,
+    "ast_hash": "d93e27ae725f990b1cc14980e3c7ce7a",
+    "semantic_hash": "d93e27ae725f990b1cc14980e3c7ce7a"
+  },
+  "proxmox/python/pmx_passthrough_manager.py": {
+    "mtime": 1784981981.1772807,
+    "ast_hash": "a0013d135c42be887d7235aefbb114e6",
+    "semantic_hash": "a0013d135c42be887d7235aefbb114e6"
+  },
+  "proxmox/python/pmx_pbs_manager.py": {
+    "mtime": 1784981920.0355706,
+    "ast_hash": "79978c26f1fac4f71848935049abe7ce",
+    "semantic_hash": "79978c26f1fac4f71848935049abe7ce"
+  },
+  "proxmox/python/pmx_sdn_manager.py": {
+    "mtime": 1784981961.415531,
+    "ast_hash": "69ba7754b14396953314aa9c9eeb2486",
+    "semantic_hash": "69ba7754b14396953314aa9c9eeb2486"
+  },
+  "proxmox/python/pmx_snapshot_manager.py": {
+    "mtime": 1784981836.8341732,
+    "ast_hash": "41996c8e1cfc3b7cf9002425fd1a5f51",
+    "semantic_hash": "41996c8e1cfc3b7cf9002425fd1a5f51"
+  },
+  "proxmox/python/pmx_storage_manager.py": {
+    "mtime": 1784981733.7232363,
+    "ast_hash": "09f3ee3e1a9209a9645fd82c9a2e7113",
+    "semantic_hash": "09f3ee3e1a9209a9645fd82c9a2e7113"
+  },
+  "proxmox/python/pmx_template_manager.py": {
+    "mtime": 1784982021.1157534,
+    "ast_hash": "85f1d7edcb1187d93dc64c8138f988fe",
+    "semantic_hash": "85f1d7edcb1187d93dc64c8138f988fe"
+  },
+  "proxmox/python/pmx_user_acl_manager.py": {
+    "mtime": 1784981827.484958,
+    "ast_hash": "f4be03df05e5cf19ecdbceda53f0375d",
+    "semantic_hash": "f4be03df05e5cf19ecdbceda53f0375d"
+  },
+  "proxmox/python/pmx_vm_config_audit.py": {
+    "mtime": 1784982041.1702304,
+    "ast_hash": "6580f3705497765537e4645e9fb9bd66",
+    "semantic_hash": "6580f3705497765537e4645e9fb9bd66"
+  },
+  "proxmox/python/pmx_vm_console.py": {
+    "mtime": 1784982052.459312,
+    "ast_hash": "ec0769cf2fb6414bc5e3f7d91c18967c",
+    "semantic_hash": "ec0769cf2fb6414bc5e3f7d91c18967c"
+  },
+  "proxmox/python/pmx_vm_manager.py": {
+    "mtime": 1784981692.0777662,
+    "ast_hash": "e8700701df287e132301f81c3fb78644",
+    "semantic_hash": "e8700701df287e132301f81c3fb78644"
+  },
+  "proxmox/python/pmx_zfs_manager.py": {
+    "mtime": 1784981901.2103488,
+    "ast_hash": "8df79a671657fee09df2d2caf6875584",
+    "semantic_hash": "8df79a671657fee09df2d2caf6875584"
+  },
+  "proxmox/python/pve_api_client.py": {
+    "mtime": 1784981646.7819362,
+    "ast_hash": "22cbc1e05d120be571eb73cc95921245",
+    "semantic_hash": "22cbc1e05d120be571eb73cc95921245"
+  },
+  "proxmox/terraform/main.tf": {
+    "mtime": 1784982611.9432254,
+    "ast_hash": "96457b814d022f728971fb8a00a54173",
+    "semantic_hash": "96457b814d022f728971fb8a00a54173"
+  },
+  "proxmox/terraform/modules/ct/main.tf": {
+    "mtime": 1784982612.9878137,
+    "ast_hash": "d0344d090208a20006a09f706c151e93",
+    "semantic_hash": "d0344d090208a20006a09f706c151e93"
+  },
+  "proxmox/terraform/modules/ct/outputs.tf": {
+    "mtime": 1784982529.7006283,
+    "ast_hash": "803db6e0e316163b84f4f485f538a7ca",
+    "semantic_hash": "803db6e0e316163b84f4f485f538a7ca"
+  },
+  "proxmox/terraform/modules/ct/variables.tf": {
+    "mtime": 1784982526.51223,
+    "ast_hash": "7b390360328f632d1368cabf5c08c5ae",
+    "semantic_hash": "7b390360328f632d1368cabf5c08c5ae"
+  },
+  "proxmox/terraform/modules/network/main.tf": {
+    "mtime": 1784982536.6441424,
+    "ast_hash": "747a29deacb6369aeb574de1a4d1c74a",
+    "semantic_hash": "747a29deacb6369aeb574de1a4d1c74a"
+  },
+  "proxmox/terraform/modules/network/outputs.tf": {
+    "mtime": 1784982548.3106444,
+    "ast_hash": "ae2cc826550f5a5d18bd8ede45e325a9",
+    "semantic_hash": "ae2cc826550f5a5d18bd8ede45e325a9"
+  },
+  "proxmox/terraform/modules/network/variables.tf": {
+    "mtime": 1784982545.6302984,
+    "ast_hash": "6e070c477fef2d5146a51b9555f07047",
+    "semantic_hash": "6e070c477fef2d5146a51b9555f07047"
+  },
+  "proxmox/terraform/modules/pool/main.tf": {
+    "mtime": 1784982549.5322554,
+    "ast_hash": "ae688911923c516e081b535a8142ed62",
+    "semantic_hash": "ae688911923c516e081b535a8142ed62"
+  },
+  "proxmox/terraform/modules/pool/outputs.tf": {
+    "mtime": 1784982552.550464,
+    "ast_hash": "024f36457f59625b2c53fdbea1e1a8f4",
+    "semantic_hash": "024f36457f59625b2c53fdbea1e1a8f4"
+  },
+  "proxmox/terraform/modules/pool/variables.tf": {
+    "mtime": 1784982551.0362978,
+    "ast_hash": "386643bd2b20d090e7ad341b40bf5389",
+    "semantic_hash": "386643bd2b20d090e7ad341b40bf5389"
+  },
+  "proxmox/terraform/modules/vm/main.tf": {
+    "mtime": 1784982500.0012083,
+    "ast_hash": "8948937423849f09b10dcf4b4e4962e3",
+    "semantic_hash": "8948937423849f09b10dcf4b4e4962e3"
+  },
+  "proxmox/terraform/modules/vm/outputs.tf": {
+    "mtime": 1784982510.9479265,
+    "ast_hash": "9f06cb15d428a371728ac293c6963fa5",
+    "semantic_hash": "9f06cb15d428a371728ac293c6963fa5"
+  },
+  "proxmox/terraform/modules/vm/variables.tf": {
+    "mtime": 1784982508.3216157,
+    "ast_hash": "260cf1fd940306f14cfc109c301d7765",
+    "semantic_hash": "260cf1fd940306f14cfc109c301d7765"
+  },
+  "proxmox/terraform/outputs.tf": {
+    "mtime": 1784982578.8416133,
+    "ast_hash": "dd1fd6a778b6a60d07c0695f600c8032",
+    "semantic_hash": "dd1fd6a778b6a60d07c0695f600c8032"
+  },
+  "proxmox/terraform/providers.tf": {
+    "mtime": 1784982581.849198,
+    "ast_hash": "0c1836edfcec4dcc6dff7664eea1a5f5",
+    "semantic_hash": "0c1836edfcec4dcc6dff7664eea1a5f5"
+  },
+  "proxmox/terraform/variables.tf": {
+    "mtime": 1784982574.459033,
+    "ast_hash": "abfe544cf5b04c98abbe5a2377ffb5a2",
+    "semantic_hash": "abfe544cf5b04c98abbe5a2377ffb5a2"
+  },
+  "proxmox/terraform/versions.tf": {
+    "mtime": 1784982584.0829415,
+    "ast_hash": "80c57ea816bb093e6bb1f5d1cb561316",
+    "semantic_hash": "80c57ea816bb093e6bb1f5d1cb561316"
+  },
+  "shared/bash/lib/common.sh": {
+    "mtime": 1784979952.2557933,
+    "ast_hash": "9ed4a2f8b3afeb8b38e001fd9af33113",
+    "semantic_hash": "9ed4a2f8b3afeb8b38e001fd9af33113"
+  },
+  "shared/go/go.mod": {
+    "mtime": 1784980222.7098289,
+    "ast_hash": "4b9108e36288610d284a24166e2328c3",
+    "semantic_hash": "4b9108e36288610d284a24166e2328c3"
+  },
+  "shared/go/sshexec/executor.go": {
+    "mtime": 1784980210.8182735,
+    "ast_hash": "afe1bd9318b213cc366b817b84129ee6",
+    "semantic_hash": "afe1bd9318b213cc366b817b84129ee6"
+  },
+  "shared/python/__init__.py": {
+    "mtime": 1784980219.2371583,
+    "ast_hash": "6e87565725e68f7b8654c9bc9fc32770",
+    "semantic_hash": "6e87565725e68f7b8654c9bc9fc32770"
+  },
+  "shared/python/health_check.py": {
+    "mtime": 1784980185.8819697,
+    "ast_hash": "467b14fa8f1eb09102f48b4f98c75891",
+    "semantic_hash": "467b14fa8f1eb09102f48b4f98c75891"
+  },
+  "shared/python/inventory_parser.py": {
+    "mtime": 1784980031.7256832,
+    "ast_hash": "633bb204ac05a4c7811f77f26180472a",
+    "semantic_hash": "633bb204ac05a4c7811f77f26180472a"
+  },
+  "shared/python/notification.py": {
+    "mtime": 1784980082.4217465,
+    "ast_hash": "a51c2e84a4123cf5e1be2afae21b0bc0",
+    "semantic_hash": "a51c2e84a4123cf5e1be2afae21b0bc0"
+  },
+  "shared/python/report_generator.py": {
+    "mtime": 1784980131.4907851,
+    "ast_hash": "79e316855f069d4350b5c2989b07f5c0",
+    "semantic_hash": "79e316855f069d4350b5c2989b07f5c0"
+  },
+  "shared/python/ssh_executor.py": {
+    "mtime": 1784979996.5437536,
+    "ast_hash": "8d4a45fda5123a7e3da933d16f45767c",
+    "semantic_hash": "8d4a45fda5123a7e3da933d16f45767c"
+  },
+  "tests/go/config_test.go": {
+    "mtime": 1784983663.179829,
+    "ast_hash": "d5921c98485ea1adac18d07b2078054e",
+    "semantic_hash": "d5921c98485ea1adac18d07b2078054e"
+  },
+  "tests/go/proxmox_client_test.go": {
+    "mtime": 1784983680.4099352,
+    "ast_hash": "db0b88ee0ef4861d522b7d7cdd36c04e",
+    "semantic_hash": "db0b88ee0ef4861d522b7d7cdd36c04e"
+  },
+  "tests/go/vm_operations_test.go": {
+    "mtime": 1784983637.072675,
+    "ast_hash": "94a55653f64755f9960596fb6f177971",
+    "semantic_hash": "94a55653f64755f9960596fb6f177971"
+  },
+  "tests/pytest/conftest.py": {
+    "mtime": 1784983371.509777,
+    "ast_hash": "13d591537aabca74b063725c836f0165",
+    "semantic_hash": "13d591537aabca74b063725c836f0165"
+  },
+  "tests/pytest/test_backup_manager.py": {
+    "mtime": 1784983435.6306822,
+    "ast_hash": "77a1a50d852c0ebe390b603411692a3b",
+    "semantic_hash": "77a1a50d852c0ebe390b603411692a3b"
+  },
+  "tests/pytest/test_ceph_manager.py": {
+    "mtime": 1784983511.1192398,
+    "ast_hash": "9975bd2ef27d58a7815ecf89c0b4e836",
+    "semantic_hash": "9975bd2ef27d58a7815ecf89c0b4e836"
+  },
+  "tests/pytest/test_cluster_manager.py": {
+    "mtime": 1784983469.7054238,
+    "ast_hash": "13caf98ab80e92370307f7049dbe81c9",
+    "semantic_hash": "13caf98ab80e92370307f7049dbe81c9"
+  },
+  "tests/pytest/test_ct_manager.py": {
+    "mtime": 1784983416.3669963,
+    "ast_hash": "b69f19b3ce385a89654b79161f70bcb9",
+    "semantic_hash": "b69f19b3ce385a89654b79161f70bcb9"
+  },
+  "tests/pytest/test_firewall_manager.py": {
+    "mtime": 1784983452.3683915,
+    "ast_hash": "9ca203c0b7ce92c51ecaadba388a8d93",
+    "semantic_hash": "9ca203c0b7ce92c51ecaadba388a8d93"
+  },
+  "tests/pytest/test_ha_manager.py": {
+    "mtime": 1784983485.660858,
+    "ast_hash": "23e2b519bf1aacca1b32e5c9cf2a66fc",
+    "semantic_hash": "23e2b519bf1aacca1b32e5c9cf2a66fc"
+  },
+  "tests/pytest/test_health_check.py": {
+    "mtime": 1784983556.6392715,
+    "ast_hash": "ea2884e90848851ade2a906922cc6a46",
+    "semantic_hash": "ea2884e90848851ade2a906922cc6a46"
+  },
+  "tests/pytest/test_monitoring.py": {
+    "mtime": 1784983502.4125173,
+    "ast_hash": "79bc5dc5215d67585b65486020a19dcf",
+    "semantic_hash": "79bc5dc5215d67585b65486020a19dcf"
+  },
+  "tests/pytest/test_notification.py": {
+    "mtime": 1784983539.315276,
+    "ast_hash": "3bfeff983bbc6a1fef9b8dfb3770a31a",
+    "semantic_hash": "3bfeff983bbc6a1fef9b8dfb3770a31a"
+  },
+  "tests/pytest/test_pve_api_client.py": {
+    "mtime": 1784983671.1632738,
+    "ast_hash": "9c0a9691984830f5897b82a5f5d44eb0",
+    "semantic_hash": "9c0a9691984830f5897b82a5f5d44eb0"
+  },
+  "tests/pytest/test_report_generator.py": {
+    "mtime": 1784983570.8789017,
+    "ast_hash": "e458d1a76b745c3245fa3d413dc75567",
+    "semantic_hash": "e458d1a76b745c3245fa3d413dc75567"
+  },
+  "tests/pytest/test_snapshot_manager.py": {
+    "mtime": 1784983444.2142465,
+    "ast_hash": "f4ba3c3be142200e8f69c1916b7c41a3",
+    "semantic_hash": "f4ba3c3be142200e8f69c1916b7c41a3"
+  },
+  "tests/pytest/test_storage_manager.py": {
+    "mtime": 1784983425.9280803,
+    "ast_hash": "853539a1a56c943e3d42543d6ceff6e8",
+    "semantic_hash": "853539a1a56c943e3d42543d6ceff6e8"
+  },
+  "tests/pytest/test_user_acl_manager.py": {
+    "mtime": 1784983462.057779,
+    "ast_hash": "e62cfd827290b98ec55e8c8de84c4d57",
+    "semantic_hash": "e62cfd827290b98ec55e8c8de84c4d57"
+  },
+  "tests/pytest/test_vm_manager.py": {
+    "mtime": 1784983406.180118,
+    "ast_hash": "a369d298a8b35d04045461e224c83dc8",
+    "semantic_hash": "a369d298a8b35d04045461e224c83dc8"
+  },
+  "tests/pytest/test_zfs_manager.py": {
+    "mtime": 1784983522.259772,
+    "ast_hash": "959234cade0477888cc6e1665342f1f4",
+    "semantic_hash": "959234cade0477888cc6e1665342f1f4"
+  },
+  "CHANGELOG.md": {
+    "mtime": 1784979946.929968,
+    "ast_hash": "295ae9ff0fc1248109e3c552b5e3ca9f",
+    "semantic_hash": "295ae9ff0fc1248109e3c552b5e3ca9f"
+  },
+  "README.md": {
+    "mtime": 1784979891.1794028,
+    "ast_hash": "d20dd9a9e843c49d109be7074d25a2ac",
+    "semantic_hash": "d20dd9a9e843c49d109be7074d25a2ac"
+  },
+  "config/settings.yaml": {
+    "mtime": 1784979893.5381913,
+    "ast_hash": "0ffb566299434deeb54595331a99dcde",
+    "semantic_hash": "0ffb566299434deeb54595331a99dcde"
+  },
+  "docs/ARCHITECTURE.md": {
+    "mtime": 1784983434.1778746,
+    "ast_hash": "ae0b107283c1a4a235b405aeb7633f06",
+    "semantic_hash": "ae0b107283c1a4a235b405aeb7633f06"
+  },
+  "docs/KVM_OPERATIONS.md": {
+    "mtime": 1784983611.1083462,
+    "ast_hash": "9c07fdaeb0a7a969ff0f7707c5d70cd1",
+    "semantic_hash": "9c07fdaeb0a7a969ff0f7707c5d70cd1"
+  },
+  "docs/PROXMOX_OPERATIONS.md": {
+    "mtime": 1784983538.321479,
+    "ast_hash": "734c20ac27a124512889b069f14e14aa",
+    "semantic_hash": "734c20ac27a124512889b069f14e14aa"
+  },
+  "docs/RUNBOOKS/backup-recovery.md": {
+    "mtime": 1784983921.3102129,
+    "ast_hash": "7fadb6db7ce83419b6093e37128feba6",
+    "semantic_hash": "7fadb6db7ce83419b6093e37128feba6"
+  },
+  "docs/RUNBOOKS/ceph-recovery.md": {
+    "mtime": 1784983868.5404577,
+    "ast_hash": "435246f88355adac351fdeaf22021e72",
+    "semantic_hash": "435246f88355adac351fdeaf22021e72"
+  },
+  "docs/RUNBOOKS/failed-migration.md": {
+    "mtime": 1784983818.0979016,
+    "ast_hash": "21a63cee9a06d82b24b01664ef9c1bd8",
+    "semantic_hash": "21a63cee9a06d82b24b01664ef9c1bd8"
+  },
+  "docs/RUNBOOKS/node-failure.md": {
+    "mtime": 1784983726.5711195,
+    "ast_hash": "4ddc4df9dcfb81cc989f49181379ef47",
+    "semantic_hash": "4ddc4df9dcfb81cc989f49181379ef47"
+  },
+  "docs/RUNBOOKS/split-brain.md": {
+    "mtime": 1784983979.5959058,
+    "ast_hash": "111ae4e58e2e207ba1bb4a68cf05ed5b",
+    "semantic_hash": "111ae4e58e2e207ba1bb4a68cf05ed5b"
+  },
+  "docs/RUNBOOKS/storage-full.md": {
+    "mtime": 1784983770.1975062,
+    "ast_hash": "6751e542210f0670d77b8f266a63c1b4",
+    "semantic_hash": "6751e542210f0670d77b8f266a63c1b4"
+  },
+  "docs/TUI.md": {
+    "mtime": 1784983670.996012,
+    "ast_hash": "3b5c9f58ceeb3c52bf35d87b6e9b30d7",
+    "semantic_hash": "3b5c9f58ceeb3c52bf35d87b6e9b30d7"
+  },
+  "docs/sketchnote-documentation.html": {
+    "mtime": 1784987107.660832,
+    "ast_hash": "b70891914804f904320a35980c7e9a03",
+    "semantic_hash": "b70891914804f904320a35980c7e9a03"
+  },
+  "go/.golangci-lint.yml": {
+    "mtime": 1784982366.8793128,
+    "ast_hash": "4cee755367a0c1032dd6c2e29bdc9880",
+    "semantic_hash": "4cee755367a0c1032dd6c2e29bdc9880"
+  },
+  "kvm/ansible/playbooks/kvm_host_setup.yml": {
+    "mtime": 1784985233.3419795,
+    "ast_hash": "0d30b896f3e0389ad7b366636d3f89c2",
+    "semantic_hash": "0d30b896f3e0389ad7b366636d3f89c2"
+  },
+  "kvm/ansible/playbooks/kvm_vm_deploy.yml": {
+    "mtime": 1784985240.5159974,
+    "ast_hash": "db234952c73e622fe36b99278a14142b",
+    "semantic_hash": "db234952c73e622fe36b99278a14142b"
+  },
+  "kvm/ansible/roles/kvm_hardening/meta/main.yml": {
+    "mtime": 1784985124.6378288,
+    "ast_hash": "d50b44e13f17db57881f85e1a1416c6f",
+    "semantic_hash": "d50b44e13f17db57881f85e1a1416c6f"
+  },
+  "kvm/ansible/roles/kvm_hardening/tasks/main.yml": {
+    "mtime": 1784985121.320887,
+    "ast_hash": "a7118d7a436abb0a0bf7f7fb312e5b53",
+    "semantic_hash": "a7118d7a436abb0a0bf7f7fb312e5b53"
+  },
+  "kvm/ansible/roles/kvm_install/tasks/main.yml": {
+    "mtime": 1784985002.870967,
+    "ast_hash": "1e7beeee5cea95c009d8bd7a9e4a3399",
+    "semantic_hash": "1e7beeee5cea95c009d8bd7a9e4a3399"
+  },
+  "kvm/ansible/roles/kvm_network/meta/main.yml": {
+    "mtime": 1784985062.0304995,
+    "ast_hash": "32cc71d7c4d299e911b3654b13b934d4",
+    "semantic_hash": "32cc71d7c4d299e911b3654b13b934d4"
+  },
+  "kvm/ansible/roles/kvm_network/tasks/main.yml": {
+    "mtime": 1784985058.8518188,
+    "ast_hash": "88dadbdcb0330b34d57eada9ffc26efb",
+    "semantic_hash": "88dadbdcb0330b34d57eada9ffc26efb"
+  },
+  "kvm/ansible/roles/kvm_network/vars/main.yml": {
+    "mtime": 1784985064.038395,
+    "ast_hash": "5ced341008f1b8deb152f50671bf13bb",
+    "semantic_hash": "5ced341008f1b8deb152f50671bf13bb"
+  },
+  "kvm/ansible/roles/kvm_storage/defaults/main.yml": {
+    "mtime": 1784985077.495053,
+    "ast_hash": "b046176e8731ef70b9f676fbab5ad2aa",
+    "semantic_hash": "b046176e8731ef70b9f676fbab5ad2aa"
+  },
+  "kvm/ansible/roles/kvm_storage/handlers/main.yml": {
+    "mtime": 1784985088.615331,
+    "ast_hash": "66bf96f3a8360dee6d983838b17dcfa8",
+    "semantic_hash": "66bf96f3a8360dee6d983838b17dcfa8"
+  },
+  "kvm/ansible/roles/kvm_storage/meta/main.yml": {
+    "mtime": 1784985090.3774064,
+    "ast_hash": "c5022dfe2b60351fd46fc37586e9ea28",
+    "semantic_hash": "c5022dfe2b60351fd46fc37586e9ea28"
+  },
+  "kvm/ansible/roles/kvm_storage/tasks/main.yml": {
+    "mtime": 1784985087.072903,
+    "ast_hash": "35e2730d0055ccd7cea801b2b5eb0e61",
+    "semantic_hash": "35e2730d0055ccd7cea801b2b5eb0e61"
+  },
+  "kvm/ansible/roles/kvm_storage/vars/main.yml": {
+    "mtime": 1784985091.3702545,
+    "ast_hash": "2023e8c76a082600fddc46d01be80d1f",
+    "semantic_hash": "2023e8c76a082600fddc46d01be80d1f"
+  },
+  "kvm/ansible/roles/kvm_vm_deploy/defaults/main.yml": {
+    "mtime": 1784985019.7117746,
+    "ast_hash": "8b0d7cd25d7ed1fcf40bfe33daa064a0",
+    "semantic_hash": "8b0d7cd25d7ed1fcf40bfe33daa064a0"
+  },
+  "kvm/ansible/roles/kvm_vm_deploy/handlers/main.yml": {
+    "mtime": 1784985034.672754,
+    "ast_hash": "4a6941d579cac2fe3db4b2a3d1e4863d",
+    "semantic_hash": "4a6941d579cac2fe3db4b2a3d1e4863d"
+  },
+  "kvm/ansible/roles/kvm_vm_deploy/meta/main.yml": {
+    "mtime": 1784985036.3649492,
+    "ast_hash": "9411b3bcd7d5ed6ceaec1946afd4444b",
+    "semantic_hash": "9411b3bcd7d5ed6ceaec1946afd4444b"
+  },
+  "kvm/ansible/roles/kvm_vm_deploy/tasks/main.yml": {
+    "mtime": 1784985032.938435,
+    "ast_hash": "b256449723a0e34c5dc43a3eb994778f",
+    "semantic_hash": "b256449723a0e34c5dc43a3eb994778f"
+  },
+  "kvm/ansible/roles/kvm_vm_deploy/vars/main.yml": {
+    "mtime": 1784985038.4640005,
+    "ast_hash": "def8af6bf7deee0dbb83b332e2d0ea37",
+    "semantic_hash": "def8af6bf7deee0dbb83b332e2d0ea37"
+  },
+  "kvm/python/requirements.txt": {
+    "mtime": 1784981646.0087895,
+    "ast_hash": "0dc8fa83ad02043d0154c161f300d5ad",
+    "semantic_hash": "0dc8fa83ad02043d0154c161f300d5ad"
+  },
+  "main-prompt.md": {
+    "mtime": 1784979362.4966495,
+    "ast_hash": "da490d105b64ebb91e40934aef3624e0",
+    "semantic_hash": "da490d105b64ebb91e40934aef3624e0"
+  },
+  "proxmox/ansible/group_vars/all.yml": {
+    "mtime": 1784984321.675561,
+    "ast_hash": "1714e599f3a21b542ed9ceed93413c5e",
+    "semantic_hash": "1714e599f3a21b542ed9ceed93413c5e"
+  },
+  "proxmox/ansible/playbooks/backup_all.yml": {
+    "mtime": 1784985169.6411982,
+    "ast_hash": "f2f42286becce81b2382c775283ea30a",
+    "semantic_hash": "f2f42286becce81b2382c775283ea30a"
+  },
+  "proxmox/ansible/playbooks/backup_setup.yml": {
+    "mtime": 1784985171.022058,
+    "ast_hash": "908dfe76aee32c2a2a8e5744883e0799",
+    "semantic_hash": "908dfe76aee32c2a2a8e5744883e0799"
+  },
+  "proxmox/ansible/playbooks/ceph_setup.yml": {
+    "mtime": 1784985177.7678833,
+    "ast_hash": "480baa576b036b1b2d52f202da7b376b",
+    "semantic_hash": "480baa576b036b1b2d52f202da7b376b"
+  },
+  "proxmox/ansible/playbooks/cluster_setup.yml": {
+    "mtime": 1784985174.5545418,
+    "ast_hash": "5a5acf46335574591ed06b51acdd2959",
+    "semantic_hash": "5a5acf46335574591ed06b51acdd2959"
+  },
+  "proxmox/ansible/playbooks/deploy_cts.yml": {
+    "mtime": 1784985166.8600278,
+    "ast_hash": "39a255273c81ccddae9765ec8206bda8",
+    "semantic_hash": "39a255273c81ccddae9765ec8206bda8"
+  },
+  "proxmox/ansible/playbooks/deploy_vms.yml": {
+    "mtime": 1784985165.3409865,
+    "ast_hash": "ddc4ea2cb4538e1bb8952d18f4f51c05",
+    "semantic_hash": "ddc4ea2cb4538e1bb8952d18f4f51c05"
+  },
+  "proxmox/ansible/playbooks/hardening.yml": {
+    "mtime": 1784985189.513034,
+    "ast_hash": "9f362aae4b4b11c91404537145331c0f",
+    "semantic_hash": "9f362aae4b4b11c91404537145331c0f"
+  },
+  "proxmox/ansible/playbooks/monitoring_stack.yml": {
+    "mtime": 1784985207.951631,
+    "ast_hash": "b34b46a126a024c730221df76fa7976d",
+    "semantic_hash": "b34b46a126a024c730221df76fa7976d"
+  },
+  "proxmox/ansible/playbooks/network_setup.yml": {
+    "mtime": 1784985180.9758413,
+    "ast_hash": "a75e72a2a9c85ae21223a55546579c80",
+    "semantic_hash": "a75e72a2a9c85ae21223a55546579c80"
+  },
+  "proxmox/ansible/playbooks/patching.yml": {
+    "mtime": 1784985190.7288854,
+    "ast_hash": "4dc4e54d591362a36cc4ccd93f23c3a8",
+    "semantic_hash": "4dc4e54d591362a36cc4ccd93f23c3a8"
+  },
+  "proxmox/ansible/playbooks/rolling_upgrade.yml": {
+    "mtime": 1784985197.132904,
+    "ast_hash": "a4944f9649b6f125b1c60a6366ab3465",
+    "semantic_hash": "a4944f9649b6f125b1c60a6366ab3465"
+  },
+  "proxmox/ansible/playbooks/sdn_setup.yml": {
+    "mtime": 1784985186.0666468,
+    "ast_hash": "a5fe114cde85dacaed8e6784f742e4a4",
+    "semantic_hash": "a5fe114cde85dacaed8e6784f742e4a4"
+  },
+  "proxmox/ansible/playbooks/site.yml": {
+    "mtime": 1784985163.5939727,
+    "ast_hash": "edeb94312cd506e69a26272620ac904c",
+    "semantic_hash": "edeb94312cd506e69a26272620ac904c"
+  },
+  "proxmox/ansible/roles/proxmox_backup/defaults/main.yml": {
+    "mtime": 1784984581.2411523,
+    "ast_hash": "c20d70eaf486dd2c6382be62865f7cc2",
+    "semantic_hash": "c20d70eaf486dd2c6382be62865f7cc2"
+  },
+  "proxmox/ansible/roles/proxmox_backup/handlers/main.yml": {
+    "mtime": 1784984593.6677775,
+    "ast_hash": "1ed06acba518b729f896af1215d57b04",
+    "semantic_hash": "1ed06acba518b729f896af1215d57b04"
+  },
+  "proxmox/ansible/roles/proxmox_backup/meta/main.yml": {
+    "mtime": 1784984595.4528804,
+    "ast_hash": "b5e8a91376b578fdce6e7b57b3ca88c5",
+    "semantic_hash": "b5e8a91376b578fdce6e7b57b3ca88c5"
+  },
+  "proxmox/ansible/roles/proxmox_backup/tasks/main.yml": {
+    "mtime": 1784984592.438936,
+    "ast_hash": "629b566d2c760fe87a09572fc7286f17",
+    "semantic_hash": "629b566d2c760fe87a09572fc7286f17"
+  },
+  "proxmox/ansible/roles/proxmox_backup/vars/main.yml": {
+    "mtime": 1784984596.3554225,
+    "ast_hash": "2949d6cae3c6ade97c41ed719b9804df",
+    "semantic_hash": "2949d6cae3c6ade97c41ed719b9804df"
+  },
+  "proxmox/ansible/roles/proxmox_ceph/defaults/main.yml": {
+    "mtime": 1784984718.880785,
+    "ast_hash": "ea92b0691e9dfd6da624298e4e1449b9",
+    "semantic_hash": "ea92b0691e9dfd6da624298e4e1449b9"
+  },
+  "proxmox/ansible/roles/proxmox_ceph/handlers/main.yml": {
+    "mtime": 1784984734.0690286,
+    "ast_hash": "a8df63cb706371d2dfd01b5b33187a05",
+    "semantic_hash": "a8df63cb706371d2dfd01b5b33187a05"
+  },
+  "proxmox/ansible/roles/proxmox_ceph/meta/main.yml": {
+    "mtime": 1784984735.8239563,
+    "ast_hash": "7e9c2543d2644c265ea633a5e2ce0e5a",
+    "semantic_hash": "7e9c2543d2644c265ea633a5e2ce0e5a"
+  },
+  "proxmox/ansible/roles/proxmox_ceph/tasks/main.yml": {
+    "mtime": 1784984731.9779613,
+    "ast_hash": "648b1f426a06ecc51977da112ceca2d4",
+    "semantic_hash": "648b1f426a06ecc51977da112ceca2d4"
+  },
+  "proxmox/ansible/roles/proxmox_ceph/vars/main.yml": {
+    "mtime": 1784984736.998067,
+    "ast_hash": "52975e2faccdb27cb458871a6681069e",
+    "semantic_hash": "52975e2faccdb27cb458871a6681069e"
+  },
+  "proxmox/ansible/roles/proxmox_cloudinit/defaults/main.yml": {
+    "mtime": 1784984897.2432764,
+    "ast_hash": "fe9aaf3d0bd83ac549a026b8f8781854",
+    "semantic_hash": "fe9aaf3d0bd83ac549a026b8f8781854"
+  },
+  "proxmox/ansible/roles/proxmox_cloudinit/handlers/main.yml": {
+    "mtime": 1784984912.4824367,
+    "ast_hash": "311761c457d388e1a7e1cff5f6c1ee12",
+    "semantic_hash": "311761c457d388e1a7e1cff5f6c1ee12"
+  },
+  "proxmox/ansible/roles/proxmox_cloudinit/meta/main.yml": {
+    "mtime": 1784984914.1988919,
+    "ast_hash": "10ff81739100cbcd421cd1b2f1a59420",
+    "semantic_hash": "10ff81739100cbcd421cd1b2f1a59420"
+  },
+  "proxmox/ansible/roles/proxmox_cloudinit/tasks/main.yml": {
+    "mtime": 1784984911.4244015,
+    "ast_hash": "2ed0f35132fe39a768d546d50a9e9969",
+    "semantic_hash": "2ed0f35132fe39a768d546d50a9e9969"
+  },
+  "proxmox/ansible/roles/proxmox_cloudinit/vars/main.yml": {
+    "mtime": 1784984915.083545,
+    "ast_hash": "448ee7be9746755761f19a25159e1f9b",
+    "semantic_hash": "448ee7be9746755761f19a25159e1f9b"
+  },
+  "proxmox/ansible/roles/proxmox_cluster/defaults/main.yml": {
+    "mtime": 1784984451.2520282,
+    "ast_hash": "ecd89cf56a653620d0465785c8e48899",
+    "semantic_hash": "ecd89cf56a653620d0465785c8e48899"
+  },
+  "proxmox/ansible/roles/proxmox_cluster/handlers/main.yml": {
+    "mtime": 1784984453.8655667,
+    "ast_hash": "dc98e1b5f56d26d54ed96f80e0aeb28c",
+    "semantic_hash": "dc98e1b5f56d26d54ed96f80e0aeb28c"
+  },
+  "proxmox/ansible/roles/proxmox_cluster/meta/main.yml": {
+    "mtime": 1784984456.0479743,
+    "ast_hash": "15cbe790b2a435326b84ede3001d2e5a",
+    "semantic_hash": "15cbe790b2a435326b84ede3001d2e5a"
+  },
+  "proxmox/ansible/roles/proxmox_cluster/tasks/main.yml": {
+    "mtime": 1784984450.1435966,
+    "ast_hash": "f8d7e61b56e4959aa76af88ef768781f",
+    "semantic_hash": "f8d7e61b56e4959aa76af88ef768781f"
+  },
+  "proxmox/ansible/roles/proxmox_cluster/vars/main.yml": {
+    "mtime": 1784984457.1520085,
+    "ast_hash": "43f84e17a85b5f06e7ab9f6d27f72d70",
+    "semantic_hash": "43f84e17a85b5f06e7ab9f6d27f72d70"
+  },
+  "proxmox/ansible/roles/proxmox_ct_deploy/defaults/main.yml": {
+    "mtime": 1784984548.5090795,
+    "ast_hash": "c6efbd8bec5a5fdc75fe5fff289c4bf4",
+    "semantic_hash": "c6efbd8bec5a5fdc75fe5fff289c4bf4"
+  },
+  "proxmox/ansible/roles/proxmox_ct_deploy/handlers/main.yml": {
+    "mtime": 1784984565.0032928,
+    "ast_hash": "ce704b9aa0ffcbc2789a6325131af673",
+    "semantic_hash": "ce704b9aa0ffcbc2789a6325131af673"
+  },
+  "proxmox/ansible/roles/proxmox_ct_deploy/meta/main.yml": {
+    "mtime": 1784984567.9166474,
+    "ast_hash": "f5b3c77b88a4ea6c8712ed1bf2e169b8",
+    "semantic_hash": "f5b3c77b88a4ea6c8712ed1bf2e169b8"
+  },
+  "proxmox/ansible/roles/proxmox_ct_deploy/tasks/main.yml": {
+    "mtime": 1784984563.2358904,
+    "ast_hash": "21615afa133d110b7bbe557de9eaf7b6",
+    "semantic_hash": "21615afa133d110b7bbe557de9eaf7b6"
+  },
+  "proxmox/ansible/roles/proxmox_ct_deploy/vars/main.yml": {
+    "mtime": 1784984568.9810715,
+    "ast_hash": "54a04a9c567bba947400c1991beabcfe",
+    "semantic_hash": "54a04a9c567bba947400c1991beabcfe"
+  },
+  "proxmox/ansible/roles/proxmox_firewall/defaults/main.yml": {
+    "mtime": 1784984649.665302,
+    "ast_hash": "f292538a495fc9d1653fe97754eed3b5",
+    "semantic_hash": "f292538a495fc9d1653fe97754eed3b5"
+  },
+  "proxmox/ansible/roles/proxmox_firewall/handlers/main.yml": {
+    "mtime": 1784984666.2191296,
+    "ast_hash": "5e4bd8b5e47af7d2a5d4f15f25b8bee0",
+    "semantic_hash": "5e4bd8b5e47af7d2a5d4f15f25b8bee0"
+  },
+  "proxmox/ansible/roles/proxmox_firewall/meta/main.yml": {
+    "mtime": 1784984667.7349124,
+    "ast_hash": "6483c3a4011258549b98b72cba9a8d65",
+    "semantic_hash": "6483c3a4011258549b98b72cba9a8d65"
+  },
+  "proxmox/ansible/roles/proxmox_firewall/tasks/main.yml": {
+    "mtime": 1784984664.7823052,
+    "ast_hash": "cbb40a6d85df3e13a287ae0ac6e283cb",
+    "semantic_hash": "cbb40a6d85df3e13a287ae0ac6e283cb"
+  },
+  "proxmox/ansible/roles/proxmox_firewall/vars/main.yml": {
+    "mtime": 1784984668.6952353,
+    "ast_hash": "08c1a3ea5b2260fd231fb3542b2b198c",
+    "semantic_hash": "08c1a3ea5b2260fd231fb3542b2b198c"
+  },
+  "proxmox/ansible/roles/proxmox_ha/defaults/main.yml": {
+    "mtime": 1784984614.9281466,
+    "ast_hash": "2d3f51a099a21fd7c286796939e6c617",
+    "semantic_hash": "2d3f51a099a21fd7c286796939e6c617"
+  },
+  "proxmox/ansible/roles/proxmox_ha/meta/main.yml": {
+    "mtime": 1784984634.2261662,
+    "ast_hash": "f0edad6c3645c1564bb1d60ea3b5549c",
+    "semantic_hash": "f0edad6c3645c1564bb1d60ea3b5549c"
+  },
+  "proxmox/ansible/roles/proxmox_ha/tasks/main.yml": {
+    "mtime": 1784984630.7603357,
+    "ast_hash": "409cd3b8272fbdd415014b6b23de8777",
+    "semantic_hash": "409cd3b8272fbdd415014b6b23de8777"
+  },
+  "proxmox/ansible/roles/proxmox_hardening/defaults/main.yml": {
+    "mtime": 1784984928.7574737,
+    "ast_hash": "3d95383f29eb0c59258480fd4d380010",
+    "semantic_hash": "3d95383f29eb0c59258480fd4d380010"
+  },
+  "proxmox/ansible/roles/proxmox_hardening/meta/main.yml": {
+    "mtime": 1784984949.8997874,
+    "ast_hash": "e2e1b3938c51b6ed2678aada0cd3510c",
+    "semantic_hash": "e2e1b3938c51b6ed2678aada0cd3510c"
+  },
+  "proxmox/ansible/roles/proxmox_hardening/tasks/main.yml": {
+    "mtime": 1784984945.9725356,
+    "ast_hash": "79a5a99200dd3ad67f05df2f0614fc6a",
+    "semantic_hash": "79a5a99200dd3ad67f05df2f0614fc6a"
+  },
+  "proxmox/ansible/roles/proxmox_install/meta/main.yml": {
+    "mtime": 1784984339.5526173,
+    "ast_hash": "89de44d38adfc2acca9ef99929fceb99",
+    "semantic_hash": "89de44d38adfc2acca9ef99929fceb99"
+  },
+  "proxmox/ansible/roles/proxmox_install/tasks/main.yml": {
+    "mtime": 1784984333.1885371,
+    "ast_hash": "ed648dd928669ed618903486ed41d9fd",
+    "semantic_hash": "ed648dd928669ed618903486ed41d9fd"
+  },
+  "proxmox/ansible/roles/proxmox_network/defaults/main.yml": {
+    "mtime": 1784984812.6224697,
+    "ast_hash": "c5628a745609e6710433a512597c5323",
+    "semantic_hash": "c5628a745609e6710433a512597c5323"
+  },
+  "proxmox/ansible/roles/proxmox_network/meta/main.yml": {
+    "mtime": 1784984827.1007602,
+    "ast_hash": "0099ecc000c5c292ba7114a177aebf7a",
+    "semantic_hash": "0099ecc000c5c292ba7114a177aebf7a"
+  },
+  "proxmox/ansible/roles/proxmox_network/tasks/main.yml": {
+    "mtime": 1784984823.6594245,
+    "ast_hash": "1f709e3ce4e9489a584d5ec2a51dd99d",
+    "semantic_hash": "1f709e3ce4e9489a584d5ec2a51dd99d"
+  },
+  "proxmox/ansible/roles/proxmox_passthrough/defaults/main.yml": {
+    "mtime": 1784984872.2818217,
+    "ast_hash": "02f8916ed295d331003535569d2ac5a5",
+    "semantic_hash": "02f8916ed295d331003535569d2ac5a5"
+  },
+  "proxmox/ansible/roles/proxmox_passthrough/meta/main.yml": {
+    "mtime": 1784984886.9787087,
+    "ast_hash": "19b1dd0c6fd4caffd417052113093bed",
+    "semantic_hash": "19b1dd0c6fd4caffd417052113093bed"
+  },
+  "proxmox/ansible/roles/proxmox_passthrough/tasks/main.yml": {
+    "mtime": 1784984883.8719263,
+    "ast_hash": "b52e3c22bd3bbf52fd2befbce228d38a",
+    "semantic_hash": "b52e3c22bd3bbf52fd2befbce228d38a"
+  },
+  "proxmox/ansible/roles/proxmox_patching/defaults/main.yml": {
+    "mtime": 1784984958.5581098,
+    "ast_hash": "acbe7c756215ddaeb61d82e90e95f5e3",
+    "semantic_hash": "acbe7c756215ddaeb61d82e90e95f5e3"
+  },
+  "proxmox/ansible/roles/proxmox_patching/handlers/main.yml": {
+    "mtime": 1784984979.6097822,
+    "ast_hash": "c3b12fcc1808353973270cd74091f564",
+    "semantic_hash": "c3b12fcc1808353973270cd74091f564"
+  },
+  "proxmox/ansible/roles/proxmox_patching/meta/main.yml": {
+    "mtime": 1784984981.3079333,
+    "ast_hash": "e20adebe9ebad31c26c5ff0a1549d3bb",
+    "semantic_hash": "e20adebe9ebad31c26c5ff0a1549d3bb"
+  },
+  "proxmox/ansible/roles/proxmox_patching/tasks/main.yml": {
+    "mtime": 1784984977.6724007,
+    "ast_hash": "339756a72e33ecccd04227a778f606f6",
+    "semantic_hash": "339756a72e33ecccd04227a778f606f6"
+  },
+  "proxmox/ansible/roles/proxmox_pbs/defaults/main.yml": {
+    "mtime": 1784984783.4904215,
+    "ast_hash": "a3a27531eb6d3c19714570299dccae71",
+    "semantic_hash": "a3a27531eb6d3c19714570299dccae71"
+  },
+  "proxmox/ansible/roles/proxmox_pbs/handlers/main.yml": {
+    "mtime": 1784984797.5328698,
+    "ast_hash": "0552592c08c650b92a2e87d47ac895aa",
+    "semantic_hash": "0552592c08c650b92a2e87d47ac895aa"
+  },
+  "proxmox/ansible/roles/proxmox_pbs/meta/main.yml": {
+    "mtime": 1784984799.04656,
+    "ast_hash": "07c715949b1d88657d116a98b787a960",
+    "semantic_hash": "07c715949b1d88657d116a98b787a960"
+  },
+  "proxmox/ansible/roles/proxmox_pbs/tasks/main.yml": {
+    "mtime": 1784984796.4427712,
+    "ast_hash": "862d7dfb283e6ecfe300b66ce588a145",
+    "semantic_hash": "862d7dfb283e6ecfe300b66ce588a145"
+  },
+  "proxmox/ansible/roles/proxmox_sdn/defaults/main.yml": {
+    "mtime": 1784984843.0391934,
+    "ast_hash": "51167fa8e3e6a3c261489f88c31a7ecb",
+    "semantic_hash": "51167fa8e3e6a3c261489f88c31a7ecb"
+  },
+  "proxmox/ansible/roles/proxmox_sdn/handlers/main.yml": {
+    "mtime": 1784984859.8760707,
+    "ast_hash": "70e356a5902c0d7666fa65efa7524ecf",
+    "semantic_hash": "70e356a5902c0d7666fa65efa7524ecf"
+  },
+  "proxmox/ansible/roles/proxmox_sdn/meta/main.yml": {
+    "mtime": 1784984861.5452545,
+    "ast_hash": "36f601b7405894f2c91fd19a0a607af4",
+    "semantic_hash": "36f601b7405894f2c91fd19a0a607af4"
+  },
+  "proxmox/ansible/roles/proxmox_sdn/tasks/main.yml": {
+    "mtime": 1784984857.9268796,
+    "ast_hash": "73dd76821938099d2b1365d3441ac3c7",
+    "semantic_hash": "73dd76821938099d2b1365d3441ac3c7"
+  },
+  "proxmox/ansible/roles/proxmox_storage/defaults/main.yml": {
+    "mtime": 1784984468.0466554,
+    "ast_hash": "bbe23f84d30f04e7ba71d5e10a94853b",
+    "semantic_hash": "bbe23f84d30f04e7ba71d5e10a94853b"
+  },
+  "proxmox/ansible/roles/proxmox_storage/handlers/main.yml": {
+    "mtime": 1784984485.4342253,
+    "ast_hash": "d76eeb48bdf8f39f826eb0fa41778ae1",
+    "semantic_hash": "d76eeb48bdf8f39f826eb0fa41778ae1"
+  },
+  "proxmox/ansible/roles/proxmox_storage/meta/main.yml": {
+    "mtime": 1784984487.5085998,
+    "ast_hash": "84ae658808b1bb4176d2d912f1dd5750",
+    "semantic_hash": "84ae658808b1bb4176d2d912f1dd5750"
+  },
+  "proxmox/ansible/roles/proxmox_storage/tasks/main.yml": {
+    "mtime": 1784984483.719898,
+    "ast_hash": "87afc02b9fe3d0f5dfc907dd9328c4e8",
+    "semantic_hash": "87afc02b9fe3d0f5dfc907dd9328c4e8"
+  },
+  "proxmox/ansible/roles/proxmox_storage/vars/main.yml": {
+    "mtime": 1784984489.3879075,
+    "ast_hash": "ceadda5ed9de65c45f5a4822b9137c79",
+    "semantic_hash": "ceadda5ed9de65c45f5a4822b9137c79"
+  },
+  "proxmox/ansible/roles/proxmox_users/defaults/main.yml": {
+    "mtime": 1784984680.3464744,
+    "ast_hash": "bec961101b1f2eed1c042451399a77bc",
+    "semantic_hash": "bec961101b1f2eed1c042451399a77bc"
+  },
+  "proxmox/ansible/roles/proxmox_users/handlers/main.yml": {
+    "mtime": 1784984698.0580602,
+    "ast_hash": "872fc60dce38e4d55b70962c4307f142",
+    "semantic_hash": "872fc60dce38e4d55b70962c4307f142"
+  },
+  "proxmox/ansible/roles/proxmox_users/meta/main.yml": {
+    "mtime": 1784984699.6720593,
+    "ast_hash": "5b21ed2688a61ccd6341d134daba33af",
+    "semantic_hash": "5b21ed2688a61ccd6341d134daba33af"
+  },
+  "proxmox/ansible/roles/proxmox_users/tasks/main.yml": {
+    "mtime": 1784984695.4317596,
+    "ast_hash": "3f3d3d6d9632ff53164e121367b8e46f",
+    "semantic_hash": "3f3d3d6d9632ff53164e121367b8e46f"
+  },
+  "proxmox/ansible/roles/proxmox_users/vars/main.yml": {
+    "mtime": 1784984700.5937119,
+    "ast_hash": "c90010c4fef825a657065ccaa96c3e25",
+    "semantic_hash": "c90010c4fef825a657065ccaa96c3e25"
+  },
+  "proxmox/ansible/roles/proxmox_vm_deploy/defaults/main.yml": {
+    "mtime": 1784984508.1986535,
+    "ast_hash": "1a979def9d7a1dee4eb4af88501f50c7",
+    "semantic_hash": "1a979def9d7a1dee4eb4af88501f50c7"
+  },
+  "proxmox/ansible/roles/proxmox_vm_deploy/handlers/main.yml": {
+    "mtime": 1784984531.5498295,
+    "ast_hash": "c0160b2483c19f4f27f002b2bbe96f8d",
+    "semantic_hash": "c0160b2483c19f4f27f002b2bbe96f8d"
+  },
+  "proxmox/ansible/roles/proxmox_vm_deploy/meta/main.yml": {
+    "mtime": 1784984533.1893315,
+    "ast_hash": "eeeac3c59af8f2d0c028887d0eb95c70",
+    "semantic_hash": "eeeac3c59af8f2d0c028887d0eb95c70"
+  },
+  "proxmox/ansible/roles/proxmox_vm_deploy/tasks/main.yml": {
+    "mtime": 1784984529.876145,
+    "ast_hash": "7995d09ab3b81865396b7ef44742d240",
+    "semantic_hash": "7995d09ab3b81865396b7ef44742d240"
+  },
+  "proxmox/ansible/roles/proxmox_vm_deploy/vars/main.yml": {
+    "mtime": 1784984534.1722846,
+    "ast_hash": "0ddff48c4ad80282763a34b1b8557b0c",
+    "semantic_hash": "0ddff48c4ad80282763a34b1b8557b0c"
+  },
+  "proxmox/ansible/roles/proxmox_zfs/defaults/main.yml": {
+    "mtime": 1784984756.0819702,
+    "ast_hash": "7cf69a72b67f944a1863c5490c1a342d",
+    "semantic_hash": "7cf69a72b67f944a1863c5490c1a342d"
+  },
+  "proxmox/ansible/roles/proxmox_zfs/handlers/main.yml": {
+    "mtime": 1784984770.8290088,
+    "ast_hash": "dbbfb771e70c438eeda7e1b9f441a504",
+    "semantic_hash": "dbbfb771e70c438eeda7e1b9f441a504"
+  },
+  "proxmox/ansible/roles/proxmox_zfs/meta/main.yml": {
+    "mtime": 1784984772.5860178,
+    "ast_hash": "ef9ed3cb0e6115a663e067ca9ef0ca6b",
+    "semantic_hash": "ef9ed3cb0e6115a663e067ca9ef0ca6b"
+  },
+  "proxmox/ansible/roles/proxmox_zfs/tasks/main.yml": {
+    "mtime": 1784984769.3596017,
+    "ast_hash": "756f78502c0f41864b4426cf073e11ac",
+    "semantic_hash": "756f78502c0f41864b4426cf073e11ac"
+  },
+  "proxmox/ansible/roles/proxmox_zfs/vars/main.yml": {
+    "mtime": 1784984773.677725,
+    "ast_hash": "02c588f11b7f7efb15c6f4128ebafe1f",
+    "semantic_hash": "02c588f11b7f7efb15c6f4128ebafe1f"
+  },
+  "proxmox/ansible/rules/proxmox_ceph/defaults/main.yml": {
+    "mtime": 1784984711.9845676,
+    "ast_hash": "ea92b0691e9dfd6da624298e4e1449b9",
+    "semantic_hash": "ea92b0691e9dfd6da624298e4e1449b9"
+  },
+  "proxmox/python/requirements.txt": {
+    "mtime": 1784981610.6945007,
+    "ast_hash": "509b7b7f00991d6b636a3223511e7660",
+    "semantic_hash": "509b7b7f00991d6b636a3223511e7660"
+  },
+  "shared/python/requirements.txt": {
+    "mtime": 1784980228.207617,
+    "ast_hash": "db6dfc707ca245651e84b89be328891a",
+    "semantic_hash": "db6dfc707ca245651e84b89be328891a"
+  }
+}

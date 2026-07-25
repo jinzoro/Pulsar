@@ -6,7 +6,7 @@
 
 ### Goals
 
-- **Unified interface**: A single `swissknife` binary and TUI that orchestrates all operations across Proxmox clusters and local KVM hosts.
+- **Unified interface**: A single `swissknife` binary and TUI that orchestrates all operations across Proxmox clusters and local KVM hosts. A REST API gateway (`apigateway`) enables web-based UIs and third-party integrations.
 - **Multi-layered tooling**: Go CLIs for performance-critical paths, Python modules for complex logic and API integration, Bash scripts for direct node-level operations, and Terraform/Ansible/Packer for infrastructure-as-code workflows.
 - **Resilience by default**: Retry logic, graceful degradation (paramiko fallback), dry-run mode, and comprehensive error handling at every layer.
 - **Observability**: Structured logging (zerolog for Go, Python logging for scripts), Prometheus metrics, and multi-channel alerting (Slack, Telegram, email, ntfy, PagerDuty).
@@ -24,8 +24,18 @@
 │  │  Go/Bubbletea │  │  Go/Cobra    │  │  Go/Cobra                    │  │
 │  └──────┬───────┘  └──────┬───────┘  └──────────┬────────────────────┘  │
 │         │                  │                      │                       │
-│         └──────────────────┼──────────────────────┘                       │
-│                            │                                              │
+│  ┌──────▼──────────────────▼──────────────────────▼──────────────────┐  │
+│  │                    apigateway (REST API)                           │  │
+│  │                    Go / net/http                                   │  │
+│  │                    :8443 — JSON over HTTP                          │  │
+│  └──────────┬─────────────────────────────────────────────────────────┘  │
+│             │                                                            │
+│  ┌──────────▼─────────────────────────────────────────────────────────┐  │
+│  │  Web UI (SvelteKit SPA)                                            │  │
+│  │  npm run dev → :5173 (proxies /api → :8443)                       │  │
+│  │  npm run build → web/build/ (static files for production)          │  │
+│  │  Pages: Dashboard, VMs, Nodes, Containers, Storage, Settings       │  │
+│  └────────────────────────────────────────────────────────────────────┘  │
 ├────────────────────────────┼──────────────────────────────────────────────┤
 │                     EXECUTOR LAYER                                        │
 │                            │                                              │
@@ -171,11 +181,13 @@
 | `swissknife` | `go/cmd/swissknife/main.go` | Unified CLI + Bubble Tea TUI dashboard |
 | `pmxctl` | `go/cmd/pmxctl/main.go` | Proxmox VE CLI — all cluster/node/VM operations |
 | `kvmctl` | `go/cmd/kvmctl/main.go` | KVM/libvirt CLI — local hypervisor management |
+| `apigateway` | `go/cmd/apigateway/main.go` | REST API gateway — HTTP/HTTPS JSON API wrapping the Proxmox client |
 
 ### Go Internal Packages (`go/internal/`)
 
 | Package | Purpose |
 |---------|---------|
+| `apiserver` | REST API gateway — HTTP server, middleware (auth/CORS/logging/metrics), routing, and 40+ endpoint handlers |
 | `config` | Configuration loading via viper (env, .env, settings.yaml, CLI flags) |
 | `proxmox` | Proxmox REST API client (nodes, VMs, CTs, storage, cluster, HA, firewall, snapshots, migration, Ceph, ZFS) |
 | `kvm` | libvirt domain management, QMP client, disk operations |
@@ -464,7 +476,62 @@ Backup Trigger (CLI / Cron / TUI action)
 └──────────────────────────┘
 ```
 
-### Migration Flow
+### API Gateway Data Flow
+
+```
+HTTP Request (REST client — curl, web UI, monitoring system)
+       │
+       ▼
+┌──────────────────────┐
+│  X-API-Key / Bearer  │  Auth middleware (optional)
+│  token validation    │
+└──────┬───────────────┘
+       │
+       ▼
+┌──────────────────────┐
+│  Logging + Request   │  zerolog structured log + X-Request-ID header
+│  ID middleware        │
+└──────┬───────────────┘
+       │
+       ▼
+┌──────────────────────┐
+│  Route dispatch      │  Go 1.22+ ServeMux pattern matching
+│  GET /api/v1/...     │
+└──────┬───────────────┘
+       │
+       ▼
+┌──────────────────────┐     ┌────────────────────────────────┐
+│  Handler (wrapped)   │────▶│ proxmox.Client.Get/Post/Put/   │
+│                      │◀────│ Delete → Proxmox VE API        │
+│  Return (data, err)  │     │                                │
+│  or writeError()      │     │ - Zero retry logic (delegated) │
+│                      │     │ - Context timeout from request  │
+└──────┬───────────────┘     └────────────────────────────────┘
+       │
+       ▼
+┌──────────────────────┐
+│  JSON APIResponse    │  {success: true, data: ..., error: ...}
+│  + Prometheus metric │  request_count, duration, active_requests
+└──────────────────────┘
+```
+
+**Available endpoint groups:**
+
+| Group | Prefix | Examples |
+|-------|--------|---------|
+| Health | `GET /api/v1/health` | Liveness check |
+| Cluster | `GET /api/v1/cluster/...` | status, resources, log, options |
+| Nodes | `GET /api/v1/nodes/...` | list, status, services, network |
+| VMs | `GET/POST/DELETE /api/v1/vms/...` | CRUD, start, stop, shutdown, clone, resize, migrate, config, monitor |
+| Snapshots | `GET/POST/DELETE /api/v1/vms/{vmid}/snapshots/...` | list, create, delete, rollback |
+| Containers | `GET/POST/DELETE /api/v1/containers/...` | CRUD, start, stop, shutdown |
+| Storage | `GET/POST/DELETE /api/v1/storage/...` | list, content, add, remove |
+| Pools | `GET/POST/DELETE /api/v1/pools/...` | list, create, delete |
+| Backups | `GET/POST /api/v1/backups/...` | list, backup now |
+| Firewall | `GET/POST /api/v1/nodes/{node}/firewall/rules` | list, add rule |
+| HA | `GET/POST /api/v1/ha/...` | groups, resources |
+| Metrics | `GET /api/v1/metrics/...` | node, cluster aggregation |
+| Prometheus | `GET /metrics` | Scrape endpoint |
 
 ```
 Migration Request (CLI / TUI)
@@ -657,12 +724,26 @@ proxmox-kvm-swissknife/
 │       ├── backup-recovery.md       #     Backup restore procedures
 │       └── split-brain.md           #     Cluster split-brain recovery
 │
+├── web/                             # SvelteKit web UI
+│   ├── src/                         #   Components, pages, API client library
+│   │   ├── lib/
+│   │   │   ├── api/client.ts        #     API client (talks to apigateway)
+│   │   │   └── components/          #     Sidebar, Topbar, StatusBadge
+│   │   └── routes/                  #     SvelteKit pages (Dashboard, VMs, Nodes, Containers, Storage, Settings)
+│   ├── static/                      #   Static assets
+│   ├── build/                       #   Production build output
+│   ├── package.json
+│   ├── svelte.config.js
+│   └── vite.config.ts               #   Dev proxy /api → :8443
+│
 ├── go/                              # Go source code
-│   ├── cmd/                         #   CLI entry points
+│   ├── cmd/                         #   CLI & server entry points
 │   │   ├── swissknife/main.go       #     Unified CLI + TUI
 │   │   ├── pmxctl/main.go           #     Proxmox control CLI
-│   │   └── kvmctl/main.go           #     KVM control CLI
+│   │   ├── kvmctl/main.go           #     KVM control CLI
+│   │   └── apigateway/main.go       #     REST API gateway
 │   ├── internal/                    #   Internal packages (not importable)
+│   │   ├── apiserver/               #     API gateway server, handlers, types, middleware
 │   │   ├── config/                  #     Configuration loader (viper)
 │   │   ├── proxmox/                 #     Proxmox REST API client
 │   │   ├── kvm/                     #     libvirt/libkvm client
@@ -759,6 +840,14 @@ proxmox-kvm-swissknife/
 │                   ├── config (viper)                                │
 │                   ├── proxmox client (internal)                     │
 │                   └── kvm client (internal)                         │
+│                                                                     │
+│  apigateway ───────┬──── apiserver (internal)                      │
+│                    ├── proxmox client (internal)                    │
+│                    ├── config (viper)                               │
+│                    ├── prometheus (external)                        │
+│                    └── zerolog (external)                           │
+│                                                                     │
+│  Web UI (SvelteKit) ─── apigateway (REST API via HTTP proxy)      │
 │                                                                     │
 │  pmxctl ──────────┬──── proxmox client (internal)                  │
 │                   ├── config (viper)                                │

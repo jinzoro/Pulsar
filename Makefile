@@ -5,9 +5,9 @@
 # =============================================================================
 GO           := go
 GOFLAGS      := -trimpath
-LDFLAGS      := -s -w -X main.version=1.0.0 -X main.commit=$(shell git rev-parse --short HEAD 2>/dev/null || echo "dev") -X main.date=$(shell date -u +%Y%m%d%H%M%S)
+LDFLAGS      := -s -w -X main.version=1.1.0 -X main.commit=$(shell git rev-parse --short HEAD 2>/dev/null || echo "dev") -X main.date=$(shell date -u +%Y%m%d%H%M%S)
 BINDIR       := bin
-CMDS         := swissknife pmxctl kvmctl
+CMDS         := swissknife pmxctl kvmctl apigateway
 PYTHON       := python3
 SHELLCHECK   := shellcheck
 RUFF         := ruff
@@ -30,7 +30,7 @@ ANSIBLE_DIR  := proxmox
 
 help: ## Show this help message
 	@echo ""
-	@echo "  proxmox-kvm-swissknife v1.0.0"
+	@echo "  proxmox-kvm-swissknife v1.1.0"
 	@echo "  ============================="
 	@echo ""
 	@echo "  Usage:  make <target>"
@@ -39,7 +39,7 @@ help: ## Show this help message
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 	@echo ""
 
-build: ## Build all Go binaries (swissknife, pmxctl, kvmctl)
+build: ## Build all Go binaries (swissknife, pmxctl, kvmctl, apigateway)
 	@echo "==> Building Go binaries..."
 	@mkdir -p $(BINDIR)
 	@for cmd in $(CMDS); do \

@@ -244,6 +244,11 @@ func (c *Client) setVMState(vmid, action string) error {
 	return nil
 }
 
+// GetVMNode resolves the node hosting a VM by its VMID.
+func (c *Client) GetVMNode(vmid string) (string, error) {
+	return c.resolveVMNode(vmid)
+}
+
 func (c *Client) resolveVMNode(vmid string) (string, error) {
 	ctx := context.Background()
 	data, err := c.Get(ctx, "/api2/json/cluster/resources?type=vm")

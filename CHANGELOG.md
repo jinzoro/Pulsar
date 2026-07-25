@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-25
+
+### Added
+
+- **REST API Gateway (`apigateway`)** — New Go binary wrapping the Proxmox client as a secure HTTP/HTTPS REST API on `:8443` with:
+  - Full CRUD for VMs, containers, storage, pools, snapshots, backups, firewall rules, and HA groups
+  - Cluster, node, and network status/inspection endpoints
+  - Real-time cluster and node metrics aggregation
+  - Prometheus `/metrics` endpoint with request counters, duration histograms, and active request gauge
+  - X-API-Key and Bearer token authentication with CORS enabled
+  - Structured zerolog logging with request ID tracing
+  - Config via `apigateway.yaml` or env vars (`APIGW_*` prefix)
+- **`go/internal/apiserver/` package** — Reusable module with `Server`, `Config`, middleware stack, routing, and handler injection
+- **Web UI (**``**web/`)** — New SvelteKit single-page application with PegaProx-inspired dark theme:
+  - Dashboard with cluster overview, VM/node summary cards, and tables
+  - VM list, detail, and power actions (start/stop/shutdown)
+  - Container list and detail views
+  - Node list and detail views
+  - Storage list with usage bar charts
+  - Settings page with API gateway status
+  - Vite dev proxy to Go API gateway at `:8443`
+  - Static adapter builds to `web/build/` for production deployment
+- **Makefile integration** — `apigateway` binary builds alongside existing CLIs via `make build`
+
+### Changed
+
+- **Makefile**: `CMDS` now includes `apigateway` (4 binaries total)
+- **Proxmox client**: `GetVMNode` exported as public method (previously unexported `resolveVMNode`)
+- **Version**: Bumped from 1.0.0 to 1.1.0
+
 ## [1.0.0] - 2024-01-01
 
 ### Added

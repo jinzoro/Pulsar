@@ -1,16 +1,18 @@
 # proxmox-kvm-swissknife
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Go](https://img.shields.io/badge/go-1.22+-00ADD8?logo=go&logoColor=white)
 ![Python](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)
 ![Bash](https://img.shields.io/badge/bash-5+-4EAA25?logo=gnubash&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-VE%208+-E57000?logo=proxmox&logoColor=white)
 
-A comprehensive, opinionated automation suite for managing Proxmox VE clusters, KVM virtual machines, Packer image builds, and Ansible orchestration — all from a unified CLI with a rich terminal UI.
+A comprehensive, opinionated automation suite for managing Proxmox VE clusters, KVM virtual machines, Packer image builds, and Ansible orchestration — all from a unified CLI with a rich terminal UI, plus a REST API gateway for web-based integrations.
 
 ## Features
 
+- **Web UI** — SvelteKit SPA with PegaProx-inspired dark theme. Dashboard, VM/container/node/storage views, power actions, and dev proxy to the API gateway.
+- **REST API Gateway** — HTTP/HTTPS API on `:8443` wrapping the Proxmox client with full CRUD for VMs, containers, storage, snapshots, backups, firewall, HA, and cluster metrics. Auth via X-API-Key / Bearer token. Prometheus `/metrics` endpoint.
 - **Unified CLI** — Single `swissknife` binary wrapping `pmxctl` and `kvmctl` subcommands
 - **Rich TUI** — Interactive terminal dashboard built with Bubble Tea / Lip Gloss for real-time VM monitoring, resource overview, and quick actions
 - **Proxmox API Client** — Full lifecycle management of VMs, containers, storage, networking, backups, and cluster operations via the Proxmox REST API
@@ -52,11 +54,17 @@ cp .env.example .env
 ### First Run
 
 ```bash
-# Build all binaries
+# Build all binaries (including apigateway)
 make build
 
 # Run the interactive TUI
 make tui
+
+# Start the REST API gateway
+./bin/apigateway.exe
+
+# Start the web UI dev server (separate terminal, proxies /api to :8443)
+cd web && npm run dev
 
 # Or use the CLI directly
 ./bin/swissknife status
@@ -76,11 +84,13 @@ proxmox-kvm-swissknife/
 │   ├── api-reference.md     # CLI command reference
 │   └── runbooks/            # Operational runbooks
 ├── go/                      # Go source code
-│   ├── cmd/                 # CLI entry points
+│   ├── cmd/                 # CLI & server entry points
 │   │   ├── swissknife/      # Main unified CLI
 │   │   ├── pmxctl/          # Proxmox control CLI
-│   │   └── kvmctl/          # KVM/libvirt control CLI
+│   │   ├── kvmctl/          # KVM/libvirt control CLI
+│   │   └── apigateway/      # REST API gateway
 │   ├── internal/            # Internal packages
+│   │   ├── apiserver/       # API gateway server, handlers, middleware
 │   │   ├── pmx/             # Proxmox API client
 │   │   ├── kvm/             # libvirt/libkvm client
 │   │   ├── tui/             # Bubble Tea TUI components
@@ -102,6 +112,13 @@ proxmox-kvm-swissknife/
 │   ├── bats/                # Bash automated testing system tests
 │   ├── pytest/              # Python test suite
 │   └── go/                  # Go test suite
+├── web/                     # SvelteKit web UI
+│   ├── src/                 #  Svelte components, pages, API client
+│   ├── static/              #  Static assets
+│   ├── build/               #  Production build output
+│   ├── package.json
+│   ├── svelte.config.js
+│   └── vite.config.ts
 ├── .env.example             # Environment variable template
 ├── .gitignore               # Git ignore rules
 ├── Makefile                 # Build and task automation
@@ -186,6 +203,23 @@ Key variables:
 | `TELEGRAM_BOT_TOKEN` | Telegram bot API token | No |
 | `TELEGRAM_CHAT_ID` | Telegram chat ID for notifications | No |
 
+### API Gateway Environment Variables
+
+The REST API gateway (`apigateway`) is configured via `apigateway.yaml` or environment variables with prefix `APIGW_`:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `APIGW_LISTEN` | Listen address | `:8443` |
+| `APIGW_TLS_ENABLED` | Enable HTTPS | `false` |
+| `APIGW_TLS_CERT` | TLS cert path | — |
+| `APIGW_TLS_KEY` | TLS key path | — |
+| `APIGW_PROXMOX_URL` | Proxmox API endpoint | `https://localhost:8006` |
+| `APIGW_PROXMOX_USER` | Proxmox auth user | `root@pam` |
+| `APIGW_PROXMOX_TOKEN_ID` | API token ID | — |
+| `APIGW_PROXMOX_TOKEN_SECRET` | API token secret | — |
+| `APIGW_AUTH_ENABLED` | Enable X-API-Key auth | `true` |
+| `APIGW_AUTH_API_KEY` | API key for auth | — |
+
 ### `settings.yaml`
 
 Located at `config/settings.yaml`. Controls default behaviors:
@@ -257,7 +291,7 @@ Run `make help` to see all available targets:
 | Target | Description |
 |--------|-------------|
 | `make help` | Display all available targets (default) |
-| `make build` | Build all Go binaries (`swissknife`, `pmxctl`, `kvmctl`) |
+| `make build` | Build all Go binaries (`swissknife`, `pmxctl`, `kvmctl`, `apigateway`) |
 | `make tui` | Build and launch the interactive TUI |
 | `make test` | Run the full test suite (bats, pytest, Go) |
 | `make lint` | Run all linters (shellcheck, ruff, golangci-lint, ansible-lint, tflint) |

@@ -7,6 +7,8 @@
 		{ href: '/containers', label: 'Containers', icon: '▣' },
 		{ href: '/nodes', label: 'Nodes', icon: '⬟' },
 		{ href: '/storage', label: 'Storage', icon: '◷' },
+		{ href: '/pools', label: 'Pools', icon: '⊞' },
+		{ href: '/backups', label: 'Backups', icon: '◰' },
 		{ href: '/settings', label: 'Settings', icon: '⚙' },
 	];
 

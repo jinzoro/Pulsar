@@ -18,7 +18,7 @@
 	});
 </script>
 
-<svelte:head><title>Nodes — SwissKnife</title></svelte:head>
+<svelte:head><title>Nodes — Pulsar</title></svelte:head>
 
 <div class="page-header"><h2>Nodes</h2></div>
 

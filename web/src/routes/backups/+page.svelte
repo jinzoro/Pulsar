@@ -3,13 +3,13 @@
 	import { api } from '$lib/api/client';
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
 
-	let containers = $state<any[]>([]);
+	let backups = $state<any[]>([]);
 	let loading = $state(true);
 	let error = $state('');
 
 	onMount(async () => {
 		try {
-			containers = (await api.listContainers()) || [];
+			backups = (await api.listBackups()) || [];
 		} catch (e: any) {
 			error = e.message;
 		} finally {
@@ -18,29 +18,32 @@
 	});
 </script>
 
-<svelte:head><title>Containers — Pulsar</title></svelte:head>
+<svelte:head><title>Backups — Pulsar</title></svelte:head>
 
-<div class="page-header"><h2>Containers</h2></div>
+<div class="page-header"><h2>Backups</h2></div>
 
 {#if loading}
 	<div class="state">Loading...</div>
 {:else if error}
 	<div class="state error">{error}</div>
+{:else if backups.length === 0}
+	<div class="state">No backups found.</div>
 {:else}
 	<div class="table-wrap">
 		<table>
 			<thead>
-				<tr><th>CTID</th><th>Name</th><th>Node</th><th>Status</th><th>Memory</th><th>Disk</th></tr>
+				<tr><th>VMID</th><th>Name</th><th>Node</th><th>Type</th><th>Status</th><th>Size</th><th>Date</th></tr>
 			</thead>
 			<tbody>
-				{#each containers as ct}
+				{#each backups as backup}
 					<tr>
-						<td><a href="/containers/{ct.vmid}">{ct.vmid}</a></td>
-						<td>{ct.name || '-'}</td>
-						<td>{ct.node || '-'}</td>
-						<td><StatusBadge status={ct.status} /></td>
-						<td>{ct.maxmem ? (ct.maxmem / 1024 / 1024 / 1024).toFixed(1) + ' GB' : '-'}</td>
-						<td>{ct.maxdisk ? (ct.maxdisk / 1024 / 1024 / 1024).toFixed(1) + ' GB' : '-'}</td>
+						<td>{backup.vmid}</td>
+						<td>{backup.name || '-'}</td>
+						<td>{backup.node || '-'}</td>
+						<td>{backup.type || '-'}</td>
+						<td><StatusBadge status={backup.status} /></td>
+						<td>{backup.size ? (backup.size / 1024 / 1024 / 1024).toFixed(2) + ' GB' : '-'}</td>
+						<td>{backup.ctime ? new Date(backup.ctime * 1000).toLocaleString() : '-'}</td>
 					</tr>
 				{/each}
 			</tbody>

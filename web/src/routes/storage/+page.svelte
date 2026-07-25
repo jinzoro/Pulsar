@@ -17,7 +17,7 @@
 	});
 </script>
 
-<svelte:head><title>Storage — SwissKnife</title></svelte:head>
+<svelte:head><title>Storage — Pulsar</title></svelte:head>
 
 <div class="page-header"><h2>Storage</h2></div>
 

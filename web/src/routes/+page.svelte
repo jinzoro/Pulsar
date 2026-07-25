@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { api } from '$lib/api/client';
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
 
@@ -8,8 +8,12 @@
 	let metrics = $state<any>(null);
 	let vms = $state<any[]>([]);
 	let nodes = $state<any[]>([]);
+	let lastUpdated = $state('');
 
-	onMount(async () => {
+	const POLL_INTERVAL = 10000;
+	let intervalId: ReturnType<typeof setInterval> | null = null;
+
+	async function fetchAll() {
 		try {
 			const [m, vmList, nodeList] = await Promise.all([
 				api.clusterMetrics(),
@@ -19,11 +23,20 @@
 			metrics = m;
 			vms = vmList || [];
 			nodes = nodeList || [];
+			lastUpdated = new Date().toLocaleTimeString();
 		} catch (e: any) {
 			error = e.message;
-		} finally {
-			loading = false;
 		}
+	}
+
+	onMount(async () => {
+		await fetchAll();
+		loading = false;
+		intervalId = setInterval(fetchAll, POLL_INTERVAL);
+	});
+
+	onDestroy(() => {
+		if (intervalId) clearInterval(intervalId);
 	});
 </script>
 
@@ -50,6 +63,8 @@
 			<span class="card-value" style="font-size:14px;color:var(--color-success)">Connected</span>
 		</div>
 	</div>
+
+	<div class="last-updated">Auto-refreshes every 10s · Last updated: {lastUpdated}</div>
 
 	<section class="section">
 		<h2>Nodes</h2>
@@ -113,6 +128,7 @@
 	.card-label { font-size: 12px; color: var(--color-text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
 	.card-value { font-size: 28px; font-weight: 700; color: var(--color-text); }
 	.section { margin-bottom: 28px; }
+	.last-updated { font-size: 11px; color: var(--color-text-dim); margin-bottom: 20px; text-align: right; }
 	.section h2 { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--color-text-muted); }
 	.table-wrap { overflow-x: auto; }
 	table { width: 100%; border-collapse: collapse; font-size: 13px; }

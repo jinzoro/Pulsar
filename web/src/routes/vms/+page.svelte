@@ -19,7 +19,7 @@
 	});
 </script>
 
-<svelte:head><title>VMs — SwissKnife</title></svelte:head>
+<svelte:head><title>VMs — Pulsar</title></svelte:head>
 
 <div class="page-header">
 	<h2>Virtual Machines</h2>

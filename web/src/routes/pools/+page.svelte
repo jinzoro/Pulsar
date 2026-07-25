@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api/client';
-	import StatusBadge from '$lib/components/StatusBadge.svelte';
 
-	let containers = $state<any[]>([]);
+	let pools = $state<any[]>([]);
 	let loading = $state(true);
 	let error = $state('');
 
 	onMount(async () => {
 		try {
-			containers = (await api.listContainers()) || [];
+			pools = (await api.listPools()) || [];
 		} catch (e: any) {
 			error = e.message;
 		} finally {
@@ -18,29 +17,28 @@
 	});
 </script>
 
-<svelte:head><title>Containers — Pulsar</title></svelte:head>
+<svelte:head><title>Pools — Pulsar</title></svelte:head>
 
-<div class="page-header"><h2>Containers</h2></div>
+<div class="page-header"><h2>Pools</h2></div>
 
 {#if loading}
 	<div class="state">Loading...</div>
 {:else if error}
 	<div class="state error">{error}</div>
+{:else if pools.length === 0}
+	<div class="state">No pools found.</div>
 {:else}
 	<div class="table-wrap">
 		<table>
 			<thead>
-				<tr><th>CTID</th><th>Name</th><th>Node</th><th>Status</th><th>Memory</th><th>Disk</th></tr>
+				<tr><th>Pool ID</th><th>Members</th><th>Comment</th></tr>
 			</thead>
 			<tbody>
-				{#each containers as ct}
+				{#each pools as pool}
 					<tr>
-						<td><a href="/containers/{ct.vmid}">{ct.vmid}</a></td>
-						<td>{ct.name || '-'}</td>
-						<td>{ct.node || '-'}</td>
-						<td><StatusBadge status={ct.status} /></td>
-						<td>{ct.maxmem ? (ct.maxmem / 1024 / 1024 / 1024).toFixed(1) + ' GB' : '-'}</td>
-						<td>{ct.maxdisk ? (ct.maxdisk / 1024 / 1024 / 1024).toFixed(1) + ' GB' : '-'}</td>
+						<td><strong>{pool.poolid || pool.pool}</strong></td>
+						<td>{pool.members ? pool.members.length : 0}</td>
+						<td>{pool.comment || '-'}</td>
 					</tr>
 				{/each}
 			</tbody>

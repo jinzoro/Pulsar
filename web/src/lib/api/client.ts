@@ -43,4 +43,15 @@ export const api = {
 	listBackups: () => api.get<any[]>('/backups'),
 	nodeMetrics: () => api.get<any>('/metrics/nodes'),
 	clusterMetrics: () => api.get<any>('/metrics/cluster'),
+
+	// VM config / resources
+	getVMConfig: (vmid: string) => api.get<any>(`/vms/${vmid}/config`),
+	getVMSnapshots: (vmid: string) => api.get<any[]>(`/vms/${vmid}/snapshots`),
+
+	// Node resources
+	getNodeVMs: (node: string) => api.get<any[]>(`/nodes/${node}/vms`),
+	getNodeContainers: (node: string) => api.get<any[]>(`/nodes/${node}/containers`),
+
+	// Pools
+	getPool: (poolid: string) => api.get<any>(`/pools/${poolid}`),
 };

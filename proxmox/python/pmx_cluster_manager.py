@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Cluster Manager
+# Pulsar - Cluster Manager
 
 """Proxmox VE cluster formation and management."""
 

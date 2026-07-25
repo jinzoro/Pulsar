@@ -3,7 +3,7 @@
 # kvm-vm-lifecycle.sh — VM lifecycle management via libvirt
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, start, stop, destroy, suspend, resume, save, restore,
 #             list, autostart, define, undefine

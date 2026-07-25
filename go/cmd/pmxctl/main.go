@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/proxmox-kvm-swissknife/internal/config"
-	"github.com/proxmox-kvm-swissknife/internal/proxmox"
+	"github.com/pulsar/internal/config"
+	"github.com/pulsar/internal/proxmox"
 )
 
 var (

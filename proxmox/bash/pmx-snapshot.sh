@@ -3,7 +3,7 @@
 # pmx-snapshot.sh — Snapshot management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, list, rollback, delete, schedule
 # =============================================================================

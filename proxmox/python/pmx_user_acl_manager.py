@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - User & ACL Manager
+# Pulsar - User & ACL Manager
 
 """Proxmox VE user, group, role, ACL and API-token management."""
 

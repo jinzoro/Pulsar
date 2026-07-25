@@ -3,7 +3,7 @@
 # pmx-pci-passthrough.sh — PCI device passthrough
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: list, groups, bind, assign, verify, unbind, override
 # =============================================================================

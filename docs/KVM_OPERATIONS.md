@@ -1,6 +1,6 @@
 # KVM/libvirt Operations Reference
 
-Complete reference for all KVM/libvirt operations available through the proxmox-kvm-swissknife toolset. These operations manage local KVM hypervisors via libvirt.
+Complete reference for all KVM/libvirt operations available through the Pulsar toolset. These operations manage local KVM hypervisors via libvirt.
 
 ---
 

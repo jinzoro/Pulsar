@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Proxmox Backup Server Manager
+# Pulsar - Proxmox Backup Server Manager
 
 """Integration with Proxmox Backup Server (PBS) via the Proxmox API."""
 

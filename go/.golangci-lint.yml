@@ -60,7 +60,7 @@ linters-settings:
   gocyclo:
     min-complexity: 30
   goimports:
-    local-prefixes: github.com/proxmox-kvm-swissknife
+    local-prefixes: github.com/pulsar
 
 issues:
   max-issues-per-linter: 50

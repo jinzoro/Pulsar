@@ -3,7 +3,7 @@
 # pmx-ct-lifecycle.sh — LXC container lifecycle management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, start, stop, shutdown, delete, clone, resize, set-features
 # =============================================================================

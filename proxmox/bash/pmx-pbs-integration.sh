@@ -3,7 +3,7 @@
 # pmx-pbs-integration.sh — Proxmox Backup Server integration
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: add-datastore, backup, restore, verify, prune, status
 # =============================================================================

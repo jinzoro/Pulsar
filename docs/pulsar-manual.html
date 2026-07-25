@@ -1,0 +1,1809 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulsar — User Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Architects+Daughter&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink-black: #1a1a2e;
+    --ink-blue: #2563eb;
+    --ink-blue-light: #60a5fa;
+    --ink-red: #dc2626;
+    --ink-red-light: #fca5a5;
+    --ink-green: #16a34a;
+    --ink-orange: #ea580c;
+    --ink-teal: #14b8a6;
+    --ink-teal-light: #5eead4;
+    --paper-white: #fefdfb;
+    --paper-line: #c8d6e5;
+    --paper-margin: #e74c3c;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --page-width: 210mm;
+    --page-height: 297mm;
+    --hand: 'Caveat', cursive;
+    --hand-alt: 'Patrick Hand', cursive;
+    --hand-alt2: 'Architects Daughter', cursive;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #e8e4df;
+    font-family: var(--hand);
+    color: var(--ink-black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 30px;
+  }
+  .page {
+    width: var(--page-width);
+    min-height: var(--page-height);
+    background: var(--paper-white);
+    position: relative;
+    padding: 25mm 20mm 20mm 25mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+    overflow: auto;
+    page-break-after: always;
+  }
+  .page::before {
+    content: '';
+    position: absolute;
+    left: 8mm;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 8px,
+      #999 8px,
+      #999 10px,
+      transparent 10px,
+      transparent 18px
+    );
+  }
+  .page::after {
+    content: '';
+    position: absolute;
+    left: 22mm;
+    right: 15mm;
+    top: 25mm;
+    bottom: 20mm;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 7.5mm,
+      var(--paper-line) 7.5mm,
+      var(--paper-line) 7.6mm
+    );
+    pointer-events: none;
+    opacity: 0.4;
+  }
+  .margin-line {
+    position: absolute;
+    left: 22mm;
+    top: 20mm;
+    bottom: 15mm;
+    width: 1.5px;
+    background: var(--paper-margin);
+    opacity: 0.35;
+  }
+  .title {
+    font-family: var(--hand);
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ink-red);
+    line-height: 1.1;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .title.teal { color: var(--ink-teal); }
+  .title.blue { color: var(--ink-blue); }
+  .subtitle {
+    font-family: var(--hand-alt);
+    font-size: 16px;
+    color: var(--ink-blue);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-title {
+    font-family: var(--hand);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-red);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-title .icon { font-size: 24px; }
+  .section-title.teal { color: var(--ink-teal); }
+  .section-title.blue { color: var(--ink-blue); }
+  .section-title.green { color: var(--ink-green); }
+  .section-underline {
+    height: 3px;
+    background: linear-gradient(90deg, var(--ink-red), var(--ink-red-light), transparent);
+    border-radius: 2px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-underline.teal { background: linear-gradient(90deg, var(--ink-teal), var(--ink-teal-light), transparent); }
+  .section-underline.blue { background: linear-gradient(90deg, var(--ink-blue), var(--ink-blue-light), transparent); }
+  .section-underline.green { background: linear-gradient(90deg, var(--ink-green), var(--ink-teal-light), transparent); }
+  .body-text {
+    font-family: var(--hand);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink-black);
+    position: relative;
+    z-index: 1;
+  }
+  .label {
+    font-family: var(--hand-alt);
+    font-size: 14px;
+    color: var(--ink-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  .mono { font-family: var(--mono); font-size: 13px; }
+  .rounded-box {
+    border: 2px solid var(--ink-blue);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: rgba(37, 99, 235, 0.03);
+    position: relative;
+    z-index: 1;
+  }
+  .rounded-box.red { border-color: var(--ink-red); background: rgba(220, 38, 38, 0.03); }
+  .rounded-box.green { border-color: var(--ink-green); background: rgba(22, 163, 74, 0.03); }
+  .rounded-box.orange { border-color: var(--ink-orange); background: rgba(234, 88, 12, 0.03); }
+  .rounded-box.teal { border-color: var(--ink-teal); background: rgba(20, 184, 166, 0.03); }
+  .dashed-box {
+    border: 2px dashed var(--ink-blue-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .dashed-box.teal { border-color: var(--ink-teal-light); }
+  .hand-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--ink-blue);
+    border-radius: 50%;
+    font-family: var(--hand);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink-blue);
+    flex-shrink: 0;
+  }
+  .hand-circle.red { border-color: var(--ink-red); color: var(--ink-red); }
+  .hand-circle.green { border-color: var(--ink-green); color: var(--ink-green); }
+  .hand-circle.orange { border-color: var(--ink-orange); color: var(--ink-orange); }
+  .hand-circle.teal { border-color: var(--ink-teal); color: var(--ink-teal); }
+  .hand-bullet {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--ink-blue);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .hand-bullet.red { background: var(--ink-red); }
+  .hand-bullet.green { background: var(--ink-green); }
+  .hand-bullet.orange { background: var(--ink-orange); }
+  .hand-bullet.teal { background: var(--ink-teal); }
+  .flex { display: flex; position: relative; z-index: 1; }
+  .flex-col { flex-direction: column; }
+  .flex-row { flex-direction: row; }
+  .gap-4 { gap: 4px; }
+  .gap-6 { gap: 6px; }
+  .gap-8 { gap: 8px; }
+  .gap-10 { gap: 10px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .justify-between { justify-content: space-between; }
+  .flex-1 { flex: 1; }
+  .flex-wrap { flex-wrap: wrap; }
+  .mt-4 { margin-top: 4px; }
+  .mt-6 { margin-top: 6px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-10 { margin-top: 10px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 4px; }
+  .mb-6 { margin-bottom: 6px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-10 { margin-bottom: 10px; }
+  .mb-12 { margin-bottom: 12px; }
+  .p-8 { padding: 8px; }
+  .p-10 { padding: 10px; }
+  .p-12 { padding: 12px; }
+  .w-full { width: 100%; }
+  .text-center { text-align: center; }
+  .text-sm { font-size: 16px; }
+  .text-xs { font-size: 14px; }
+  .text-lg { font-size: 24px; }
+  .font-bold { font-weight: 700; }
+  .text-red { color: var(--ink-red); }
+  .text-blue { color: var(--ink-blue); }
+  .text-green { color: var(--ink-green); }
+  .text-orange { color: var(--ink-orange); }
+  .text-teal { color: var(--ink-teal); }
+  .tech-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--ink-blue);
+    border-radius: 20px;
+    font-family: var(--hand);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink-blue);
+    background: rgba(37, 99, 235, 0.04);
+    position: relative;
+    z-index: 1;
+  }
+  .tech-pill.red { border-color: var(--ink-red); color: var(--ink-red); background: rgba(220, 38, 38, 0.04); }
+  .tech-pill.green { border-color: var(--ink-green); color: var(--ink-green); background: rgba(22, 163, 74, 0.04); }
+  .tech-pill.orange { border-color: var(--ink-orange); color: var(--ink-orange); background: rgba(234, 88, 12, 0.04); }
+  .tech-pill.teal { border-color: var(--ink-teal); color: var(--ink-teal); background: rgba(20, 184, 166, 0.04); }
+  .highlight-box {
+    background: rgba(220, 38, 38, 0.06);
+    border-left: 4px solid var(--ink-red);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .info-box {
+    background: rgba(37, 99, 235, 0.06);
+    border-left: 4px solid var(--ink-blue);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .success-box {
+    background: rgba(22, 163, 74, 0.06);
+    border-left: 4px solid var(--ink-green);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .warning-box {
+    background: rgba(234, 88, 12, 0.06);
+    border-left: 4px solid var(--ink-orange);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .code-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    background: #1a1a2e;
+    color: #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    position: relative;
+    z-index: 1;
+    white-space: pre;
+  }
+  .inline-code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: rgba(37, 99, 235, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--ink-blue);
+  }
+  .page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 20mm;
+    font-family: var(--hand-alt);
+    font-size: 13px;
+    color: #999;
+    z-index: 1;
+  }
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ink-blue-light), transparent);
+    margin: 10px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--hand);
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .param-table th {
+    font-weight: 700;
+    color: var(--ink-blue);
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 2px solid var(--ink-blue);
+    font-size: 17px;
+  }
+  .param-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--paper-line);
+    vertical-align: top;
+  }
+  .param-table tr:hover td { background: rgba(37, 99, 235, 0.02); }
+  .param-table .mono { font-size: 13px; }
+  .command-example {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(37, 99, 235, 0.03);
+    border: 1px solid var(--ink-blue-light);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+  }
+  .command-example .prompt { color: var(--ink-green); font-weight: 700; }
+  .command-example .cmd { color: var(--ink-black); }
+  .endpoint-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .endpoint-badge.get { background: rgba(22, 163, 74, 0.12); color: var(--ink-green); }
+  .endpoint-badge.post { background: rgba(37, 99, 235, 0.12); color: var(--ink-blue); }
+  .endpoint-badge.put { background: rgba(234, 88, 12, 0.12); color: var(--ink-orange); }
+  .endpoint-badge.delete { background: rgba(220, 38, 38, 0.12); color: var(--ink-red); }
+  .key-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 6px;
+    background: #1a1a2e;
+    color: #e2e8f0;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #334155;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-family: var(--hand);
+    font-size: 18px;
+  }
+  .toc-item .page-ref {
+    color: #94a3b8;
+    font-family: var(--hand-alt);
+    font-size: 14px;
+    margin-left: auto;
+  }
+  .tree {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-black);
+    background: rgba(37, 99, 235, 0.03);
+    border: 1.5px solid var(--ink-blue-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .tree .folder { color: var(--ink-blue); font-weight: 700; }
+  .tree .file { color: var(--ink-black); }
+  .tree .highlight { color: var(--ink-red); font-weight: 700; }
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--ink-red);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-family: var(--hand);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-red);
+    transform: rotate(-3deg);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+  }
+  .stamp.teal { border-color: var(--ink-teal); color: var(--ink-teal); }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .feature-card {
+    border: 1.5px solid var(--ink-blue);
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: rgba(37, 99, 235, 0.03);
+    position: relative;
+    z-index: 1;
+  }
+  .feature-card .card-icon { font-size: 22px; margin-bottom: 2px; }
+  .feature-card .card-title { font-family: var(--hand); font-size: 16px; font-weight: 700; color: var(--ink-blue); }
+  .feature-card .card-desc { font-family: var(--hand); font-size: 14px; color: var(--ink-black); line-height: 1.3; }
+  @media print {
+    body { background: white; padding: 0; gap: 0; }
+    .page { box-shadow: none; margin: 0; page-break-after: always; }
+  }
+  @page { size: A4; margin: 0; }
+</style>
+</head>
+<body>
+<div class="page" style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
+  <div class="margin-line"></div>
+  <div style="position:relative;z-index:1;text-align:center;">
+    <div style="font-size:64px;margin-bottom:12px;position:relative;z-index:1;">⚡</div>
+    <div class="title" style="font-size:56px;margin-bottom:8px;position:relative;z-index:1;">Pulsar</div>
+    <div class="subtitle" style="font-size:20px;margin-bottom:24px;position:relative;z-index:1;">Proxmox & KVM Automation Suite</div>
+    <div class="stamp teal" style="transform:none;margin-bottom:40px;font-size:16px;">v1.1.0</div>
+    <div style="border-top:2px dashed var(--ink-teal-light);width:60%;margin:0 auto 32px;"></div>
+    <div style="font-family:var(--hand);font-size:20px;color:var(--ink-black);margin-bottom:8px;position:relative;z-index:1;">
+      Go TUI · REST API Gateway · SvelteKit Web UI
+    </div>
+    <div style="font-family:var(--hand-alt);font-size:16px;color:var(--ink-blue);margin-bottom:32px;position:relative;z-index:1;">
+      CLI · Packer · Ansible · Terraform · Golden Images
+    </div>
+    <div class="flex items-center justify-center gap-8">
+      <span class="tech-pill teal">Go 1.22+</span>
+      <span class="tech-pill">Python 3.11+</span>
+      <span class="tech-pill teal">Svelte 5</span>
+      <span class="tech-pill">Ansible 2.16+</span>
+      <span class="tech-pill green">Packer 1.10+</span>
+      <span class="tech-pill orange">Terraform 1.7+</span>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:25mm;left:0;right:0;text-align:center;z-index:1;">
+    <div class="label" style="font-size:12px;">User Manual · July 2026 · MIT License</div>
+  </div>
+  <div class="page-number">Page 1</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title"><span class="icon">📑</span> Table of Contents</div>
+  <div class="section-underline"></div>
+  <div class="two-col gap-16" style="margin-top:10px;">
+    <div class="flex flex-col gap-2">
+      <div class="toc-item"><span class="hand-circle" style="width:24px;height:24px;font-size:12px;">1</span> Getting Started<span class="page-ref">p.3</span></div>
+      <div class="toc-item"><span class="hand-circle teal" style="width:24px;height:24px;font-size:12px;">2</span> Architecture<span class="page-ref">p.4</span></div>
+      <div class="toc-item"><span class="hand-circle blue" style="width:24px;height:24px;font-size:12px;">3</span> Configuration<span class="page-ref">p.5</span></div>
+      <div class="toc-item"><span class="hand-circle orange" style="width:24px;height:24px;font-size:12px;">4</span> pmxctl — Proxmox CLI<span class="page-ref">p.6</span></div>
+      <div class="toc-item"><span class="hand-circle red" style="width:24px;height:24px;font-size:12px;">5</span> kvmctl — KVM CLI<span class="page-ref">p.8</span></div>
+      <div class="toc-item"><span class="hand-circle green" style="width:24px;height:24px;font-size:12px;">6</span> swissknife — Unified CLI<span class="page-ref">p.9</span></div>
+      <div class="toc-item"><span class="hand-circle teal" style="width:24px;height:24px;font-size:12px;">7</span> TUI Dashboard<span class="page-ref">p.9</span></div>
+      <div class="toc-item"><span class="hand-circle" style="width:24px;height:24px;font-size:12px;">8</span> API Gateway<span class="page-ref">p.10</span></div>
+      <div class="toc-item"><span class="hand-circle teal" style="width:24px;height:24px;font-size:12px;">9</span> Web UI<span class="page-ref">p.13</span></div>
+      <div class="toc-item"><span class="hand-circle blue" style="width:24px;height:24px;font-size:12px;">10</span> Packer Images<span class="page-ref">p.14</span></div>
+      <div class="toc-item"><span class="hand-circle orange" style="width:24px;height:24px;font-size:12px;">11</span> Ansible Playbooks<span class="page-ref">p.15</span></div>
+      <div class="toc-item"><span class="hand-circle green" style="width:24px;height:24px;font-size:12px;">12</span> Terraform Modules<span class="page-ref">p.16</span></div>
+      <div class="toc-item"><span class="hand-circle red" style="width:24px;height:24px;font-size:12px;">13</span> Backup & Restore<span class="page-ref">p.17</span></div>
+      <div class="toc-item"><span class="hand-circle teal" style="width:24px;height:24px;font-size:12px;">14</span> Monitoring<span class="page-ref">p.18</span></div>
+      <div class="toc-item"><span class="hand-circle" style="width:24px;height:24px;font-size:12px;">15</span> Security<span class="page-ref">p.19</span></div>
+      <div class="toc-item"><span class="hand-circle orange" style="width:24px;height:24px;font-size:12px;">16</span> Development<span class="page-ref">p.20</span></div>
+      <div class="toc-item"><span class="hand-circle red" style="width:24px;height:24px;font-size:12px;">17</span> Runbooks<span class="page-ref">p.21</span></div>
+      <div class="toc-item"><span class="hand-circle teal" style="width:24px;height:24px;font-size:12px;">A</span> Appendices<span class="page-ref">p.23</span></div>
+    </div>
+  </div>
+  <div class="page-number">Page 2</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title"><span class="icon">🚀</span> 1. Getting Started</div>
+  <div class="section-underline"></div>
+  <div class="info-box mb-8">
+    <div class="body-text text-sm">Pulsar is a modular automation suite. You can use the TUI for interactive management, the CLI for scripts, the REST API for web integrations, or the Web UI for visual management — all connect to the same Proxmox backend.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📋</span> Prerequisites</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Tool</th><th>Min Version</th><th>Purpose</th></tr>
+    <tr><td><span class="mono">Go</span></td><td>1.22</td><td>Building CLI binaries (pmxctl, kvmctl, swissknife, apigateway)</td></tr>
+    <tr><td><span class="mono">Python</span></td><td>3.11</td><td>Ansible playbooks, Python orchestration modules</td></tr>
+    <tr><td><span class="mono">Packer</span></td><td>1.10</td><td>Building golden VM images</td></tr>
+    <tr><td><span class="mono">Ansible</span></td><td>2.16</td><td>Fleet-wide configuration management</td></tr>
+    <tr><td><span class="mono">Terraform</span></td><td>1.7</td><td>Infrastructure provisioning</td></tr>
+    <tr><td><span class="mono">Proxmox VE</span></td><td>8.x</td><td>Target hypervisor cluster</td></tr>
+    <tr><td><span class="mono">Node.js</span></td><td>20</td><td>Building the SvelteKit Web UI</td></tr>
+  </table>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🔧</span> Installation</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">git clone https://github.com/yourorg/pulsar.git && cd pulsar</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">cp .env.example .env        # edit with your credentials</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">make build                   # builds all Go binaries</span></div>
+  <div class="command-example mb-6"><span class="prompt">$</span> <span class="cmd">make test                    # runs full test suite</span></div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">⚡</span> First Run</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="two-col gap-8">
+    <div class="rounded-box teal">
+      <div class="text-teal font-bold mb-4" style="font-size:17px;">Interactive TUI</div>
+      <div class="command-example mb-4" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">make tui</span></div>
+      <div class="body-text text-xs">Bubble Tea TUI with real-time VM status, node health, and quick actions.</div>
+    </div>
+    <div class="rounded-box">
+      <div class="text-blue font-bold mb-4" style="font-size:17px;">API Gateway</div>
+      <div class="command-example mb-4" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">./bin/apigateway.exe</span></div>
+      <div class="body-text text-xs">REST API on :8443 with all endpoints.</div>
+    </div>
+    <div class="rounded-box green">
+      <div class="text-green font-bold mb-4" style="font-size:17px;">Web UI</div>
+      <div class="command-example mb-4" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">cd web && npm run dev</span></div>
+      <div class="body-text text-xs">Dev server at :5173, proxies /api to :8443.</div>
+    </div>
+    <div class="rounded-box orange">
+      <div class="text-orange font-bold mb-4" style="font-size:17px;">CLI</div>
+      <div class="command-example mb-4" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">./bin/swissknife status</span></div>
+      <div class="body-text text-xs">Cluster overview from the command line.</div>
+    </div>
+  </div>
+  <div class="page-number">Page 3</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title teal"><span class="icon">🏗</span> 2. Architecture</div>
+  <div class="section-underline teal"></div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🔄</span> System Overview</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="body-text text-sm mb-8">Pulsar is organized in layers. You interact through one of four interfaces (TUI, CLI, REST API, Web UI), which call into the executor layer. The executor dispatches to the appropriate backend — Proxmox REST API, libvirt, Ansible, Terraform, or Packer.</div>
+  <svg class="svg-diagram" width="680" height="260" viewBox="0 0 680 260">
+    <rect x="240" y="5" width="200" height="40" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="340" y="30" text-anchor="middle" font-family="Caveat" font-size="15" font-weight="700" fill="#dc2626">👤 Administrator</text>
+    <rect x="10" y="55" width="140" height="40" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="80" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#2563eb">🖥 TUI (Bubble Tea)</text>
+    <rect x="165" y="55" width="110" height="40" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="220" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#dc2626">⚡ CLI</text>
+    <rect x="290" y="55" width="120" height="40" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="350" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#16a34a">🌐 REST API</text>
+    <rect x="425" y="55" width="120" height="40" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+    <text x="485" y="80" text-anchor="middle" font-family="Caveat" font-size="12" fill="#ea580c">🕸 Web UI</text>
+    <rect x="10" y="110" width="550" height="40" rx="8" fill="#fef2f2" stroke="#ea580c" stroke-width="1.5"/>
+    <text x="285" y="135" text-anchor="middle" font-family="Caveat" font-size="13" font-weight="700" fill="#ea580c">⚙ Executor Layer (Go internal packages)</text>
+    <rect x="10" y="165" width="95" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="57" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#dc2626">Proxmox</text>
+    <text x="57" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">REST API v2</text>
+    <rect x="115" y="165" width="90" height="45" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="160" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#2563eb">KVM/libvirt</text>
+    <text x="160" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">virsh + QMP</text>
+    <rect x="215" y="165" width="85" height="45" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+    <text x="257" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#ea580c">Ansible</text>
+    <text x="257" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#ea580c">Fleet mgmt</text>
+    <rect x="310" y="165" width="85" height="45" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="352" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#16a34a">Terraform</text>
+    <text x="352" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#16a34a">IaC provision</text>
+    <rect x="405" y="165" width="80" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="445" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#dc2626">Packer</text>
+    <text x="445" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#dc2626">Images</text>
+    <rect x="495" y="165" width="90" height="45" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="540" y="183" text-anchor="middle" font-family="Caveat" font-size="12" font-weight="700" fill="#2563eb">Shared</text>
+    <text x="540" y="199" text-anchor="middle" font-family="Caveat" font-size="11" fill="#2563eb">SSH · notify</text>
+    <line x1="80" y1="95" x2="80" y2="110" stroke="#2563eb" stroke-width="1.5"/>
+    <line x1="220" y1="95" x2="220" y2="110" stroke="#dc2626" stroke-width="1.5"/>
+    <line x1="350" y1="95" x2="350" y2="110" stroke="#16a34a" stroke-width="1.5"/>
+    <line x1="485" y1="95" x2="485" y2="110" stroke="#ea580c" stroke-width="1.5"/>
+    <rect x="100" y="220" width="370" height="30" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="285" y="240" text-anchor="middle" font-family="Caveat" font-size="12" fill="#dc2626">💾 ZFS · Ceph · LVM · NFS · PBS · iSCSI · GlusterFS</text>
+  </svg>
+  <div class="two-col gap-12 mt-8">
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">Directory Structure</div>
+      <div class="tree">
+        <span class="folder">pulsar/</span>
+        ├── <span class="highlight">shared/</span>
+        ├── <span class="highlight">proxmox/</span>
+        │   ├── bash/ (22) · python/ (27)
+        │   ├── ansible/ (17) · terraform/
+        ├── <span class="highlight">kvm/</span>
+        │   ├── bash/ (14) · python/ (19)
+        │   └── ansible/ (5)
+        ├── <span class="folder">packer/</span> (6)
+        ├── <span class="folder">go/</span> (4 binaries)
+        ├── <span class="folder">web/</span> (SvelteKit)
+        ├── <span class="folder">tests/</span> (30 files)
+        └── <span class="folder">docs/</span>
+      </div>
+    </div>
+    <div>
+      <div class="rounded-box teal mb-6">
+        <div class="text-teal font-bold text-sm mb-4">Design Principle</div>
+        <div class="body-text text-sm"><span class="text-red font-bold">proxmox/</span> — PVE only</div>
+        <div class="body-text text-sm"><span class="text-blue font-bold">kvm/</span> — libvirt only</div>
+        <div class="body-text text-sm"><span class="text-green font-bold">shared/</span> — usable by both</div>
+      </div>
+      <div class="rounded-box green">
+        <div class="text-green font-bold text-sm mb-4">380+ Files · 7 Languages</div>
+        <div class="body-text text-xs">Go · Python · Bash · TypeScript · Ansible · Terraform · Packer</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-number">Page 4</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title blue"><span class="icon">⚙</span> 3. Configuration</div>
+  <div class="section-underline blue"></div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🔑</span> Environment Variables</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr><td class="mono">PULSAR_LOG_LEVEL</td><td>info</td><td>Log verbosity: debug, info, warn, error</td></tr>
+    <tr><td class="mono">PULSAR_LOG_FORMAT</td><td>text</td><td>Output format: text or json</td></tr>
+    <tr><td class="mono">PULSAR_LOG_FILE</td><td>—</td><td>Optional log file path (stdout if empty)</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_URL</td><td>—</td><td>Proxmox host URL e.g. https://10.0.0.1:8006</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_USER</td><td>root@pam</td><td>Proxmox API user</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_PASS</td><td>—</td><td>Proxmox API password</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_REALM</td><td>pam</td><td>Authentication realm</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_OTP</td><td>—</td><td>2FA OTP if required</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TOKEN_NAME</td><td>—</td><td>API token name (alternative to password)</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TOKEN_SECRET</td><td>—</td><td>API token secret</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TIMEOUT</td><td>30</td><td>HTTP request timeout in seconds</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_INSECURE</td><td>false</td><td>Skip TLS verification (dev only)</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">📄</span> settings.yaml</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="body-text text-sm mb-4">Place <span class="inline-code">settings.yaml</span> next to the binary or at <span class="inline-code">~/.config/pulsar/settings.yaml</span>.</div>
+  <div class="code-block">proxmox:
+  url: "https://10.0.0.1:8006"
+  user: "root@pam"
+  password: ""
+  timeout: 30
+  insecure: false
+
+log:
+  level: info
+  format: json
+  file: "/var/log/pulsar/pulsar.log"
+
+api:
+  host: "0.0.0.0"
+  port: 8443
+  tls:
+    cert: "/etc/pulsar/certs/server.crt"
+    key: "/etc/pulsar/certs/server.key"
+  cors:
+    enabled: true
+    origins: ["*"]
+  rate_limit: 100
+
+tui:
+  refresh_interval: 5
+  default_node: "pve1"</div>
+  <div class="warning-box mt-8">
+    <div class="body-text text-sm"><span class="font-bold">⚠ Tip:</span> Use <span class="inline-code"></span> syntax in YAML to reference environment variables. Never hardcode secrets in settings files.</div>
+  </div>
+  <div class="page-number">Page 5</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title orange"><span class="icon">💻</span> 4. pmxctl — Proxmox CLI</div>
+  <div class="section-underline orange"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm"><span class="inline-code">pmxctl</span> is the Proxmox-specific CLI. It wraps the Proxmox VE REST API v2 with automatic ticket management.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🖥</span> VM Lifecycle</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">pmxctl vm list</td><td>List all VMs with status, node, IP</td></tr>
+    <tr><td class="mono">pmxctl vm start &lt;vmid&gt;</td><td>Start a VM</td></tr>
+    <tr><td class="mono">pmxctl vm stop &lt;vmid&gt;</td><td>Hard stop a VM</td></tr>
+    <tr><td class="mono">pmxctl vm shutdown &lt;vmid&gt;</td><td>Graceful shutdown (ACPI)</td></tr>
+    <tr><td class="mono">pmxctl vm reset &lt;vmid&gt;</td><td>Hard reset</td></tr>
+    <tr><td class="mono">pmxctl vm suspend &lt;vmid&gt;</td><td>Suspend to RAM</td></tr>
+    <tr><td class="mono">pmxctl vm resume &lt;vmid&gt;</td><td>Resume from suspend</td></tr>
+    <tr><td class="mono">pmxctl vm reboot &lt;vmid&gt;</td><td>Reboot a VM</td></tr>
+    <tr><td class="mono">pmxctl vm status &lt;vmid&gt;</td><td>Detailed VM status</td></tr>
+    <tr><td class="mono">pmxctl vm info &lt;vmid&gt;</td><td>Extended config info</td></tr>
+  </table>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📸</span> Snapshots</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">pmxctl vm snapshot &lt;vmid&gt; create &lt;name&gt;</td><td>Create snapshot</td></tr>
+    <tr><td class="mono">pmxctl vm snapshot &lt;vmid&gt; list</td><td>List snapshots</td></tr>
+    <tr><td class="mono">pmxctl vm snapshot &lt;vmid&gt; rollback &lt;name&gt;</td><td>Rollback to snapshot</td></tr>
+    <tr><td class="mono">pmxctl vm snapshot &lt;vmid&gt; delete &lt;name&gt;</td><td>Delete snapshot</td></tr>
+  </table>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">✨</span> Create VM Example</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="code-block">pmxctl vm create 200 --name "web-01" \
+  --memory 4096 --cores 4 \
+  --disk "local-lvm:32" \
+  --net "virtio,bridge=vmbr0" \
+  --iso "local:iso/ubuntu-24.04-server-cloudimg-amd64.img" \
+  --ostype l26 \
+  --start</div>
+  <div class="rounded-box green mt-6">
+    <div class="body-text text-sm"><span class="text-green font-bold">Tip:</span> Flags like <span class="inline-code">--memory</span> accept MB values. Use <span class="inline-code">--disk "storage:size"</span> format. Add <span class="inline-code">--start</span> to boot immediately after creation.</div>
+  </div>
+  <div class="page-number">Page 6</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title orange"><span class="icon">📦</span> 4.1 pmxctl — Containers</div>
+  <div class="section-underline orange"></div>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">📦</span> Container (LXC) Management</div>
+  <div class="section-underline green mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">pmxctl ct list</td><td>List all containers</td></tr>
+    <tr><td class="mono">pmxctl ct create &lt;ctid&gt; --ostemplate &lt;template&gt;</td><td>Create container from template</td></tr>
+    <tr><td class="mono">pmxctl ct start &lt;ctid&gt;</td><td>Start container</td></tr>
+    <tr><td class="mono">pmxctl ct stop &lt;ctid&gt;</td><td>Stop container</td></tr>
+    <tr><td class="mono">pmxctl ct shutdown &lt;ctid&gt;</td><td>Graceful shutdown</td></tr>
+    <tr><td class="mono">pmxctl ct reboot &lt;ctid&gt;</td><td>Reboot container</td></tr>
+    <tr><td class="mono">pmxctl ct exec &lt;ctid&gt; -- &lt;cmd&gt;</td><td>Execute command inside container</td></tr>
+    <tr><td class="mono">pmxctl ct resize &lt;ctid&gt; --disk &lt;size&gt;</td><td>Resize root disk</td></tr>
+    <tr><td class="mono">pmxctl ct migrate &lt;ctid&gt; --target &lt;node&gt;</td><td>Migrate container to another node</td></tr>
+    <tr><td class="mono">pmxctl ct template &lt;ctid&gt;</td><td>Convert container to template</td></tr>
+    <tr><td class="mono">pmxctl ct clone &lt;ctid&gt; --newid &lt;newid&gt;</td><td>Clone container from template</td></tr>
+  </table>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">💾</span> Storage Management</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">pmxctl storage list</td><td>List all configured storages</td></tr>
+    <tr><td class="mono">pmxctl storage info &lt;storage&gt;</td><td>Detailed storage info</td></tr>
+    <tr><td class="mono">pmxctl storage content &lt;storage&gt;</td><td>List content (ISO, vztmpl, backups)</td></tr>
+    <tr><td class="mono">pmxctl storage upload &lt;storage&gt; &lt;file&gt;</td><td>Upload file to storage</td></tr>
+    <tr><td class="mono">pmxctl storage download &lt;storage&gt; &lt;url&gt;</td><td>Download URL to storage</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🔗</span> Cluster Management</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">pmxctl cluster status</td><td>View cluster status and quorum</td></tr>
+    <tr><td class="mono">pmxctl cluster join &lt;host&gt; --password &lt;pw&gt;</td><td>Join existing cluster</td></tr>
+    <tr><td class="mono">pmxctl cluster nodes</td><td>List cluster nodes</td></tr>
+    <tr><td class="mono">pmxctl cluster resources</td><td>Show cluster resource usage</td></tr>
+    <tr><td class="mono">pmxctl node list</td><td>List all nodes</td></tr>
+    <tr><td class="mono">pmxctl node info &lt;node&gt;</td><td>Node hardware and service info</td></tr>
+    <tr><td class="mono">pmxctl node services &lt;node&gt;</td><td>List running services</td></tr>
+  </table>
+  <div class="page-number">Page 7</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title red"><span class="icon">🔧</span> 5. kvmctl — KVM CLI</div>
+  <div class="section-underline red"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm"><span class="inline-code">kvmctl</span> manages local KVM/libvirt hosts. It uses <span class="inline-code">virsh</span> and QEMU Monitor Protocol (QMP) for direct control without a Proxmox dependency.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🖥</span> Domain Management</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">kvmctl domain list</td><td>List domains and their states</td></tr>
+    <tr><td class="mono">kvmctl domain start &lt;domain&gt;</td><td>Start a domain</td></tr>
+    <tr><td class="mono">kvmctl domain shutdown &lt;domain&gt;</td><td>ACPI graceful shutdown</td></tr>
+    <tr><td class="mono">kvmctl domain destroy &lt;domain&gt;</td><td>Force power off</td></tr>
+    <tr><td class="mono">kvmctl domain reboot &lt;domain&gt;</td><td>Reboot a domain</td></tr>
+    <tr><td class="mono">kvmctl domain suspend &lt;domain&gt;</td><td>Suspend to RAM (S3)</td></tr>
+    <tr><td class="mono">kvmctl domain resume &lt;domain&gt;</td><td>Resume domain</td></tr>
+    <tr><td class="mono">kvmctl domain info &lt;domain&gt;</td><td>XML/Virsh domain details</td></tr>
+    <tr><td class="mono">kvmctl domain define &lt;xml-file&gt;</td><td>Define domain from XML</td></tr>
+    <tr><td class="mono">kvmctl domain undefine &lt;domain&gt;</td><td>Remove domain definition</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">📸</span> Snapshots & Migration</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">kvmctl snapshot create &lt;domain&gt; &lt;name&gt;</td><td>Create disk/memory snapshot</td></tr>
+    <tr><td class="mono">kvmctl snapshot list &lt;domain&gt;</td><td>List snapshots</td></tr>
+    <tr><td class="mono">kvmctl snapshot revert &lt;domain&gt; &lt;name&gt;</td><td>Revert to snapshot</td></tr>
+    <tr><td class="mono">kvmctl snapshot delete &lt;domain&gt; &lt;name&gt;</td><td>Delete snapshot</td></tr>
+    <tr><td class="mono">kvmctl migrate live &lt;domain&gt; --dest &lt;uri&gt;</td><td>Live migrate domain</td></tr>
+    <tr><td class="mono">kvmctl migrate offline &lt;domain&gt; --dest &lt;uri&gt;</td><td>Offline migrate domain</td></tr>
+  </table>
+  <div class="section-title orange" style="font-size:22px;"><span class="icon">⚡</span> Advanced Features</div>
+  <div class="section-underline orange mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">kvmctl pci list</td><td>List PCI devices available for passthrough</td></tr>
+    <tr><td class="mono">kvmctl pci attach &lt;domain&gt; &lt;pci-addr&gt;</td><td>Attach PCI device (hotplug)</td></tr>
+    <tr><td class="mono">kvmctl pci detach &lt;domain&gt; &lt;pci-addr&gt;</td><td>Detach PCI device</td></tr>
+    <tr><td class="mono">kvmctl net list</td><td>List virtual networks</td></tr>
+    <tr><td class="mono">kvmctl net info &lt;network&gt;</td><td>Show network details</td></tr>
+    <tr><td class="mono">kvmctl pool list</td><td>List storage pools</td></tr>
+    <tr><td class="mono">kvmctl pool info &lt;pool&gt;</td><td>Show pool capacity and usage</td></tr>
+  </table>
+  <div class="warning-box mt-6">
+    <div class="body-text text-sm"><span class="font-bold">⚠ IOMMU:</span> PCI passthrough requires IOMMU enabled in kernel cmdline (<span class="inline-code">intel_iommu=on</span> or <span class="inline-code">amd_iommu=on</span>). Verify with <span class="inline-code">dmesg | grep IOMMU</span>.</div>
+  </div>
+  <div class="page-number">Page 8</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title green"><span class="icon">🔧</span> 6. swissknife — Unified CLI</div>
+  <div class="section-underline green"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm"><span class="inline-code">swissknife</span> is a unified CLI that wraps <span class="inline-code">pmxctl</span> and <span class="inline-code">kvmctl</span> functionality. Use it when you want abstract commands that work across both Proxmox and KVM environments.</div>
+  </div>
+  <table class="param-table mb-8">
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td class="mono">swissknife status</td><td>Cluster and environment overview</td></tr>
+    <tr><td class="mono">swissknife vm list</td><td>List all VMs across all backends</td></tr>
+    <tr><td class="mono">swissknife vm start &lt;id&gt;</td><td>Start a VM</td></tr>
+    <tr><td class="mono">swissknife vm stop &lt;id&gt;</td><td>Stop a VM</td></tr>
+    <tr><td class="mono">swissknife backup run --all</td><td>Trigger backup for all VMs</td></tr>
+    <tr><td class="mono">swissknife backup run &lt;id&gt;</td><td>Backup specific VM</td></tr>
+    <tr><td class="mono">swissknife backup list</td><td>List recent backups</td></tr>
+    <tr><td class="mono">swissknife health</td><td>Run health checks across all nodes</td></tr>
+    <tr><td class="mono">swissknife update --check</td><td>Check available updates</td></tr>
+    <tr><td class="mono">swissknife update --apply</td><td>Apply system updates</td></tr>
+    <tr><td class="mono">swissknife info &lt;id&gt;</td><td>Detailed VM/container info</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🖥</span> 7. TUI Dashboard</div>
+  <div class="section-underline teal"></div>
+  <div class="body-text text-sm mb-6">The Bubble Tea TUI provides an interactive terminal dashboard. Launch with <span class="inline-code">make tui</span> or <span class="inline-code">./bin/tui</span>.</div>
+  <div class="two-col gap-8">
+    <div>
+      <div class="text-blue font-bold mb-4">Dashboard Views</div>
+      <table class="param-table mb-4">
+        <tr><th>View</th><th>Key</th><th>Description</th></tr>
+        <tr><td>Overview</td><td><span class="key-hint">1</span></td><td>Cluster health, resource usage, alerts</td></tr>
+        <tr><td>VMs</td><td><span class="key-hint">2</span></td><td>VM list with status, CPU, memory</td></tr>
+        <tr><td>Containers</td><td><span class="key-hint">3</span></td><td>LXC container management</td></tr>
+        <tr><td>Nodes</td><td><span class="key-hint">4</span></td><td>Per-node resource breakdown</td></tr>
+        <tr><td>Storage</td><td><span class="key-hint">5</span></td><td>Storage pool usage</td></tr>
+        <tr><td>Backups</td><td><span class="key-hint">6</span></td><td>Backup jobs and history</td></tr>
+        <tr><td>Logs</td><td><span class="key-hint">7</span></td><td>Real-time log viewer</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="text-blue font-bold mb-4">Keyboard Shortcuts</div>
+      <table class="param-table mb-4">
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="key-hint">Tab</span></td><td>Focus next panel</td></tr>
+        <tr><td><span class="key-hint">q</span> / <span class="key-hint">Ctrl+C</span></td><td>Quit</td></tr>
+        <tr><td><span class="key-hint">/</span></td><td>Search / filter</td></tr>
+        <tr><td><span class="key-hint">Enter</span></td><td>Select / confirm</td></tr>
+        <tr><td><span class="key-hint">Esc</span></td><td>Back / cancel</td></tr>
+        <tr><td><span class="key-hint">r</span></td><td>Refresh current view</td></tr>
+        <tr><td><span class="key-hint">d</span></td><td>View details</td></tr>
+        <tr><td><span class="key-hint">Del</span></td><td>Delete selected item</td></tr>
+        <tr><td><span class="key-hint">?</span></td><td>Toggle help overlay</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="rounded-box teal mt-6">
+    <div class="body-text text-sm"><span class="text-teal font-bold">Tip:</span> The TUI auto-refreshes every 5 seconds. Use <span class="inline-code">PULSAR_TUI_REFRESH_INTERVAL</span> to customize the interval.</div>
+  </div>
+  <div class="page-number">Page 9</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title"><span class="icon">🌐</span> 8. API Gateway</div>
+  <div class="section-underline"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">The API Gateway (<span class="inline-code">apigateway</span>) exposes all functionality as a RESTful JSON API on <span class="inline-code">:8443</span>. Start with <span class="inline-code">./bin/apigateway.exe</span> or <span class="inline-code">make api</span>.</div>
+  </div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🔐</span> Authentication</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="body-text text-sm mb-6">The API supports two authentication methods. Include your credentials in every request via the <span class="inline-code">Authorization</span> header.</div>
+  <div class="two-col gap-8 mb-8">
+    <div class="rounded-box">
+      <div class="text-blue font-bold mb-6" style="font-size:17px;">Method 1: X-API-Key</div>
+      <div class="code-block" style="font-size:11px;">curl -X GET "https://localhost:8443/api/v1/vms" \
+  -H "X-API-Key: your-api-key-here" \
+  -H "Content-Type: application/json"</div>
+      <div class="body-text text-xs mt-4">Simple API key authentication. Generate keys via <span class="inline-code">apigateway --generate-key</span>.</div>
+    </div>
+    <div class="rounded-box green">
+      <div class="text-green font-bold mb-6" style="font-size:17px;">Method 2: Bearer Token</div>
+      <div class="code-block" style="font-size:11px;">curl -X POST "https://localhost:8443/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"secret"}'
+
+# Returns: { "token": "eyJhbGciOiJIUzI1NiIs..." }</div>
+      <div class="code-block mt-4" style="font-size:11px;">curl -X GET "https://localhost:8443/api/v1/vms" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."</div>
+      <div class="body-text text-xs mt-4">JWT tokens expire after 24 hours by default.</div>
+    </div>
+  </div>
+  <div class="two-col gap-8">
+    <div class="info-box">
+      <div class="body-text text-sm"><span class="font-bold">CORS:</span> Enabled by default with wildcard origin. Configure in <span class="inline-code">settings.yaml</span> under <span class="inline-code">api.cors</span>.</div>
+    </div>
+    <div class="warning-box">
+      <div class="body-text text-sm"><span class="font-bold">TLS:</span> The server requires TLS. Generate self-signed certs with <span class="inline-code">make certs</span> or provide your own in <span class="inline-code">settings.yaml</span>.</div>
+    </div>
+  </div>
+  <div class="page-number">Page 10</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title blue"><span class="icon">🔌</span> 8.1 API Endpoints — VMs & Containers</div>
+  <div class="section-underline blue"></div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🖥</span> VM Endpoints</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/vms</td><td>List all VMs</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/vms/{id}</td><td>Get VM details</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/create</td><td>Create a new VM</td></tr>
+    <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/api/v1/vms/{id}</td><td>Delete a VM</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/start</td><td>Start VM</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/stop</td><td>Stop VM</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/shutdown</td><td>Graceful shutdown</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/reboot</td><td>Reboot VM</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/reset</td><td>Hard reset</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/suspend</td><td>Suspend VM</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/resume</td><td>Resume VM</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">📸</span> Snapshot Sub-endpoints</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/vms/{id}/snapshots</td><td>List snapshots</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/snapshots</td><td>Create snapshot</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/vms/{id}/snapshots/{name}/rollback</td><td>Rollback to snapshot</td></tr>
+    <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/api/v1/vms/{id}/snapshots/{name}</td><td>Delete snapshot</td></tr>
+  </table>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">📦</span> Container (LXC) Endpoints</div>
+  <div class="section-underline green mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/containers</td><td>List all containers</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/containers/{id}</td><td>Get container details</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/containers/create</td><td>Create container</td></tr>
+    <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/api/v1/containers/{id}</td><td>Delete container</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/containers/{id}/start</td><td>Start container</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/containers/{id}/stop</td><td>Stop container</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/containers/{id}/exec</td><td>Execute command in container</td></tr>
+  </table>
+  <div class="page-number">Page 11</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title blue"><span class="icon">🔌</span> 8.2 API Endpoints — Infrastructure</div>
+  <div class="section-underline blue"></div>
+  <div class="section-title teal" style="font-size:20px;"><span class="icon">🔗</span> Nodes, Cluster & Storage</div>
+  <div class="section-underline teal mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/nodes</td><td>List all nodes</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/nodes/{node}</td><td>Node details</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/cluster/status</td><td>Cluster status & quorum</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/cluster/resources</td><td>Cluster resource usage</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/storage</td><td>List storage pools</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/storage/{name}</td><td>Storage pool details</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/storage/{name}/content</td><td>List stored content</td></tr>
+  </table>
+  <div class="section-title green" style="font-size:20px;"><span class="icon">💾</span> Backups & Pools</div>
+  <div class="section-underline green mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/backups</td><td>List backup jobs</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/backups/run</td><td>Trigger backup</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/pools</td><td>List resource pools</td></tr>
+    <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/api/v1/pools/create</td><td>Create pool</td></tr>
+    <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/api/v1/pools/{name}</td><td>Delete pool</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/ha/status</td><td>HA group status</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/firewall/rules</td><td>List firewall rules</td></tr>
+    <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/api/v1/health</td><td>System health check</td></tr>
+  </table>
+  <div class="section-title orange" style="font-size:20px;"><span class="icon">📡</span> curl Examples</div>
+  <div class="section-underline orange mb-6"></div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Start a VM</div>
+    <div class="code-block">curl -X POST "https://localhost:8443/api/v1/vms/100/start" \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json"</div>
+  </div>
+  <div class="rounded-box green mb-4">
+    <div class="body-text text-sm font-bold mb-4">List all VMs with details</div>
+    <div class="code-block">curl -s "https://localhost:8443/api/v1/vms" \
+  -H "X-API-Key: your-api-key" | jq '.'</div>
+  </div>
+  <div class="rounded-box teal mb-4">
+    <div class="body-text text-sm font-bold mb-4">Create a snapshot</div>
+    <div class="code-block">curl -X POST "https://localhost:8443/api/v1/vms/100/snapshots" \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"pre-update","description":"Before kernel update"}'</div>
+  </div>
+  <div class="page-number">Page 12</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title teal"><span class="icon">🕸</span> 9. Web UI</div>
+  <div class="section-underline teal"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">The SvelteKit Web UI provides a modern browser-based management interface. It proxies API calls to the API Gateway (<span class="inline-code">:8443</span>) during development.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🚀</span> Quick Start</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">cd web</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">npm install</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">npm run dev          # dev server on :5173</span></div>
+  <div class="command-example mb-6"><span class="prompt">$</span> <span class="cmd">npm run build        # production build</span></div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📄</span> Pages</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="card-grid">
+    <div class="feature-card"><div class="card-icon">📊</div><div class="card-title">Dashboard</div><div class="card-desc">Cluster overview, resource charts, recent activity</div></div>
+    <div class="feature-card"><div class="card-icon">🖥</div><div class="card-title">VMs</div><div class="card-desc">VM list, create, start/stop, snapshots, console</div></div>
+    <div class="feature-card"><div class="card-icon">📦</div><div class="card-title">Containers</div><div class="card-desc">LXC management, exec, resize, templates</div></div>
+    <div class="feature-card"><div class="card-icon">🔗</div><div class="card-title">Nodes</div><div class="card-desc">Node health, services, resource usage</div></div>
+    <div class="feature-card"><div class="card-icon">💾</div><div class="card-title">Storage</div><div class="card-desc">Pool management, ISO uploads, backups</div></div>
+    <div class="feature-card"><div class="card-icon">⚙</div><div class="card-title">Settings</div><div class="card-desc">API keys, user preferences, theme toggle</div></div>
+  </div>
+  <div class="section-title green mt-12" style="font-size:22px;"><span class="icon">🔧</span> Environment</div>
+  <div class="section-underline green mb-6"></div>
+  <table class="param-table">
+    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr><td class="mono">PUBLIC_API_URL</td><td>/api</td><td>API Gateway proxy path</td></tr>
+    <tr><td class="mono">PUBLIC_API_KEY</td><td>—</td><td>Pre-configured API key</td></tr>
+    <tr><td class="mono">PUBLIC_SITE_NAME</td><td>Pulsar</td><td>Custom site title</td></tr>
+    <tr><td class="mono">PUBLIC_THEME</td><td>system</td><td>Theme: light, dark, or system</td></tr>
+  </table>
+  <div class="rounded-box orange mt-8">
+    <div class="body-text text-sm"><span class="text-orange font-bold">Note:</span> The dev server proxies <span class="inline-code">/api</span> requests to <span class="inline-code">http://localhost:8443</span>. Configure in <span class="inline-code">web/vite.config.ts</span>.</div>
+  </div>
+  <div class="page-number">Page 13</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title green"><span class="icon">📦</span> 10. Packer Images</div>
+  <div class="section-underline green"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">Pulsar uses Packer to build golden VM images for Proxmox. Images are pre-configured with SSH, monitoring agents, security hardening, and application dependencies.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📋</span> Available Templates</div>
+  <div class="section-underline blue mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Template</th><th>Builder</th><th>OS</th><th>Use Case</th></tr>
+    <tr><td class="mono">ubuntu-24.04</td><td>Proxmox ISO</td><td>Ubuntu 24.04 LTS</td><td>General purpose server</td></tr>
+    <tr><td class="mono">ubuntu-22.04</td><td>Proxmox ISO</td><td>Ubuntu 22.04 LTS</td><td>Stable legacy deployments</td></tr>
+    <tr><td class="mono">debian-12</td><td>Proxmox ISO</td><td>Debian 12 Bookworm</td><td>Minimal server footprint</td></tr>
+    <tr><td class="mono">rocky-9</td><td>Proxmox ISO</td><td>Rocky Linux 9</td><td>Enterprise RHEL workloads</td></tr>
+    <tr><td class="mono">almalinux-9</td><td>Proxmox ISO</td><td>AlmaLinux 9</td><td>RHEL-compatible alternative</td></tr>
+    <tr><td class="mono">windows-server-2022</td><td>Proxmox ISO</td><td>Windows Server 2022</td><td>Windows workloads</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🔨</span> Build Commands</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">cd packer</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">packer init .</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">packer build -var-file=ubuntu-24.04.pkrvars.hcl .</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">packer build -var-file=debian-12.pkrvars.hcl .</span></div>
+  <div class="command-example mb-6"><span class="prompt">$</span> <span class="cmd">packer build -var-file=rocky-9.pkrvars.hcl .</span></div>
+  <div class="rounded-box green mb-6">
+    <div class="body-text text-sm"><span class="text-green font-bold">Tip:</span> Customize images by editing the <span class="inline-code">pkrvars.hcl</span> files. Variables include SSH keys, disk size, network config, and post-install scripts.</div>
+  </div>
+  <div class="success-box">
+    <div class="body-text text-sm">Built images are automatically registered as Proxmox templates. Deploy via <span class="inline-code">pmxctl vm create --from-template &lt;template-name&gt;</span>.</div>
+  </div>
+  <div class="page-number">Page 14</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title orange"><span class="icon">📜</span> 11. Ansible Playbooks</div>
+  <div class="section-underline orange"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">Pulsar includes Ansible roles for Proxmox, KVM, and shared infrastructure. Playbooks are organized by function and support tagging for partial runs.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📂</span> Proxmox Roles</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="two-col gap-8 mb-6">
+    <div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/system</div>
+        <div class="body-text text-xs">Kernel tuning, sysctl, GRUB config, firewall</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/storage</div>
+        <div class="body-text text-xs">ZFS pool setup, LVM, Ceph config, NFS mounts</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/network</div>
+        <div class="body-text text-xs">OVS bridges, bond config, VLAN tagging, firewall</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/cluster</div>
+        <div class="body-text text-xs">Corosync config, quorum, fencing, HA setup</div>
+      </div>
+    </div>
+    <div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/backup</div>
+        <div class="body-text text-xs">PBS client, job scheduling, retention policies</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/monitoring</div>
+        <div class="body-text text-xs">Prometheus exporters, SNMP, log forwarding</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/security</div>
+        <div class="body-text text-xs">AppArmor, SELinux, auditd, key management</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">proxmox/users</div>
+        <div class="body-text text-xs">PAM config, SSH keys, user provisioning</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">🔧</span> KVM Roles</div>
+  <div class="section-underline green mb-6"></div>
+  <div class="flex flex-row gap-8 flex-wrap mb-6">
+    <span class="tech-pill">kvm/host</span>
+    <span class="tech-pill">kvm/storage</span>
+    <span class="tech-pill">kvm/network</span>
+    <span class="tech-pill">kvm/security</span>
+    <span class="tech-pill">kvm/monitoring</span>
+  </div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">▶</span> Running Playbooks</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">ansible-playbook -i inventories/prod proxmox/system.yml</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">ansible-playbook -i inventories/prod proxmox/storage.yml --tags nfs</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">ansible-playbook -i inventories/prod proxmox/cluster.yml --check</span></div>
+  <div class="command-example mb-6"><span class="prompt">$</span> <span class="cmd">ansible-playbook -i inventories/prod kvm/host.yml -l kvm-01</span></div>
+  <div class="warning-box">
+    <div class="body-text text-sm"><span class="font-bold">⚠ Always run with <span class="inline-code">--check</span> first</span> in production. Use <span class="inline-code">-l</span> to limit to specific hosts during rollout.</div>
+  </div>
+  <div class="page-number">Page 15</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title blue"><span class="icon">🏗</span> 12. Terraform Modules</div>
+  <div class="section-underline blue"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">Terraform modules in Pulsar provide infrastructure-as-code provisioning for Proxmox resources. Modules follow the standard registry pattern with input/output variables.</div>
+  </div>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">📋</span> Module Reference</div>
+  <div class="section-underline green mb-6"></div>
+  <table class="param-table mb-8">
+    <tr><th>Module</th><th>Resource</th><th>Key Variables</th></tr>
+    <tr><td class="mono">proxmox-vm</td><td>QEMU VM</td><td>vmid, name, cores, memory, disk, network, cloud_init</td></tr>
+    <tr><td class="mono">proxmox-ct</td><td>LXC Container</td><td>ctid, hostname, ostemplate, cores, disk, swap</td></tr>
+    <tr><td class="mono">proxmox-pool</td><td>Resource Pool</td><td>pool_id, comment, vms, containers</td></tr>
+    <tr><td class="mono">proxmox-snapshot</td><td>VM Snapshot</td><td>vmid, snapshot_name, description, include_ram</td></tr>
+    <tr><td class="mono">proxmox-backup</td><td>Backup Job</td><td>vmid, storage, schedule, retention, mode</td></tr>
+    <tr><td class="mono">proxmox-firewall</td><td>Firewall Rule</td><td>type, action, source, dest, port, proto</td></tr>
+    <tr><td class="mono">proxmox-user</td><td>API User</td><td>username, password, roles, acl_path</td></tr>
+  </table>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">📝</span> Example Usage</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="code-block" style="font-size:11px;">module "web_server" {
+  source = "./modules/proxmox-vm"
+  vmid    = 200
+  name    = "web-01"
+  cores   = 4
+  memory  = 8192
+  disk = {
+    storage = "local-lvm"
+    size    = "80G"
+  }
+  network = {
+    bridge = "vmbr0"
+    model  = "virtio"
+  }
+  cloud_init = {
+    user = "deploy"
+    ssh_key = file("~/.ssh/id_ed25519.pub")
+  }
+}</div>
+  <div class="section-title orange mt-8" style="font-size:22px;"><span class="icon">▶</span> Terraform Commands</div>
+  <div class="section-underline orange mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">cd terraform &amp;&amp; terraform init</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">terraform plan -var-file=prod.tfvars</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">terraform apply -var-file=prod.tfvars</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">terraform destroy -var-file=prod.tfvars</span></div>
+  <div class="page-number">Page 16</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title red"><span class="icon">💾</span> 13. Backup & Restore</div>
+  <div class="section-underline red"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">Pulsar integrates Proxmox Backup Server (PBS) for efficient, deduplicated backups with push-based architecture and incremental snapshots.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">⚙</span> PBS Configuration</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="two-col gap-8 mb-8">
+    <div>
+      <div class="code-block">proxmox-backup-server:
+  host: "10.0.0.10:8007"
+  datastore: "main"
+  fingerprint: "xx:xx:xx:xx:xx"
+  username: "root@pam"
+  password: ""
+  namespace: "production"</div>
+    </div>
+    <div>
+      <div class="rounded-box teal mb-4">
+        <div class="body-text text-sm font-bold mb-4">Retention Policy</div>
+        <div class="body-text text-xs">• Keep last 7 daily backups</div>
+        <div class="body-text text-xs">• Keep last 4 weekly backups</div>
+        <div class="body-text text-xs">• Keep last 12 monthly backups</div>
+        <div class="body-text text-xs">• Keep last 3 yearly backups</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">▶</span> Backup Commands</div>
+  <div class="section-underline green mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">pmxctl backup run --all                         # backup all VMs</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">pmxctl backup run 100 101 102                  # backup specific VMs</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">swissknife backup run --all                     # unified backup</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">pmxctl backup list                             # list recent backups</span></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">pmxctl backup status &lt;backup-id&gt;               # backup status</span></div>
+  <div class="command-example mb-6"><span class="prompt">$</span> <span class="cmd">pmxctl backup restore &lt;backup-id&gt; --node pve1  # restore backup</span></div>
+  <div class="section-title orange" style="font-size:22px;"><span class="icon">🚨</span> Disaster Recovery</div>
+  <div class="section-underline orange mb-6"></div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm font-bold">Node Failure</div>
+    <div class="body-text text-xs">1. Restore VMs from PBS onto a healthy node</div>
+    <div class="body-text text-xs">2. Rejoin cluster with <span class="inline-code">pmxctl cluster join</span></div>
+    <div class="body-text text-xs">3. Reconfigure HA groups</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm font-bold">Full Cluster Loss</div>
+    <div class="body-text text-xs">1. Reinstall Proxmox on all nodes</div>
+    <div class="body-text text-xs">2. Restore PBS configuration from backup</div>
+    <div class="body-text text-xs">3. Restore VMs via <span class="inline-code">pmxctl backup restore</span></div>
+  </div>
+  <div class="success-box">
+    <div class="body-text text-sm">Always test a restore in a staging environment. Automate nightly backups with <span class="inline-code">pmxctl backup run --all --cron "0 2 * * *"</span>.</div>
+  </div>
+  <div class="page-number">Page 17</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title teal"><span class="icon">📊</span> 14. Monitoring</div>
+  <div class="section-underline teal"></div>
+  <div class="info-box mb-6">
+    <div class="body-text text-sm">Pulsar exposes Prometheus metrics and structured JSON logs. Integrate with your existing monitoring stack via Prometheus, Grafana, Loki, or your preferred alerting channel.</div>
+  </div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">📈</span> Prometheus Metrics</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="command-example mb-4"><span class="prompt">$</span> <span class="cmd">curl -s https://localhost:8443/api/v1/metrics | head -20</span></div>
+  <div class="code-block mb-6"># HELP pulsar_vm_cpu_usage VM CPU usage percentage
+# TYPE pulsar_vm_cpu_usage gauge
+pulsar_vm_cpu_usage{vmid="100",node="pve1"} 23.5
+pulsar_vm_cpu_usage{vmid="101",node="pve2"} 67.1
+# HELP pulsar_vm_memory_bytes VM memory usage in bytes
+# TYPE pulsar_vm_memory_bytes gauge
+pulsar_vm_memory_bytes{vmid="100",node="pve1"} 2.147e+09
+pulsar_vm_memory_bytes{vmid="101",node="pve2"} 4.294e+09</div>
+  <div class="section-title green" style="font-size:22px;"><span class="icon">📝</span> Structured Logging</div>
+  <div class="section-underline green mb-6"></div>
+  <div class="code-block mb-6">{"level":"info","time":"2026-07-24T14:30:00Z",
+ "source":"pmxctl","msg":"vm started",
+ "vmid":100,"duration_ms":2340}
+
+{"level":"warn","time":"2026-07-24T14:31:00Z",
+ "source":"apigateway","msg":"slow request",
+ "method":"POST","path":"/api/v1/vms/create",
+ "duration_ms":12500}</div>
+  <div class="section-title orange" style="font-size:22px;"><span class="icon">🔔</span> Alerting Channels</div>
+  <div class="section-underline orange mb-6"></div>
+  <div class="card-grid">
+    <div class="feature-card"><div class="card-icon">💬</div><div class="card-title">Slack</div><div class="card-desc">Webhook integration with customizable message templates</div></div>
+    <div class="feature-card"><div class="card-icon">✈</div><div class="card-title">Telegram</div><div class="card-desc">Bot API with inline keyboards for quick actions</div></div>
+    <div class="feature-card"><div class="card-icon">📧</div><div class="card-title">Email</div><div class="card-desc">SMTP relay with HTML formatting</div></div>
+    <div class="feature-card"><div class="card-icon">📡</div><div class="card-title">ntfy</div><div class="card-desc">Self-hosted push notification server</div></div>
+  </div>
+  <div class="page-number">Page 18</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title"><span class="icon">🔒</span> 15. Security</div>
+  <div class="section-underline"></div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🔐</span> Authentication Methods</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="two-col gap-8 mb-8">
+    <div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm mb-2">API Keys</div>
+        <div class="body-text text-xs">Static pre-shared keys. Generate with <span class="inline-code">apigateway --generate-key</span>. Store in environment variables or <span class="inline-code">settings.yaml</span>.</div>
+      </div>
+      <div class="rounded-box green mb-4">
+        <div class="text-green font-bold text-sm mb-2">JWT Tokens</div>
+        <div class="body-text text-xs">Time-limited bearer tokens (24h default). Issued via <span class="inline-code">POST /api/v1/auth/login</span>. Refresh with <span class="inline-code">POST /api/v1/auth/refresh</span>.</div>
+      </div>
+      <div class="rounded-box orange mb-4">
+        <div class="text-orange font-bold text-sm mb-2">mTLS</div>
+        <div class="body-text text-xs">Optional mutual TLS for machine-to-machine auth. Requires client certificates signed by the internal CA.</div>
+      </div>
+    </div>
+    <div>
+      <div class="rounded-box red mb-4">
+        <div class="text-red font-bold text-sm mb-2">Secrets Management</div>
+        <div class="body-text text-xs">• HashiCorp Vault integration via <span class="inline-code">PULSAR_VAULT_ADDR</span></div>
+        <div class="body-text text-xs">• SOPS-encrypted YAML files for GitOps</div>
+        <div class="body-text text-xs">• Environment variable substitution in YAML</div>
+        <div class="body-text text-xs">• TLS 1.3 for all API communication</div>
+      </div>
+      <div class="rounded-box teal mb-4">
+        <div class="text-teal font-bold text-sm mb-2">Encryption</div>
+        <div class="body-text text-xs">• TLS 1.3 for API Gateway</div>
+        <div class="body-text text-xs">• AES-256-GCM for backup encryption</div>
+        <div class="body-text text-xs">• SSH key-based auth for Ansible</div>
+        <div class="body-text text-xs">• API tokens scoped by RBAC role</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🛡</span> Security Best Practices</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">1. Use API tokens instead of passwords for Proxmox authentication</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">2. Enable <span class="inline-code">PULSAR_PROXMOX_INSECURE=false</span> in production</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">3. Restrict API keys with IP whitelisting and RBAC scopes</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">4. Run Ansible hardening roles against all Proxmox and KVM hosts</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">5. Rotate secrets regularly — use Vault or SOPS for GitOps</div>
+  </div>
+  <div class="highlight-box mb-4">
+    <div class="body-text text-sm">6. Enable audit logging and forward to centralized SIEM</div>
+  </div>
+  <div class="page-number">Page 19</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title orange"><span class="icon">🛠</span> 16. Development</div>
+  <div class="section-underline orange"></div>
+  <div class="section-title blue" style="font-size:22px;"><span class="icon">🔨</span> Building</div>
+  <div class="section-underline blue mb-6"></div>
+  <div class="two-col gap-8 mb-8">
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">Makefile Targets</div>
+      <table class="param-table">
+        <tr><th>Target</th><th>Description</th></tr>
+        <tr><td class="mono">make build</td><td>Build all Go binaries</td></tr>
+        <tr><td class="mono">make test</td><td>Run all tests</td></tr>
+        <tr><td class="mono">make lint</td><td>Run linters (golangci-lint)</td></tr>
+        <tr><td class="mono">make tui</td><td>Build and launch TUI</td></tr>
+        <tr><td class="mono">make api</td><td>Build and launch API</td></tr>
+        <tr><td class="mono">make web</td><td>Start Web UI dev server</td></tr>
+        <tr><td class="mono">make clean</td><td>Clean build artifacts</td></tr>
+        <tr><td class="mono">make certs</td><td>Generate self-signed TLS certs</td></tr>
+        <tr><td class="mono">make fmt</td><td>Format Go code</td></tr>
+        <tr><td class="mono">make test-all</td><td>Run all tests + lint + build</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">Contributing</div>
+      <div class="rounded-box mb-4">
+        <div class="body-text text-sm font-bold mb-2">Branch Strategy</div>
+        <div class="body-text text-xs">• <span class="inline-code">main</span> — stable, production-ready</div>
+        <div class="body-text text-xs">• <span class="inline-code">develop</span> — integration branch</div>
+        <div class="body-text text-xs">• <span class="inline-code">feature/*</span> — feature branches</div>
+        <div class="body-text text-xs">• <span class="inline-code">fix/*</span> — bug fixes</div>
+      </div>
+      <div class="rounded-box green mb-4">
+        <div class="body-text text-sm font-bold mb-2">Commit Convention</div>
+        <div class="body-text text-xs"><span class="inline-code">type(scope): message</span></div>
+        <div class="body-text text-xs">Types: feat, fix, docs, chore, refactor, test, style</div>
+        <div class="body-text text-xs">Scope: pmxctl, kvmctl, api, web, packer, ansible, terraform</div>
+      </div>
+      <div class="rounded-box teal">
+        <div class="body-text text-sm font-bold mb-2">Testing</div>
+        <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">make test                    # unit tests</span></div>
+        <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">go test ./... -v             # verbose Go tests</span></div>
+        <div class="command-example" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">cd web && npm run test       # web UI tests</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">📋</span> Code Review Checklist</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="flex flex-row gap-4 flex-wrap">
+    <span class="tech-pill green">Tests pass</span>
+    <span class="tech-pill">Lint clean</span>
+    <span class="tech-pill teal">No secrets</span>
+    <span class="tech-pill orange">Error handling</span>
+    <span class="tech-pill red">Logging added</span>
+    <span class="tech-pill green">Docs updated</span>
+    <span class="tech-pill">Backwards compat</span>
+  </div>
+  <div class="page-number">Page 20</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title red"><span class="icon">📋</span> 17. Runbooks</div>
+  <div class="section-underline red"></div>
+  <div class="warning-box mb-6">
+    <div class="body-text text-sm">Runbooks provide step-by-step procedures for common operational scenarios. Always verify the environment state before executing destructive actions.</div>
+  </div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🚨</span> Runbook A: Node Failure Recovery</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="rounded-box orange mb-4">
+    <div class="body-text text-sm font-bold mb-4">Symptoms</div>
+    <div class="body-text text-xs">• Node unreachable via SSH and web UI</div>
+    <div class="body-text text-xs">• Cluster shows node as offline/inactive</div>
+    <div class="body-text text-xs">• HA services fail over but may stall</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 1: Verify Node Status</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">#</span> <span class="cmd">Check cluster status from a healthy node</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl cluster status</span></div>
+    <div class="body-text text-xs">If node shows offline, proceed to Step 2.</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 2: HA Failover</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl ha group list                           # check HA groups</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl ha resource status                      # check resource state</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl ha resource migrate &lt;vm&gt; --node &lt;node&gt; # manual migration</span></div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 3: Recover Node</div>
+    <div class="body-text text-xs">• Power cycle and check console</div>
+    <div class="body-text text-xs">• If hardware failure: replace hardware, reinstall Proxmox</div>
+    <div class="body-text text-xs">• Rejoin cluster: <span class="inline-code">pmxctl cluster join &lt;node&gt;</span></div>
+    <div class="body-text text-xs">• Restore corosync config from backup if needed</div>
+  </div>
+  <div class="rounded-box green">
+    <div class="body-text text-sm font-bold mb-4">Step 4: Verify Recovery</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl cluster status     # all nodes online?</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm list            # all VMs running?</span></div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🗄</span> Runbook B: Storage Full</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="rounded-box orange mb-4">
+    <div class="body-text text-sm font-bold mb-4">Symptoms</div>
+    <div class="body-text text-xs">• Alerts: storage usage > 90%</div>
+    <div class="body-text text-xs">• VM disk errors or I/O pauses</div>
+    <div class="body-text text-xs">• Backup jobs failing with "no space"</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 1: Identify Usage</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl storage list                       # list all storage pools</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl storage info local-lvm             # check specific pool</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl storage content local-lvm          # find large volumes</span></div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 2: Free Space</div>
+    <div class="body-text text-xs">• Remove old backups: <span class="inline-code">pmxctl backup prune --keep 7</span></div>
+    <div class="body-text text-xs">• Delete unused ISO templates</div>
+    <div class="body-text text-xs">• Relocate large VMs to another storage</div>
+  </div>
+  <div class="rounded-box green">
+    <div class="body-text text-sm font-bold mb-4">Step 3: Add Capacity</div>
+    <div class="body-text text-xs">• Add new disk to ZFS pool</div>
+    <div class="body-text text-xs">• Expand LVM logical volume</div>
+    <div class="body-text text-xs">• Configure PBS for off-site backups</div>
+  </div>
+  <div class="page-number">Page 21</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title red"><span class="icon">📋</span> 17. Runbooks (cont.)</div>
+  <div class="section-underline red"></div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">🔄</span> Runbook C: Failed Migration</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="rounded-box orange mb-4">
+    <div class="body-text text-sm font-bold mb-4">Symptoms</div>
+    <div class="body-text text-xs">• Migration task fails with error message</div>
+    <div class="body-text text-xs">• VM stuck in "migrating" state</div>
+    <div class="body-text text-xs">• Network connectivity issues between nodes</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 1: Check Migration State</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm status &lt;vmid&gt;                  # check current state</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl node tasks &lt;node&gt;                 # view task logs</span></div>
+    <div class="body-text text-xs">If VM is stuck, you may need to unlock it.</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 2: Unlock & Cleanup</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm unlock &lt;vmid&gt;                  # unlock VM if locked</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm migrate &lt;vmid&gt; --cancel         # cancel ongoing migration</span></div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 3: Retry Migration</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">#</span> <span class="cmd">Try offline migration first:</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm shutdown &lt;vmid&gt; --force</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm migrate &lt;vmid&gt; --target &lt;node&gt; --online=false</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">#</span> <span class="cmd">Then restart on target:</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm start &lt;vmid&gt;</span></div>
+  </div>
+  <div class="rounded-box green">
+    <div class="body-text text-sm font-bold mb-4">Prevention</div>
+    <div class="body-text text-xs">• Ensure shared storage is available on both nodes</div>
+    <div class="body-text text-xs">• Check network latency between nodes (<span class="inline-code">ping</span>)</div>
+    <div class="body-text text-xs">• Verify CPU compatibility (or use <span class="inline-code">--force-cpu</span>)</div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="section-title teal" style="font-size:22px;"><span class="icon">♻</span> Runbook D: Backup Recovery</div>
+  <div class="section-underline teal mb-6"></div>
+  <div class="rounded-box orange mb-4">
+    <div class="body-text text-sm font-bold mb-4">Scenario</div>
+    <div class="body-text text-xs">A VM has failed or been corrupted. You need to restore from the latest PBS backup.</div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 1: List Available Backups</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl backup list --vmid &lt;vmid&gt;              # list backups for VM</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl backup info &lt;backup-id&gt;                # backup metadata</span></div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 2: Restore</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">#</span> <span class="cmd">Restore to original node:</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl backup restore &lt;backup-id&gt; --node pve1</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">#</span> <span class="cmd">Or restore with new VMID (avoids conflicts):</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl backup restore &lt;backup-id&gt; --node pve1 --newid 300</span></div>
+  </div>
+  <div class="rounded-box mb-4">
+    <div class="body-text text-sm font-bold mb-4">Step 3: Verify Restore</div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm start &lt;vmid&gt;                         # start restored VM</span></div>
+    <div class="command-example mb-2" style="font-size:12px;"><span class="prompt">$</span> <span class="cmd">pmxctl vm status &lt;vmid&gt;                        # verify running</span></div>
+    <div class="body-text text-xs">SSH into the VM and verify application health.</div>
+  </div>
+  <div class="success-box">
+    <div class="body-text text-sm">Always verify backup integrity with <span class="inline-code">pmxctl backup verify &lt;backup-id&gt;</span> before relying on a restore.</div>
+  </div>
+  <div class="page-number">Page 22</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title teal"><span class="icon">📎</span> Appendix A: Environment Variables Reference</div>
+  <div class="section-underline teal"></div>
+  <div class="body-text text-sm mb-6">Complete list of all environment variables recognized by Pulsar components.</div>
+  <table class="param-table">
+    <tr><th>Variable</th><th>Default</th><th>Component</th><th>Description</th></tr>
+    <tr><td class="mono">PULSAR_LOG_LEVEL</td><td>info</td><td>all</td><td>Log verbosity (debug, info, warn, error)</td></tr>
+    <tr><td class="mono">PULSAR_LOG_FORMAT</td><td>text</td><td>all</td><td>Log output format (text, json)</td></tr>
+    <tr><td class="mono">PULSAR_LOG_FILE</td><td>—</td><td>all</td><td>Log file path</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_URL</td><td>—</td><td>pmxctl, api</td><td>Proxmox API endpoint</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_USER</td><td>root@pam</td><td>pmxctl, api</td><td>API username</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_PASS</td><td>—</td><td>pmxctl, api</td><td>API password</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_REALM</td><td>pam</td><td>pmxctl, api</td><td>Authentication realm</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TOKEN_NAME</td><td>—</td><td>pmxctl, api</td><td>API token name</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TOKEN_SECRET</td><td>—</td><td>pmxctl, api</td><td>API token secret</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_TIMEOUT</td><td>30</td><td>pmxctl, api</td><td>HTTP timeout (seconds)</td></tr>
+    <tr><td class="mono">PULSAR_PROXMOX_INSECURE</td><td>false</td><td>pmxctl, api</td><td>Skip TLS verify</td></tr>
+    <tr><td class="mono">PULSAR_API_HOST</td><td>0.0.0.0</td><td>api</td><td>API bind address</td></tr>
+    <tr><td class="mono">PULSAR_API_PORT</td><td>8443</td><td>api</td><td>API listen port</td></tr>
+    <tr><td class="mono">PULSAR_API_TLS_CERT</td><td>—</td><td>api</td><td>TLS cert path</td></tr>
+    <tr><td class="mono">PULSAR_API_TLS_KEY</td><td>—</td><td>api</td><td>TLS key path</td></tr>
+    <tr><td class="mono">PULSAR_API_RATE_LIMIT</td><td>100</td><td>api</td><td>Requests per second</td></tr>
+    <tr><td class="mono">PULSAR_TUI_REFRESH</td><td>5</td><td>tui</td><td>Refresh interval (s)</td></tr>
+    <tr><td class="mono">PULSAR_TUI_NODE</td><td>—</td><td>tui</td><td>Default node</td></tr>
+    <tr><td class="mono">PULSAR_VAULT_ADDR</td><td>—</td><td>all</td><td>Vault server address</td></tr>
+    <tr><td class="mono">PULSAR_VAULT_TOKEN</td><td>—</td><td>all</td><td>Vault authentication token</td></tr>
+    <tr><td class="mono">PULSAR_PBS_HOST</td><td>—</td><td>pmxctl</td><td>PBS server address</td></tr>
+    <tr><td class="mono">PULSAR_PBS_DATASTORE</td><td>main</td><td>pmxctl</td><td>PBS datastore name</td></tr>
+    <tr><td class="mono">PULSAR_PBS_FINGERPRINT</td><td>—</td><td>pmxctl</td><td>PBS server fingerprint</td></tr>
+    <tr><td class="mono">PULSAR_PBS_USER</td><td>root@pam</td><td>pmxctl</td><td>PBS username</td></tr>
+    <tr><td class="mono">PULSAR_PBS_PASSWORD</td><td>—</td><td>pmxctl</td><td>PBS password</td></tr>
+    <tr><td class="mono">PULSAR_KVM_URI</td><td>qemu:///system</td><td>kvmctl</td><td>libvirt connection URI</td></tr>
+    <tr><td class="mono">PULSAR_KVM_SSH_HOST</td><td>—</td><td>kvmctl</td><td>Remote KVM host</td></tr>
+    <tr><td class="mono">PULSAR_KVM_SSH_USER</td><td>root</td><td>kvmctl</td><td>SSH user for remote KVM</td></tr>
+    <tr><td class="mono">PULSAR_KVM_SSH_KEY</td><td>~/.ssh/id_rsa</td><td>kvmctl</td><td>SSH private key path</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_SLACK_URL</td><td>—</td><td>all</td><td>Slack webhook URL</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_TELEGRAM_TOKEN</td><td>—</td><td>all</td><td>Telegram bot token</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_TELEGRAM_CHAT</td><td>—</td><td>all</td><td>Telegram chat ID</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_SMTP_HOST</td><td>—</td><td>all</td><td>SMTP relay host</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_SMTP_PORT</td><td>587</td><td>all</td><td>SMTP relay port</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_SMTP_USER</td><td>—</td><td>all</td><td>SMTP username</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_SMTP_PASS</td><td>—</td><td>all</td><td>SMTP password</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_NTFY_TOPIC</td><td>—</td><td>all</td><td>ntfy.sh topic</td></tr>
+    <tr><td class="mono">PULSAR_NOTIFY_NTFY_URL</td><td>https://ntfy.sh</td><td>all</td><td>ntfy server URL</td></tr>
+  </table>
+  <div class="page-number">Page 23</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title blue"><span class="icon">📎</span> Appendix B: API Endpoints Quick Reference</div>
+  <div class="section-underline blue"></div>
+  <div class="body-text text-sm mb-6">All REST API endpoints at a glance. Base URL: <span class="inline-code">https://localhost:8443/api/v1</span></div>
+  <div class="two-col gap-8">
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">VMs & Containers</div>
+      <table class="param-table">
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/vms</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/vms/{id}</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/create</td></tr>
+        <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/vms/{id}</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/start</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/stop</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/shutdown</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/reboot</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/reset</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/suspend</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/resume</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/vms/{id}/snapshots</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/snapshots</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/vms/{id}/snapshots/{name}/rollback</td></tr>
+        <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/vms/{id}/snapshots/{name}</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/containers</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/containers/{id}</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/containers/create</td></tr>
+        <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/containers/{id}</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/containers/{id}/start</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/containers/{id}/stop</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/containers/{id}/exec</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">Infrastructure</div>
+      <table class="param-table">
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/nodes</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/nodes/{node}</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/cluster/status</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/cluster/resources</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/storage</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/storage/{name}</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/storage/{name}/content</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/backups</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/backups/run</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/pools</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/pools/create</td></tr>
+        <tr><td><span class="endpoint-badge delete">DEL</span></td><td class="mono">/pools/{name}</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/ha/status</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/firewall/rules</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/health</td></tr>
+        <tr><td><span class="endpoint-badge get">GET</span></td><td class="mono">/metrics</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/auth/login</td></tr>
+        <tr><td><span class="endpoint-badge post">POST</span></td><td class="mono">/auth/refresh</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="page-number">Page 24</div>
+</div>
+<div class="page">
+  <div class="margin-line"></div>
+  <div class="section-title green"><span class="icon">⌨</span> Appendix C: Keyboard Shortcuts Reference</div>
+  <div class="section-underline green"></div>
+  <div class="body-text text-sm mb-6">Complete keyboard shortcut reference for the Bubble Tea TUI dashboard.</div>
+  <div class="two-col gap-8">
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">Navigation</div>
+      <table class="param-table">
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="key-hint">Tab</span></td><td>Next panel</td></tr>
+        <tr><td><span class="key-hint">Shift+Tab</span></td><td>Previous panel</td></tr>
+        <tr><td><span class="key-hint">↑</span> <span class="key-hint">↓</span></td><td>Move up/down</td></tr>
+        <tr><td><span class="key-hint">←</span> <span class="key-hint">→</span></td><td>Navigate tabs</td></tr>
+        <tr><td><span class="key-hint">PgUp</span> <span class="key-hint">PgDn</span></td><td>Page up/down</td></tr>
+        <tr><td><span class="key-hint">Home</span> <span class="key-hint">End</span></td><td>Top/bottom</td></tr>
+      </table>
+      <div class="text-blue font-bold text-sm mb-4 mt-8">Actions</div>
+      <table class="param-table">
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="key-hint">Enter</span></td><td>Select / confirm</td></tr>
+        <tr><td><span class="key-hint">Esc</span></td><td>Back / cancel</td></tr>
+        <tr><td><span class="key-hint">Space</span></td><td>Toggle checkbox</td></tr>
+        <tr><td><span class="key-hint">Del</span></td><td>Delete item</td></tr>
+        <tr><td><span class="key-hint">r</span></td><td>Refresh</td></tr>
+        <tr><td><span class="key-hint">d</span></td><td>Details</td></tr>
+        <tr><td><span class="key-hint">s</span></td><td>Start selected</td></tr>
+        <tr><td><span class="key-hint">S</span> (Shift+s)</td><td>Stop selected</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="text-blue font-bold text-sm mb-4">View Switching</div>
+      <table class="param-table">
+        <tr><th>Key</th><th>View</th></tr>
+        <tr><td><span class="key-hint">1</span></td><td>Overview</td></tr>
+        <tr><td><span class="key-hint">2</span></td><td>VMs</td></tr>
+        <tr><td><span class="key-hint">3</span></td><td>Containers</td></tr>
+        <tr><td><span class="key-hint">4</span></td><td>Nodes</td></tr>
+        <tr><td><span class="key-hint">5</span></td><td>Storage</td></tr>
+        <tr><td><span class="key-hint">6</span></td><td>Backups</td></tr>
+        <tr><td><span class="key-hint">7</span></td><td>Logs</td></tr>
+        <tr><td><span class="key-hint">0</span></td><td>Help overlay</td></tr>
+      </table>
+      <div class="text-blue font-bold text-sm mb-4 mt-8">Application</div>
+      <table class="param-table">
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="key-hint">q</span> / <span class="key-hint">Ctrl+C</span></td><td>Quit</td></tr>
+        <tr><td><span class="key-hint">/</span></td><td>Search / filter</td></tr>
+        <tr><td><span class="key-hint">?</span></td><td>Toggle help</td></tr>
+        <tr><td><span class="key-hint">Ctrl+R</span></td><td>Force refresh all</td></tr>
+        <tr><td><span class="key-hint">Ctrl+S</span></td><td>Save current view</td></tr>
+        <tr><td><span class="key-hint">Ctrl+F</span></td><td>Find text</td></tr>
+        <tr><td><span class="key-hint">Ctrl+E</span></td><td>Export data</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="section-divider mt-10"></div>
+  <div class="section-title teal mt-10"><span class="icon">📋</span> Appendix D: Changelog</div>
+  <div class="section-underline teal"></div>
+  <div class="two-col gap-8 mt-6">
+    <div>
+      <div class="rounded-box mb-4">
+        <div class="text-teal font-bold text-sm">v1.1.0 — July 2026</div>
+        <div class="body-text text-xs">• Added Web UI (SvelteKit)</div>
+        <div class="body-text text-xs">• TUI backup view</div>
+        <div class="body-text text-xs">• API rate limiting</div>
+        <div class="body-text text-xs">• PBS encryption support</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm">v1.0.0 — June 2026</div>
+        <div class="body-text text-xs">• Initial release</div>
+        <div class="body-text text-xs">• pmxctl, kvmctl, swissknife</div>
+        <div class="body-text text-xs">• API Gateway with auth</div>
+        <div class="body-text text-xs">• Packer golden images</div>
+      </div>
+    </div>
+    <div>
+      <div class="rounded-box mb-4">
+        <div class="text-teal font-bold text-sm">v0.9.0 — May 2026 (Beta)</div>
+        <div class="body-text text-xs">• TUI dashboard rewrite</div>
+        <div class="body-text text-xs">• Ansible role overhaul</div>
+        <div class="body-text text-xs">• Terraform modules</div>
+        <div class="body-text text-xs">• Monitoring stack</div>
+      </div>
+      <div class="rounded-box mb-4">
+        <div class="text-blue font-bold text-sm">v0.8.0 — Apr 2026 (Alpha)</div>
+        <div class="body-text text-xs">• Core automation engine</div>
+        <div class="body-text text-xs">• Proxmox & KVM integration</div>
+        <div class="body-text text-xs">• Basic backup support</div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:25mm;left:25mm;right:20mm;text-align:center;z-index:1;">
+    <div style="border-top:2px dashed var(--ink-teal-light);padding-top:16px;">
+      <div style="font-family:var(--hand);font-size:24px;color:var(--ink-teal);margin-bottom:4px;">⚡ Pulsar</div>
+      <div style="font-family:var(--hand-alt);font-size:14px;color:#94a3b8;">Proxmox & KVM Automation Suite · MIT License · July 2026</div>
+      <div style="font-family:var(--hand-alt);font-size:12px;color:#94a3b8;">Built with Go · Python · Svelte · Ansible · Terraform · Packer</div>
+    </div>
+  </div>
+  <div class="page-number">Page 25</div>
+</div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Proxmox VE REST API Client
+# Pulsar - Proxmox VE REST API Client
 
 """Full Proxmox VE REST API client wrapper with retry, rate-limiting, and connection pooling."""
 

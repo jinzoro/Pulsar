@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # =============================================================================
-# common.sh — Shared Bash library for proxmox-kvm-swissknife
+# common.sh — Shared Bash library for Pulsar
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Provides logging, environment loading, prerequisite checks, API helpers,
 # input prompts, and utility functions for all Bash scripts in this project.
@@ -28,7 +28,7 @@ readonly NC='\033[0m' # No Color / Reset
 # Exported Defaults
 # ---------------------------------------------------------------------------
 export LOG_LEVEL="${LOG_LEVEL:-info}"
-export LOG_DIR="${LOG_DIR:-/var/log/proxmox-kvm-swissknife}"
+export LOG_DIR="${LOG_DIR:-/var/log/Pulsar}"
 export LOG_FILE=""
 export DRY_RUN="${DRY_RUN:-false}"
 export PMX_API_TOKEN="${PMX_API_TOKEN:-}"
@@ -51,7 +51,7 @@ setup_logging() {
     }
 
     LOG_DIR="${log_dir}"
-    LOG_FILE="${LOG_DIR}/proxmox-kvm-swissknife-$(date +%Y%m%d-%H%M%S).log"
+    LOG_FILE="${LOG_DIR}/Pulsar-$(date +%Y%m%d-%H%M%S).log"
     touch "${LOG_FILE}" 2>/dev/null || {
         LOG_FILE=""
         return 0

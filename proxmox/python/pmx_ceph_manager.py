@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Ceph Manager
+# Pulsar - Ceph Manager
 
 """Proxmox VE integrated Ceph cluster management."""
 

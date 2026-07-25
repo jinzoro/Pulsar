@@ -3,7 +3,7 @@
 # pmx-sriov.sh — SR-IOV NIC management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: detect, enable, create-vfs, assign, status, persistent
 # =============================================================================

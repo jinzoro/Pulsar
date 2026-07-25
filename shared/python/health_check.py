@@ -3,7 +3,7 @@
 # health_check.py — Host and service health checker
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Provides HealthChecker class for pinging hosts, testing SSH and TCP
 # connectivity, and querying disk / memory / load statistics (local or

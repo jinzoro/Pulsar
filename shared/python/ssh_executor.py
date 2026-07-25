@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # =============================================================================
-# ssh_executor.py — SSH command execution for proxmox-kvm-swissknife
+# ssh_executor.py — SSH command execution for Pulsar
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Provides SSHExecutor class for running commands on local and remote hosts
 # via subprocess (native OpenSSH) with optional paramiko fallback.

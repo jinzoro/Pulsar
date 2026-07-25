@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Firewall Manager
+# Pulsar - Firewall Manager
 
 """Proxmox VE firewall rules and IPSet management."""
 

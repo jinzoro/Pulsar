@@ -13,9 +13,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/rs/zerolog"
 
-	"github.com/proxmox-kvm-swissknife/internal/config"
-	"github.com/proxmox-kvm-swissknife/internal/kvm"
-	"github.com/proxmox-kvm-swissknife/internal/proxmox"
+	"github.com/pulsar/internal/config"
+	"github.com/pulsar/internal/kvm"
+	"github.com/pulsar/internal/proxmox"
 )
 
 type viewName string

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 resource "proxmox_virtual_environment_container" "this" {
   node_name = var.target_node

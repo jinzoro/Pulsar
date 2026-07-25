@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - High Availability Manager
+# Pulsar - High Availability Manager
 
 """Proxmox VE High Availability group and resource management."""
 

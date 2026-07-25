@@ -3,7 +3,7 @@
 # pmx-ha.sh — HA (High Availability) management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: groups, resources, status, failover-test
 # =============================================================================

@@ -3,7 +3,7 @@
 # pmx-health-check.sh — Health monitoring
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: node, vm, storage, ceph, cluster, report, alert
 # =============================================================================

@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
 
-	"github.com/proxmox-kvm-swissknife/internal/apiserver"
+	"github.com/pulsar/internal/apiserver"
 )
 
 func main() {

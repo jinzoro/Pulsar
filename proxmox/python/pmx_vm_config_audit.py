@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - VM Configuration Audit
+# Pulsar - VM Configuration Audit
 
 """VM configuration audit and drift detection."""
 

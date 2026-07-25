@@ -3,7 +3,7 @@
 # kvm-network-bridge.sh — Network management for KVM via libvirt
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, delete, list, start, stop, autostart, dhcp, leases
 # =============================================================================

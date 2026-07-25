@@ -3,7 +3,7 @@
 # pmx-sdn.sh — Proxmox SDN management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: zones, vnets, subnets, status, apply
 # =============================================================================

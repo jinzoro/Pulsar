@@ -3,7 +3,7 @@
 # pmx-migration.sh — Migration operations
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: migrate, status, batch-migrate, evacuate
 # =============================================================================

@@ -1,6 +1,6 @@
 # Proxmox Operations Reference
 
-Complete reference for all Proxmox VE operations available through the proxmox-kvm-swissknife toolset.
+Complete reference for all Proxmox VE operations available through the Pulsar toolset.
 
 ---
 

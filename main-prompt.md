@@ -16,7 +16,7 @@ The project must be fully modular, well-documented, and culminate in a single TU
 | R1 | Every script must be **idempotent** where possible. |
 | R2 | Every script must include a `--help` / `-h` flag with full usage block. |
 | R3 | Every script must validate prerequisites (installed packages, root/sudo, API token, etc.) before running. |
-| R4 | Every script must log to both stdout AND to `/var/log/proxmox-swissknife/<module>.log` (rotating). |
+| R4 | Every script must log to both stdout AND to `/var/log/pulsar/<module>.log` (rotating). |
 | R5 | Every script must support `--dry-run` where destructive actions are involved. |
 | R6 | Secrets (API tokens, passwords) must **never** be hardcoded — use env vars, `.env` files, or a vault reference. |
 | R7 | All Python code must target **Python 3.12+**, use `type hints`, and include a `requirements.txt` per module. |
@@ -68,7 +68,7 @@ The project must be fully modular, well-documented, and culminate in a single TU
 ## 2. DIRECTORY STRUCTURE (create exactly this)
 
 ```
-proxmox-kvm-swissknife/
+pulsar/
 ├── README.md
 ├── LICENSE
 ├── .env.example
@@ -939,7 +939,7 @@ Makefile target: `make tui`
 
 ### 11.3 Config File — `config/settings.yaml`
 ```yaml
-# Global configuration for proxmox-kvm-swissknife
+# Global configuration for Pulsar
 # Uncomment and modify as needed
 
 # Proxmox connection
@@ -973,7 +973,7 @@ Makefile target: `make tui`
 #   backup_retention: 7
 #   snapshot_retention: 10
 #   log_level: "INFO"
-#   log_dir: "/var/log/proxmox-swissknife"
+#   log_dir: "/var/log/pulsar"
 #   dry_run: false
 #   executor: "bash"  # bash | python | ansible | api
 

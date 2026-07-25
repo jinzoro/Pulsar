@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Bulk Operations
+# Pulsar - Bulk Operations
 
 """Batch and pool-level VM operations."""
 

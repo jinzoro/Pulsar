@@ -312,8 +312,8 @@ Create a cron job for regular cleanup:
 ```bash
 # /etc/cron.weekly/swissknife-cleanup
 #!/bin/bash
-source /opt/proxmox-kvm-swissknife/shared/bash/lib/common.sh
-load_env /opt/proxmox-kvm-swissknife/.env
+source /opt/pulsar/shared/bash/lib/common.sh
+load_env /opt/pulsar/.env
 
 # Prune backups for all VMs
 for vmid in $(ssh pve1 "qm list | awk 'NR>1{print $1}'"); do

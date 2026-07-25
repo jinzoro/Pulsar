@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Storage Manager
+# Pulsar - Storage Manager
 
 """Proxmox storage backend management."""
 

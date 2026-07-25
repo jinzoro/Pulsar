@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 output "pool_id" {
   description = "Pool ID"

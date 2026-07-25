@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Snapshot Manager
+# Pulsar - Snapshot Manager
 
 """VM / container snapshot management."""
 

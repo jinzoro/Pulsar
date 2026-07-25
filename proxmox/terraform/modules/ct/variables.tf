@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 variable "target_node" {
   type        = string

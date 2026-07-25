@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Backup Manager
+# Pulsar - Backup Manager
 
 """Proxmox VE backup (VZDump) and restore operations."""
 

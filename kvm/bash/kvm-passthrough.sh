@@ -3,7 +3,7 @@
 # kvm-passthrough.sh - Device passthrough (GPU, PCI, USB) for KVM
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: detect, iommu-groups, bind, unbind, assign, verify, usb,
 #             enable-iommu

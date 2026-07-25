@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - LXC Container Manager
+# Pulsar - LXC Container Manager
 
 """LXC container lifecycle management."""
 

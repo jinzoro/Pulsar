@@ -3,7 +3,7 @@
 # kvm-iommu-setup.sh - IOMMU setup and configuration for KVM
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: enable, status, groups, blacklist-gpu
 # =============================================================================

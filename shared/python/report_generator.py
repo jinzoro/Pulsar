@@ -3,7 +3,7 @@
 # report_generator.py — Markdown / HTML / JSON report generation
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Generates structured reports in Markdown, HTML (with inline CSS), and
 # JSON formats.  Designed for VM inventory, health-check, and backup
@@ -299,7 +299,7 @@ class ReportGenerator:
 
         html_parts.extend([
             "</div>",
-            "<footer>proxmox-kvm-swissknife report</footer>",
+            "<footer>Pulsar report</footer>",
             "</body>",
             "</html>",
         ])

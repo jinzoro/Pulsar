@@ -3,7 +3,7 @@
 # pmx-storage.sh — Storage management for Proxmox VE
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: add, remove, list, status, resize-disk, move-disk, import-disk
 # =============================================================================

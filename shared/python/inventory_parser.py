@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # =============================================================================
-# inventory_parser.py — YAML inventory parser for proxmox-kvm-swissknife
+# inventory_parser.py — YAML inventory parser for Pulsar
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Parses a YAML-based inventory file describing hosts, groups, and their
 # connection parameters.  Provides a typed interface via pydantic models.

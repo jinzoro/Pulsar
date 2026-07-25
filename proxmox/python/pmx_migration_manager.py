@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Migration Manager
+# Pulsar - Migration Manager
 
 """VM / container live migration across Proxmox nodes."""
 

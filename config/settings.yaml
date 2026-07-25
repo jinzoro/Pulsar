@@ -1,5 +1,5 @@
 # =============================================================================
-# proxmox-kvm-swissknife — Central Configuration
+# Pulsar — Central Configuration
 # =============================================================================
 # Copy this file to settings.local.yaml and fill in your values.
 # Local settings override the defaults in this file.
@@ -61,7 +61,7 @@ defaults:
   # log_level: "info"
 
   # Directory for log files
-  # log_dir: "/var/log/proxmox-kvm-swissknife"
+  # log_dir: "/var/log/pulsar"
 
   # When true, commands are printed but not executed (dry-run mode)
   # dry_run: false
@@ -88,7 +88,7 @@ notifications:
     # Use TLS encryption for the SMTP connection
     # use_tls: true
     # Sender address shown in the From header
-    # from_addr: "proxmox-kvm-swissknife@example.com"
+    # from_addr: "pulsar@example.com"
     # Comma-separated list of recipient addresses
     # to_addrs:
     #   - "admin@example.com"

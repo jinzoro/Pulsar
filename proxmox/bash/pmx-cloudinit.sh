@@ -3,7 +3,7 @@
 # pmx-cloudinit.sh — Cloud-Init management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, configure, regenerate, dump, download-image
 # =============================================================================

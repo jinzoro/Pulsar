@@ -3,7 +3,7 @@
 # pmx-network.sh — Network configuration
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: bridge, bond, vlan, status, apply
 # =============================================================================

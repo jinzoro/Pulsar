@@ -3,7 +3,7 @@
 # kvm-disk-image.sh — Disk image management for KVM
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, convert, resize, snapshot, info, check, benchmark,
 #             sparsify, customize, resize-fs

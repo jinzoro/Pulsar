@@ -1,5 +1,5 @@
 {
-	"name": "proxmox-kvm-swissknife-web",
+	"name": "pulsar-web",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",

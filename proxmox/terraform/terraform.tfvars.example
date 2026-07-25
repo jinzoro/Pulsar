@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 # Proxmox API Configuration
 pm_api_url          = "https://pve.example.com:8006/api2/json"

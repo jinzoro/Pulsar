@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - SDN Manager
+# Pulsar - SDN Manager
 
 """Proxmox VE Software-Defined Networking management."""
 

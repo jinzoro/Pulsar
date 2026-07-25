@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/rs/zerolog"
 
-	"github.com/proxmox-kvm-swissknife/internal/config"
+	"github.com/pulsar/internal/config"
 )
 
 // NewApp creates a new TUI application using the full Model system.

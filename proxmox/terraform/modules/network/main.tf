@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 resource "proxmox_virtual_environment_network_linux_bridge" "this" {
   count = var.type == "bridge" ? 1 : 0

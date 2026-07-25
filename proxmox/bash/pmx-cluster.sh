@@ -3,7 +3,7 @@
 # pmx-cluster.sh — Cluster management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: status, create, join, remove, nodes, quorum
 # =============================================================================

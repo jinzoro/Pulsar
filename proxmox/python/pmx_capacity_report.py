@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Capacity Report
+# Pulsar - Capacity Report
 
 """Proxmox VE cluster capacity reporting with storage forecasting."""
 

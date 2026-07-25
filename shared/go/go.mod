@@ -1,3 +1,3 @@
-module github.com/proxmox-kvm-swissknife/shared/go
+module github.com/pulsar/shared/go
 
 go 1.22

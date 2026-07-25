@@ -3,7 +3,7 @@
 # pmx-user-acl.sh — User and ACL management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: users, groups, roles, acl, tokens, tfa
 # =============================================================================

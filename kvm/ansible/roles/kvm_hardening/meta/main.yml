@@ -4,7 +4,7 @@
 galaxy_info:
   role_name: kvm_hardening
   description: Security hardening for KVM/libvirt hosts
-  author: proxmox-kvm-swissknife
+  author: pulsar
   license: MIT
   min_ansible_version: "2.16"
   platforms:

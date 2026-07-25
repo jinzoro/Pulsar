@@ -3,7 +3,7 @@
 # kvm-backup.sh - Backup operations for KVM VMs
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: full, incremental, live, offline, list
 # =============================================================================

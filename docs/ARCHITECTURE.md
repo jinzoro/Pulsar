@@ -1,8 +1,8 @@
-# Architecture — proxmox-kvm-swissknife
+# Architecture — Pulsar
 
 ## Project Overview
 
-**proxmox-kvm-swissknife** is a comprehensive, opinionated automation suite for managing Proxmox VE clusters and local KVM/libvirt hypervisors. It provides a unified CLI with a rich terminal UI, wrapping Proxmox REST API operations, libvirt management, Packer image builds, Terraform provisioning, and Ansible orchestration into a single coherent toolset.
+**Pulsar** is a comprehensive, opinionated automation suite for managing Proxmox VE clusters and local KVM/libvirt hypervisors. It provides a unified CLI with a rich terminal UI, wrapping Proxmox REST API operations, libvirt management, Packer image builds, Terraform provisioning, and Ansible orchestration into a single coherent toolset.
 
 ### Goals
 
@@ -705,7 +705,7 @@ Configuration is loaded with the following precedence (highest priority wins):
 ## Directory Structure
 
 ```
-proxmox-kvm-swissknife/
+pulsar/
 │
 ├── config/                          # Configuration files
 │   ├── settings.yaml                #   Global settings with all options documented

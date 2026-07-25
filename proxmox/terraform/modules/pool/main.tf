@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 resource "proxmox_virtual_environment_pool" "this" {
   pool_id = var.pool_id

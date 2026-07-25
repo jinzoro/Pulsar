@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - PCI Passthrough Manager
+# Pulsar - PCI Passthrough Manager
 
 """Proxmox VE PCI / GPU passthrough management."""
 

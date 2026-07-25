@@ -3,7 +3,7 @@
 # kvm-health-check.sh - Health monitoring for KVM hosts and VMs
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: domain, host, storage, network, report
 # =============================================================================

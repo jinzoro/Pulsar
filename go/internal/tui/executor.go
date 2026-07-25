@@ -14,8 +14,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/rs/zerolog"
 
-	"github.com/proxmox-kvm-swissknife/internal/kvm"
-	"github.com/proxmox-kvm-swissknife/internal/proxmox"
+	"github.com/pulsar/internal/kvm"
+	"github.com/pulsar/internal/proxmox"
 )
 
 type ActionExecutor struct {

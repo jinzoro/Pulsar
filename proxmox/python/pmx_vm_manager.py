@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - VM Manager
+# Pulsar - VM Manager
 
 """Qemu virtual machine lifecycle management."""
 

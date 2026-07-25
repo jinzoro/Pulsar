@@ -14,7 +14,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/proxmox-kvm-swissknife/internal/proxmox"
+	"github.com/pulsar/internal/proxmox"
 )
 
 // Server is the REST API gateway for Proxmox VE.

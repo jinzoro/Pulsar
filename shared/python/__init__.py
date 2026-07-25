@@ -1,6 +1,6 @@
 # =============================================================================
-# shared/python/__init__.py — proxmox-kvm-swissknife shared Python package
+# shared/python/__init__.py — Pulsar shared Python package
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================

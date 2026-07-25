@@ -30,7 +30,7 @@ ANSIBLE_DIR  := proxmox
 
 help: ## Show this help message
 	@echo ""
-	@echo "  proxmox-kvm-swissknife v1.1.0"
+	@echo "  Pulsar v1.1.0"
 	@echo "  ============================="
 	@echo ""
 	@echo "  Usage:  make <target>"

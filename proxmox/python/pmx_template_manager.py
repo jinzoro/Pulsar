@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Template Manager
+# Pulsar - Template Manager
 
 """Proxmox VE VM template lifecycle management."""
 

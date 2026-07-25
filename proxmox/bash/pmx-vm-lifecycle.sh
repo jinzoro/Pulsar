@@ -3,7 +3,7 @@
 # pmx-vm-lifecycle.sh — Full KVM VM lifecycle management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, start, stop, shutdown, reboot, suspend, resume, delete,
 #             clone, rename

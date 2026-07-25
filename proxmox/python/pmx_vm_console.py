@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - VM Console
+# Pulsar - VM Console
 
 """Proxmox VE VNC / SPICE console access helpers."""
 

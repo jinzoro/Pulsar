@@ -4,7 +4,7 @@
 galaxy_info:
   role_name: kvm_vm_deploy
   description: Deploy and manage KVM virtual machines via libvirt
-  author: proxmox-kvm-swissknife
+  author: pulsar
   license: MIT
   min_ansible_version: "2.16"
   platforms:

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - ZFS Manager
+# Pulsar - ZFS Manager
 
 """Proxmox VE ZFS pool and dataset management."""
 

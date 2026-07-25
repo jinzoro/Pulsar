@@ -1,4 +1,4 @@
-"""Shared fixtures for proxmox-kvm-swissknife pytest tests."""
+"""Shared fixtures for Pulsar pytest tests."""
 
 import json
 import os

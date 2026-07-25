@@ -3,7 +3,7 @@
 # pmx-zfs.sh — ZFS management
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: pool, dataset, zvol, scrub, snapshot, properties, ARC
 # =============================================================================

@@ -3,7 +3,7 @@
 # notification.py — Multi-channel notification manager
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Sends alerts and reports via email, Slack, Telegram, ntfy, PagerDuty,
 # and arbitrary webhook endpoints.
@@ -371,7 +371,7 @@ class NotificationManager:
             "event_action": "trigger",
             "payload": {
                 "summary": message,
-                "source": "proxmox-kvm-swissknife",
+                "source": "Pulsar",
                 "severity": severity,
             },
         }
@@ -467,7 +467,7 @@ class NotificationManager:
 
         for ch in target_channels:
             if ch == "email":
-                subject = kwargs.get("subject", "proxmox-kvm-swissknife Alert")
+                subject = kwargs.get("subject", "Pulsar Alert")
                 priority = kwargs.get("priority", "normal")
                 results["email"] = self.send_email(
                     subject=subject, body=message, priority=priority

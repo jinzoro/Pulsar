@@ -1,6 +1,6 @@
 # TUI Application Guide
 
-The proxmox-kvm-swissknife TUI (Terminal User Interface) is a rich, interactive dashboard built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and [Lip Gloss](https://github.com/charmbracelet/lipgloss). It provides real-time monitoring and management of your Proxmox cluster and KVM hosts from a single terminal window.
+The Pulsar TUI (Terminal User Interface) is a rich, interactive dashboard built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and [Lip Gloss](https://github.com/charmbracelet/lipgloss). It provides real-time monitoring and management of your Proxmox cluster and KVM hosts from a single terminal window.
 
 ---
 
@@ -9,7 +9,7 @@ The proxmox-kvm-swissknife TUI (Terminal User Interface) is a rich, interactive 
 ### Build from source
 
 ```bash
-cd proxmox-kvm-swissknife
+cd pulsar
 make build
 ```
 

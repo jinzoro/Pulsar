@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Alerting
+# Pulsar - Alerting
 
 """Proxmox VE health-check alerting system."""
 

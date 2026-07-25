@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-module github.com/proxmox-kvm-swissknife
+module github.com/pulsar
 
 go 1.22.0
 

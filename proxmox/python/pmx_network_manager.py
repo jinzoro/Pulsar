@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Network Manager
+# Pulsar - Network Manager
 
 """Proxmox VE host network interface management."""
 

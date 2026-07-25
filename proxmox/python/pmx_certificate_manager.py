@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Certificate Manager
+# Pulsar - Certificate Manager
 
 """Proxmox VE SSL/TLS certificate and ACME management."""
 

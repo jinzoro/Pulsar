@@ -1,12 +1,12 @@
 <div align="center">
 
-# 🪚 proxmox-kvm-swissknife
+# 🪚 Pulsar
 
 *Unified automation suite for Proxmox VE clusters, KVM/libvirt, and golden-image pipelines*
 
 [![Version](https://img.shields.io/badge/Release-1.1.0-14b8a6?style=for-the-badge&logo=github&logoColor=white)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-MIT-3b82f6?style=for-the-badge)](LICENSE)
-[![PRs](https://img.shields.io/badge/PRs-Welcome-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourorg/proxmox-kvm-swissknife/pulls)
+[![PRs](https://img.shields.io/badge/PRs-Welcome-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourorg/pulsar/pulls)
 
 [![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?style=for-the-badge&logo=go&logoColor=white)](/go)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](/tests/pytest)
@@ -46,8 +46,8 @@
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/yourorg/proxmox-kvm-swissknife.git
-cd proxmox-kvm-swissknife
+git clone https://github.com/yourorg/pulsar.git
+cd pulsar
 cp .env.example .env   # Edit with your Proxmox credentials
 make build             # Build all Go binaries
 ```
@@ -68,7 +68,7 @@ make build             # Build all Go binaries
 ## 📁 Structure
 
 ```
-proxmox-kvm-swissknife/
+pulsar/
 ├── config/           # Settings, templates
 ├── docs/             # Architecture, API ref, runbooks
 ├── go/               # Go source (CLI, API, TUI, client libs)

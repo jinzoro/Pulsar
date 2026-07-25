@@ -3,7 +3,7 @@
 # kvm-snapshot.sh - Snapshot management for KVM
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create, list, revert, delete, external, commit
 # =============================================================================

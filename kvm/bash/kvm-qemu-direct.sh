@@ -3,7 +3,7 @@
 # kvm-qemu-direct.sh - Direct QEMU control (bypassing libvirt)
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: launch, monitor, migrate, info, kill
 # =============================================================================

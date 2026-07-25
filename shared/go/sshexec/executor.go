@@ -1,8 +1,8 @@
 // =============================================================================
-// executor.go — SSH command execution for proxmox-kvm-swissknife
+// executor.go — SSH command execution for Pulsar
 // =============================================================================
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 proxmox-kvm-swissknife contributors
+// Copyright (c) 2026 Pulsar contributors
 // =============================================================================
 // Provides the sshexec package for running commands on local and remote hosts
 // via os/exec (local) and SSH with known_hosts verification.

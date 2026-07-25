@@ -3,7 +3,7 @@
 # pmx-node-maintenance.sh — Node maintenance operations
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: enter, exit, update, reboot, shutdown, health
 # =============================================================================

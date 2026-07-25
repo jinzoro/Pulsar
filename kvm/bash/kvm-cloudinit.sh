@@ -3,7 +3,7 @@
 # kvm-cloudinit.sh - Cloud-Init management for KVM VMs
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create-iso, attach, configure, dump
 # =============================================================================

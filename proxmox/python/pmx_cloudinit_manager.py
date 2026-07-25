@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - CloudInit Manager
+# Pulsar - CloudInit Manager
 
 """Proxmox VE CloudInit image and configuration management."""
 

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# proxmox-kvm-swissknife - Monitoring
+# Pulsar - Monitoring
 
 """Proxmox VE metrics collection and Prometheus export."""
 

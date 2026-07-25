@@ -16,7 +16,7 @@ func (m *Model) renderMenu() string {
 
 	var b strings.Builder
 
-	title := TitleStyle.Render("  proxmox-kvm-swissknife  ")
+	title := TitleStyle.Render("  Pulsar  ")
 	b.WriteString(title)
 	b.WriteString("\n\n")
 

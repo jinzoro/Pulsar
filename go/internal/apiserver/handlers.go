@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/proxmox-kvm-swissknife/internal/proxmox"
+	"github.com/pulsar/internal/proxmox"
 )
 
 // --- Health ---

@@ -9,8 +9,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/rs/zerolog"
 
-	"github.com/proxmox-kvm-swissknife/internal/config"
-	"github.com/proxmox-kvm-swissknife/internal/tui"
+	"github.com/pulsar/internal/config"
+	"github.com/pulsar/internal/tui"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 
 	log.Info().
 		Str("version", "1.0.0").
-		Msg("starting proxmox-kvm-swissknife TUI")
+		Msg("starting Pulsar TUI")
 
 	app, err := tui.NewApp(cfg, log)
 	if err != nil {

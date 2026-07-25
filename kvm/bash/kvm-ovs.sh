@@ -3,7 +3,7 @@
 # kvm-ovs.sh - Open vSwitch integration for KVM
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: create-bridge, delete-bridge, add-port, delete-port, list,
 #             vxlan, bond

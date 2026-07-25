@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) proxmox-kvm-swissknife contributors
+// Copyright (c) pulsar contributors
 
 terraform {
   required_version = ">= 1.5.0"
@@ -13,7 +13,7 @@ terraform {
 
   # backend "s3" {
   #   bucket         = "terraform-state"
-  #   key            = "proxmox-kvm-swissknife/terraform.tfstate"
+  #   key            = "pulsar/terraform.tfstate"
   #   region         = "us-east-1"
   #   dynamodb_table = "terraform-locks"
   #   encrypt        = true

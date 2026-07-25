@@ -4,7 +4,7 @@
 galaxy_info:
   role_name: proxmox_ct_deploy
   description: Deploy and manage LXC containers on Proxmox VE
-  author: proxmox-kvm-swissknife
+  author: pulsar
   license: MIT
   min_ansible_version: "2.16"
   platforms:

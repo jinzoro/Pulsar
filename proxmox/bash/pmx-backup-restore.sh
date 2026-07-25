@@ -3,7 +3,7 @@
 # pmx-backup-restore.sh — Backup and restore operations
 # =============================================================================
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 proxmox-kvm-swissknife contributors
+# Copyright (c) 2026 Pulsar contributors
 # =============================================================================
 # Operations: backup, restore, list, verify, prune, schedule
 # =============================================================================

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="Public/logos/Logo.png" alt="Pulsar" width="48" height="48" style="vertical-align:middle;margin-right:10px;border-radius:8px;" /> **Pulsar**
+<img src="Public/logos/Logo.png" alt="Pulsar" width="400" style="border-radius:16px;" />
 
 *Unified automation suite for Proxmox VE clusters, KVM/libvirt, and golden-image pipelines*
 

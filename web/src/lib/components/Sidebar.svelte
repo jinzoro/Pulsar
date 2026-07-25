@@ -15,8 +15,8 @@
 
 <aside class="sidebar" class:collapsed>
 	<div class="brand">
-		<span class="logo">⚡</span>
-		<span class="title">SwissKnife</span>
+		<img src="/logo.png" alt="Pulsar" class="logo-img" />
+		<span class="title">Pulsar</span>
 	</div>
 	<nav>
 		{#each nav as item}
@@ -54,7 +54,7 @@
 		padding: 16px;
 		border-bottom: 1px solid var(--color-border);
 	}
-	.logo { font-size: 20px; }
+	.logo-img { width: 28px; height: 28px; flex-shrink: 0; }
 	.title { font-weight: 600; font-size: 15px; white-space: nowrap; }
 	.sidebar.collapsed .title { display: none; }
 	nav { flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 2px; }

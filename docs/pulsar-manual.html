@@ -489,33 +489,50 @@
 </style>
 </head>
 <body>
-<div class="page" style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
-  <div class="margin-line"></div>
-  <div style="position:relative;z-index:1;text-align:center;">
-    <div style="font-size:64px;margin-bottom:12px;position:relative;z-index:1;">⚡</div>
-    <div class="title" style="font-size:56px;margin-bottom:8px;position:relative;z-index:1;">Pulsar</div>
-    <div class="subtitle" style="font-size:20px;margin-bottom:24px;position:relative;z-index:1;">Proxmox & KVM Automation Suite</div>
-    <div class="stamp teal" style="transform:none;margin-bottom:40px;font-size:16px;">v1.1.0</div>
-    <div style="border-top:2px dashed var(--ink-teal-light);width:60%;margin:0 auto 32px;"></div>
-    <div style="font-family:var(--hand);font-size:20px;color:var(--ink-black);margin-bottom:8px;position:relative;z-index:1;">
+<div class="page" style="display:flex;flex-direction:column;justify-content:center;align-items:center;background:#08162A;padding:0;overflow:hidden;">
+  <div class="margin-line" style="background:rgba(20,184,166,0.3);opacity:1;"></div>
+
+  <!-- Large logo as background -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;opacity:0.25;">
+    <img src="pulsar-logo.png" alt="" style="width:500px;height:500px;border-radius:32px;" />
+  </div>
+
+  <!-- Glow behind logo -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,0.12),transparent 70%);pointer-events:none;z-index:0;"></div>
+
+  <!-- Subtle background grid pattern -->
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(20,184,166,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(20,184,166,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;"></div>
+
+  <!-- Thin accent line top -->
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#14b8a6,transparent);z-index:2;"></div>
+
+  <div style="position:relative;z-index:1;text-align:center;padding:0 40px;">
+    <div style="font-family:var(--hand);font-size:64px;font-weight:700;color:#ffffff;line-height:1.1;margin-bottom:6px;letter-spacing:-0.5px;text-shadow:0 2px 20px rgba(0,0,0,0.5);">Pulsar</div>
+    <div style="font-family:var(--hand-alt);font-size:20px;color:#5eead4;margin-bottom:28px;letter-spacing:0.5px;text-shadow:0 2px 12px rgba(0,0,0,0.4);">Proxmox &amp; KVM Automation Suite</div>
+
+    <div style="width:60px;height:2px;background:linear-gradient(90deg,#14b8a6,transparent);border-radius:2px;margin:0 auto 28px;"></div>
+
+    <div style="font-family:var(--hand);font-size:18px;color:#94a3b8;margin-bottom:6px;text-shadow:0 1px 8px rgba(0,0,0,0.3);">
       Go TUI · REST API Gateway · SvelteKit Web UI
     </div>
-    <div style="font-family:var(--hand-alt);font-size:16px;color:var(--ink-blue);margin-bottom:32px;position:relative;z-index:1;">
+    <div style="font-family:var(--hand-alt);font-size:15px;color:#64748b;margin-bottom:36px;">
       CLI · Packer · Ansible · Terraform · Golden Images
     </div>
-    <div class="flex items-center justify-center gap-8">
-      <span class="tech-pill teal">Go 1.22+</span>
-      <span class="tech-pill">Python 3.11+</span>
-      <span class="tech-pill teal">Svelte 5</span>
-      <span class="tech-pill">Ansible 2.16+</span>
-      <span class="tech-pill green">Packer 1.10+</span>
-      <span class="tech-pill orange">Terraform 1.7+</span>
+
+    <div class="flex items-center justify-center gap-4" style="flex-wrap:wrap;">
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(20,184,166,0.25);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#5eead4;background:rgba(20,184,166,0.08);">Go 1.22+</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(148,163,184,0.15);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#94a3b8;background:rgba(148,163,184,0.06);">Python 3.11+</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(20,184,166,0.25);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#5eead4;background:rgba(20,184,166,0.08);">Svelte 5</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(148,163,184,0.15);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#94a3b8;background:rgba(148,163,184,0.06);">Ansible 2.16+</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(34,197,94,0.25);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#86efac;background:rgba(34,197,94,0.08);">Packer 1.10+</span>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 14px;border:1px solid rgba(234,88,12,0.25);border-radius:20px;font-family:var(--hand);font-size:14px;font-weight:600;color:#fdba74;background:rgba(234,88,12,0.08);">Terraform 1.7+</span>
     </div>
   </div>
-  <div style="position:absolute;bottom:25mm;left:0;right:0;text-align:center;z-index:1;">
-    <div class="label" style="font-size:12px;">User Manual · July 2026 · MIT License</div>
+
+  <div style="position:absolute;bottom:20mm;left:0;right:0;text-align:center;z-index:1;">
+    <div style="font-family:var(--hand-alt);font-size:12px;color:#475569;letter-spacing:1px;text-transform:uppercase;">User Manual · July 2026 · MIT License</div>
   </div>
-  <div class="page-number">Page 1</div>
+  <div class="page-number" style="color:#475569;">Page 1</div>
 </div>
 <div class="page">
   <div class="margin-line"></div>
